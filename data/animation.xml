@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<animations>
+  <animation name="idle">
+    <frame name="idle1" value="75000000"/>
+    <frame name="idle2" value="75000000"/>
+    <frame name="idle3" value="75000000"/>
+    <frame name="idle4" value="75000000"/>
+    <frame name="idle5" value="75000000"/>
+    <frame name="idle6" value="75000000"/>
+    <frame name="idle7" value="75000000"/>
+    <frame name="idle8" value="75000000"/>
+  </animation>
+  <animation name="run">
+    <frame name="run1" value="60000000"/>
+    <frame name="run2" value="60000000"/>
+    <frame name="run3" value="60000000"/>
+    <frame name="run4" value="60000000"/>
+    <frame name="run5" value="60000000"/>
+    <frame name="run6" value="60000000"/>
+    <frame name="run7" value="60000000"/>
+    <frame name="run8" value="60000000"/>
+	<frame name="run9" value="60000000"/>
+    <frame name="run10" value="60000000"/>
+  </animation>
+  <animation name="attack1">
+    <frame name="attack1" value="70000000"/>
+    <frame name="attack2" value="70000000"/>
+    <frame name="attack3" value="70000000"/>
+    <frame name="attack4" value="70000000"/>
+    <frame name="attack5" value="70000000"/>
+    <frame name="attack6" value="70000000"/>
+    <frame name="attack7" value="70000000"/>
+    <frame name="attack8" value="70000000"/>
+  </animation>
+  <animation name="jump">
+    <frame name="jump1" value="150000000"/>
+    <frame name="jump2" value="150000000"/>
+  </animation>
+  <animation name="falling">
+    <frame name="falling1" value="90000000"/>
+    <frame name="falling2" value="90000000"/>
+    <frame name="falling3" value="90000000"/>
+    <frame name="falling4" value="90000000"/>
+    <frame name="falling5" value="90000000"/>
+  </animation>
+  <animation name="NBidle">
+    <frame name="NBidle1" value="60000000"/>
+    <frame name="NBidle2" value="60000000"/>
+    <frame name="NBidle3" value="60000000"/>
+    <frame name="NBidle4" value="60000000"/>
+    <frame name="NBidle5" value="60000000"/>
+    <frame name="NBidle6" value="60000000"/>
+    <frame name="NBidle7" value="60000000"/>
+    <frame name="NBidle8" value="60000000"/>
+	<frame name="NBidle9" value="60000000"/>
+  </animation>
+  <animation name="NBrun">
+    <frame name="NBrun1" value="100000000"/>
+    <frame name="NBrun2" value="100000000"/>
+    <frame name="NBrun3" value="100000000"/>
+    <frame name="NBrun4" value="100000000"/>
+    <frame name="NBrun5" value="100000000"/>
+    <frame name="NBrun6" value="100000000"/>
+  </animation>
+  <animation name="NBattack">
+    <frame name="NBattack1" value="60000000"/>
+    <frame name="NBattack2" value="60000000"/>
+    <frame name="NBattack3" value="60000000"/>
+    <frame name="NBattack4" value="60000000"/>
+    <frame name="NBattack5" value="60000000"/>
+    <frame name="NBattack6" value="60000000"/>
+    <frame name="NBattack7" value="60000000"/>
+    <frame name="NBattack8" value="60000000"/>
+	<frame name="NBattack9" value="60000000"/>
+	<frame name="NBattack10" value="60000000"/>
+    <frame name="NBattack11" value="60000000"/>
+    <frame name="NBattack12" value="60000000"/>
+  </animation>
+  <animation name="NBhurt">
+    <frame name="NBhurt1" value="60000000"/>
+    <frame name="NBhurt2" value="60000000"/>
+    <frame name="NBhurt3" value="60000000"/>
+    <frame name="NBhurt4" value="60000000"/>
+    <frame name="NBhurt5" value="60000000"/>
+  </animation>
+  <animation name="NBdeath">
+    <frame name="NBdeath1" value="60000000"/>
+    <frame name="NBdeath2" value="60000000"/>
+    <frame name="NBdeath3" value="60000000"/>
+    <frame name="NBdeath4" value="60000000"/>
+    <frame name="NBdeath5" value="60000000"/>
+    <frame name="NBdeath6" value="60000000"/>
+    <frame name="NBdeath7" value="60000000"/>
+    <frame name="NBdeath8" value="60000000"/>
+	<frame name="NBdeath9" value="60000000"/>
+	<frame name="NBdeath10" value="60000000"/>
+    <frame name="NBdeath11" value="60000000"/>
+    <frame name="NBdeath12" value="60000000"/>
+	<frame name="NBdeath13" value="60000000"/>
+    <frame name="NBdeath14" value="60000000"/>
+    <frame name="NBdeath15" value="60000000"/>
+    <frame name="NBdeath16" value="60000000"/>
+    <frame name="NBdeath17" value="60000000"/>
+    <frame name="NBdeath18" value="60000000"/>
+    <frame name="NBdeath19" value="60000000"/>
+    <frame name="NBdeath20" value="60000000"/>
+	<frame name="NBdeath21" value="60000000"/>
+	<frame name="NBdeath22" value="60000000"/>
+    <frame name="NBdeath23" value="60000000"/>
+  </animation>
+  
+    <animation name="WZ1Idle">
+    <frame name="WZ1Idle1" value="60000000"/>
+    <frame name="WZ1Idle2" value="60000000"/>
+    <frame name="WZ1Idle3" value="60000000"/>
+    <frame name="WZ1Idle4" value="60000000"/>
+    <frame name="WZ1Idle5" value="60000000"/>
+    <frame name="WZ1Idle6" value="60000000"/>
+    <frame name="WZ1Idle7" value="60000000"/>
+  </animation>
+  <animation name="WZ1Run">
+    <frame name="WZ1Run1" value="60000000"/>
+    <frame name="WZ1Run2" value="60000000"/>
+    <frame name="WZ1Run3" value="60000000"/>
+    <frame name="WZ1Run4" value="60000000"/>
+    <frame name="WZ1Run5" value="60000000"/>
+    <frame name="WZ1Run6" value="60000000"/>
+    <frame name="WZ1Run7" value="60000000"/>
+	<frame name="WZ1Run8" value="60000000"/>
+  </animation>
+  <animation name="hitAttack">
+    <frame name="hitAttack1" value="60000000"/>
+    <frame name="hitAttack2" value="60000000"/>
+    <frame name="hitAttack3" value="60000000"/>
+    <frame name="hitAttack4" value="60000000"/>
+	<frame name="hitAttack5" value="60000000"/>
+    <frame name="hitAttack6" value="60000000"/>
+  </animation>
+    <animation name="healPotion">
+    <frame name="healPotion1" value="60000000"/>
+    <frame name="healPotion2" value="60000000"/>
+    <frame name="healPotion3" value="60000000"/>
+    <frame name="healPotion4" value="60000000"/>
+	<frame name="healPotion5" value="60000000"/>
+    <frame name="healPotion6" value="60000000"/>
+	<frame name="healPotion7" value="60000000"/>
+  </animation>
+  
+  <animation name="manaPotion">
+    <frame name="manaPotion1" value="60000000"/>
+    <frame name="manaPotion2" value="60000000"/>
+    <frame name="manaPotion3" value="60000000"/>
+    <frame name="manaPotion4" value="60000000"/>
+	<frame name="manaPotion5" value="60000000"/>
+    <frame name="manaPotion6" value="60000000"/>
+	<frame name="manaPotion7" value="60000000"/>
+  </animation>
+  
+  <animation name="Box">
+    <frame name="Box1" value="60000000"/>
+    <frame name="Box2" value="60000000"/>
+    <frame name="Box3" value="60000000"/>
+    <frame name="Box4" value="60000000"/>
+	<frame name="Box5" value="60000000"/>
+    <frame name="Box6" value="60000000"/>
+	<frame name="Box7" value="60000000"/>
+	<frame name="Box8" value="60000000"/>
+  </animation>
+  
+  <animation name="Barrel">
+    <frame name="Barrel1" value="60000000"/>
+    <frame name="Barrel2" value="60000000"/>
+    <frame name="Barrel3" value="60000000"/>
+    <frame name="Barrel4" value="60000000"/>
+	<frame name="Barrel5" value="60000000"/>
+    <frame name="Barrel6" value="60000000"/>
+	<frame name="Barrel7" value="60000000"/>
+	<frame name="Barrel8" value="60000000"/>
+  </animation>
+  
+</animations>
