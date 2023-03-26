@@ -17,6 +17,7 @@ import Load.CacheDataLoader;
 import Map.TileLayer;
 import entities.Player;
 import main.Game;
+import objects.ObjectManager;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
 import ui.PauseOverlay;
@@ -28,6 +29,7 @@ public class Playing extends State implements Statemethods {
 	private Player player;
 	private LevelManager levelManager;
 	private EnemyManager enemyManager;
+	private ObjectManager objectManager;
 	private PauseOverlay pauseOverlay;
 	private GameOverOverlay gameOverOverlay;
 	private LevelCompleteOverlay levelCompleteOverlay;
@@ -98,6 +100,7 @@ public class Playing extends State implements Statemethods {
 		player.LoadLvlData(mapLayer.get(0).getTileMap());
 		player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
 		enemyManager = new EnemyManager(this);
+		objectManager = new ObjectManager(this);
 		pauseOverlay = new PauseOverlay(this);
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
@@ -115,7 +118,7 @@ public class Playing extends State implements Statemethods {
 			levelManager.getCurrLevel().Update();
 			player.update(currTime);
 			enemyManager.update(currTime, levelManager.getCurrLevel().getMapLayer().get(0).getTileMap(), player);
-
+			objectManager.update(currTime);
 			CheckCloseToBorder();
 		}
 	}
@@ -145,6 +148,7 @@ public class Playing extends State implements Statemethods {
 		levelManager.getCurrLevel().Render(g, xLvlOffset);
 		player.render(g, xLvlOffset);
 		enemyManager.render(g, xLvlOffset);
+		objectManager.render(g, xLvlOffset);
 
 		if (paused) {
 			pauseOverlay.render(g);

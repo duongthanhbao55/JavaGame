@@ -1052,7 +1052,7 @@
     <id>Barrel1</id>
     <image>data/objects_sprites.png</image>
     <x>0</x>
-    <y>0</y>
+    <y>30</y>
     <w>40</w>
     <h>30</h>
   </frame>
@@ -1060,7 +1060,7 @@
     <id>Barrel2</id>
     <image>data/objects_sprites.png</image>
     <x>40</x>
-    <y>0</y>
+    <y>30</y>
     <w>40</w>
     <h>30</h>
   </frame>
@@ -1068,7 +1068,7 @@
     <id>Barrel3</id>
     <image>data/objects_sprites.png</image>
     <x>80</x>
-    <y>0</y>
+    <y>30</y>
     <w>40</w>
     <h>30</h>
   </frame>
@@ -1076,7 +1076,7 @@
     <id>Barrel4</id>
     <image>data/objects_sprites.png</image>
     <x>120</x>
-    <y>0</y>
+    <y>30</y>
     <w>40</w>
     <h>30</h>
   </frame>
@@ -1084,7 +1084,7 @@
     <id>Barrel5</id>
     <image>data/objects_sprites.png</image>
     <x>160</x>
-    <y>0</y>
+    <y>30</y>
     <w>40</w>
     <h>30</h>
   </frame>
@@ -1092,7 +1092,7 @@
     <id>Barrel6</id>
     <image>data/objects_sprites.png</image>
     <x>200</x>
-    <y>0</y>
+    <y>30</y>
     <w>40</w>
     <h>30</h>
   </frame>
@@ -1100,7 +1100,7 @@
     <id>Barrel7</id>
     <image>data/objects_sprites.png</image>
     <x>240</x>
-    <y>0</y>
+    <y>30</y>
     <w>40</w>
     <h>30</h>
   </frame>
@@ -1108,7 +1108,7 @@
     <id>Barrel8</id>
     <image>data/objects_sprites.png</image>
     <x>280</x>
-    <y>0</y>
+    <y>30</y>
     <w>40</w>
     <h>30</h>
   </frame>
