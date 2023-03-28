@@ -3,6 +3,8 @@ package objects;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import Map.PhysicalMap;
+
 import static untilz.Constants.ObjectConstants.*;
 import gamestates.Playing;
 
@@ -14,14 +16,7 @@ public class ObjectManager {
 	
 	
 	public ObjectManager(Playing playing) {
-		 this.playing = playing;
-		 
-		 potions.add(new Potion(300,200,HEAL_POTION));
-		 potions.add(new Potion(400,200,MANA_POTION));
-		 
-		 containers.add(new GameContainer(500,200,BARREL));
-		 containers.add(new GameContainer(600,200,BOX));
-		 
+		 this.playing = playing;		 
 	}
 	public void update(long currTime) {
 		for(Potion p : potions) {
@@ -34,6 +29,7 @@ public class ObjectManager {
 		}
 	}
 	public void render(Graphics g, int xLvlOffset) {
+		System.out.println(this.containers.size());
 		drawPotions(g,xLvlOffset);
 		drawContainers(g,xLvlOffset);
 	}
@@ -51,6 +47,16 @@ public class ObjectManager {
 				
 		}
 		
+	}
+	public void loadObject(PhysicalMap physicalMap) {
+		loadPotion(physicalMap);
+		loadContainer(physicalMap);
+	}
+	public void loadPotion(PhysicalMap physicalMap) {
+		this.potions = physicalMap.getPotions();
+	}
+	public void loadContainer(PhysicalMap physicalMap) {
+		this.containers = physicalMap.getContainers();
 	}
 	
 }

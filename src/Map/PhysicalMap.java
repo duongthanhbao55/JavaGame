@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import entities.NightBorne;
 import main.Game;
+import objects.GameContainer;
+import objects.Potion;
 
 
 public class PhysicalMap 
@@ -16,6 +18,8 @@ public class PhysicalMap
 	
 	public ArrayList<TileLayer> mapLayer = new ArrayList<TileLayer>();
 	private ArrayList<NightBorne> nightBornes = new ArrayList<>();
+	private ArrayList<Potion> potions = new ArrayList<>();
+	private ArrayList<GameContainer> containers = new ArrayList<>();
 	private int lvlTilesWide;
 	private int maxTilesOffset;
 	private int maxLvlOffsetX;
@@ -48,6 +52,14 @@ public class PhysicalMap
 		for(NightBorne nightBorne : physmap.getNightBornes())
 		{
 			this.nightBornes.add(nightBorne);
+		}
+		for(Potion p : physmap.getPotions())
+		{
+			this.potions.add(p);
+		}
+		for(GameContainer c : physmap.getContainers())
+		{
+			this.containers.add(c);
 		}
 		physmap.calcLvlOffsets();
 		this.maxLvlOffsetX = physmap.getLvlOffset();
@@ -111,6 +123,18 @@ public class PhysicalMap
 		return nightBornes;
 	}
 	
+	public ArrayList<Potion> getPotions() {
+		return potions;
+	}
+	public void setPotions(ArrayList<Potion> potions) {
+		this.potions = potions;
+	}
+	public ArrayList<GameContainer> getContainers() {
+		return containers;
+	}
+	public void setContainers(ArrayList<GameContainer> containers) {
+		this.containers = containers;
+	}
 	public void addCollisionIndex(int index) {
 		collisionIndex.add(index);
 	}

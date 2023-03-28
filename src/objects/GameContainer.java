@@ -35,11 +35,19 @@ public class GameContainer extends GameObject{
 		
 	}
 	public void update(long currTime) {
-		if(this.objType == BOX) {
-			Box.Update(currTime);
+		if(Box.isLastFrame()) {
+			doAnimation = false;
+			active = false;
 		}
-		else
-			Barrel.Update(currTime);
+			
+		if(doAnimation) {
+			if(this.objType == BOX) {
+				Box.Update(currTime);
+			}
+			else
+				Barrel.Update(currTime);
+		}
+		
 	}	
 	public void render(Graphics g, int xLvlOffset) {
 		if (this.objType == BOX) {
@@ -48,6 +56,16 @@ public class GameContainer extends GameObject{
 		} else
 			Barrel.draw((int) ((getHitbox().x - xLvlOffset) - this.xDrawOffset),
 					(int) (getHitbox().y - this.yDrawOffset), CONTAINER_WIDTH, CONTAINER_HEIGHT, g);
+	}
+	
+	public void reset() {
+		if(this.objType == BOX) {
+			Box.reset();
+		} else {
+			Barrel.reset();
+		}
+			
+		
 	}
 
 }

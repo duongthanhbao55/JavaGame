@@ -20,11 +20,12 @@ public class Potion extends GameObject {
 
 		xDrawOffset = (int) (3 * Game.SCALE);
 		yDrawOffset = (int) (2 * Game.SCALE);
+		System.out.println(objType);
 	}
 
 	private void loadAnim() {
-		healPotion = CacheDataLoader.getInstance().getAnimation("healPotion");
-		manaPotion = CacheDataLoader.getInstance().getAnimation("manaPotion");
+			healPotion = CacheDataLoader.getInstance().getAnimation("healPotion");
+			manaPotion = CacheDataLoader.getInstance().getAnimation("manaPotion");
 	}
 
 	public void update(long currTime) {
