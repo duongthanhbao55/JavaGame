@@ -21,11 +21,12 @@ public abstract class Entity {
 	protected int currHealth = maxHealth;
 	protected Rectangle2D.Float attackBox;
 	protected float walkSpeed = 1.0f * Game.SCALE;
+	protected int tileY;
 	
 	//CONSTRUCTOR
 	public Entity(float x, float y, int width, int height,Playing playing) {
-		this.x = x - width/2;
-		this.y = y - height/2;
+		this.x = x;
+		this.y = y;
 		this.width = width;
 		this.height = height;
 		//initHitbox();

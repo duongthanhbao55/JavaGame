@@ -54,7 +54,7 @@ public class HelpMethods {
 	}
 	
 	public static float GetEntityYPosUnderRoofOfAboveFloor(Rectangle2D.Float hitbox,float airSpeed) {
-		int currentTile = (int)((hitbox.y + hitbox.height/2)/ Game.TILES_SIZE );//This is because the method calculates the tileYPos by taking the integer part of the current position of the hitbox divided by the TILES_SIZE.
+		int currentTile = (int)((hitbox.y + hitbox.height/2) / Game.TILES_SIZE);//This is because the method calculates the tileYPos by taking the integer part of the current position of the hitbox divided by the TILES_SIZE.
 																				//To solve this issue, you can change the way to calculate the tileYPos by taking the integer part of the bottom of the hitbox divided by the TILES_SIZE.
 		if(airSpeed > 0) {
 			//FALLING - TOUCHING FLOOR
@@ -63,7 +63,7 @@ public class HelpMethods {
 			return tileYPos + yOffset - 1;
 		}else {
 			//JUMPING
-			return currentTile * Game.TILES_SIZE ;
+			return currentTile * Game.TILES_SIZE;
 		}
 	}
 	public static boolean IsEntityOnFloor(Rectangle2D.Float hitbox, int[][] lvlData) {
@@ -81,11 +81,9 @@ public class HelpMethods {
 	}
 	public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
 		
-
+		isAllTilesClear(xStart,xEnd,y,lvlData);
 		for(int i = 0; i < (xEnd - xStart);i++)
 		{
-			if(IsTileSolid(xStart + i, y, lvlData))	
-				return false;			
 			if(!IsTileSolid(xStart + i, y + 1, lvlData))
 				return false;	
 		}	
@@ -102,6 +100,24 @@ public class HelpMethods {
 			return IsAllTileWalkable(firstXTile, secondXTile, yTile, lvlData);
 		
 	}
+	
+	public static boolean CanCannonSeePlayer(int [][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int yTile) {
+		int firstXTile = (int)((firstHitbox.x)/ Game.TILES_SIZE);
+		int secondXTile = (int)((secondHitbox.x) / Game.TILES_SIZE);
+		
+		if(firstXTile > secondXTile)
+			return isAllTilesClear(secondXTile, firstXTile, yTile, lvlData);		
+		else 
+			return isAllTilesClear(firstXTile, secondXTile, yTile, lvlData);
+	}
+	
+	public static boolean isAllTilesClear(int xStart, int xEnd, int y, int[][] lvlData) {
+		for(int i = 0; i < (xEnd - xStart);i++)
+			if(IsTileSolid(xStart + i, y, lvlData))	
+				return false;	
+			return true;	
+	}
+	
 	public static int getCollistionPointX(Rectangle2D.Float hitbox1, Rectangle2D.Float hitbox2) {
 		 int x = (int)Math.max(hitbox1.x, hitbox2.x);
         return x;

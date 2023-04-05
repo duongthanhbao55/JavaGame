@@ -111,15 +111,16 @@ public class Playing extends State implements Statemethods {
 
 	@Override
 	public void update(long currTime) {
+		int[][] collisionLayer = levelManager.getCurrLevel().getMapLayer().get(0).getTileMap();
 		if (paused) {
 			pauseOverlay.update();
 		} else if (lvlCompleted) {
 			levelCompleteOverlay.update();
 		} else if (!gameOver) {
 			levelManager.getCurrLevel().Update();
+			objectManager.update(currTime, collisionLayer, player);
 			player.update(currTime);
-			enemyManager.update(currTime, levelManager.getCurrLevel().getMapLayer().get(0).getTileMap(), player);
-			objectManager.update(currTime);
+			enemyManager.update(currTime, collisionLayer, player);
 			CheckCloseToBorder();
 		}
 	}
@@ -147,9 +148,9 @@ public class Playing extends State implements Statemethods {
 		drawClouds(g);
 
 		levelManager.getCurrLevel().Render(g, xLvlOffset);
+		objectManager.render(g, xLvlOffset);
 		player.render(g, xLvlOffset);
 		enemyManager.render(g, xLvlOffset);
-		objectManager.render(g, xLvlOffset);
 
 		if (paused) {
 			pauseOverlay.render(g);
@@ -159,6 +160,10 @@ public class Playing extends State implements Statemethods {
 			levelCompleteOverlay.render(g);
 		}
 			
+	}
+
+	public ObjectManager getObjectManager() {
+		return objectManager;
 	}
 
 	private void drawClouds(Graphics g) {
@@ -194,6 +199,7 @@ public class Playing extends State implements Statemethods {
 		lvlCompleted = false;
 		player.resetAll();
 		enemyManager.resetAllEnemies();
+		objectManager.resetAllObject();
 	}
 
 	public void setGameOver(boolean gameOver) {
@@ -305,7 +311,16 @@ public class Playing extends State implements Statemethods {
 	public void checkEnemyHit(Rectangle2D.Float attackBox) {
 		enemyManager.checkEnemyHited(attackBox, player);
 	}
-
+	public void checkPotionTouched(Rectangle2D.Float hitbox) {
+		objectManager.checkObjectTouched(hitbox);
+	}
+	public void checkObjectHit(Rectangle2D.Float attackBox) {
+		objectManager.checkObjectHit(attackBox);
+	}
+	public void checkSpikesTouched(Player player) {
+		objectManager.checkSpikesTouched(player);
+	}
+	
 	public EnemyManager getEnemyManager() {
 		return enemyManager;
 	}
@@ -318,5 +333,8 @@ public class Playing extends State implements Statemethods {
 	}
 	public void setLevelCompleted(boolean lvlCompleted) {
 		this.lvlCompleted = lvlCompleted;
+	}
+	public LevelManager getLevelManager() {
+		return this.levelManager;
 	}
 }

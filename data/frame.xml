@@ -1112,5 +1112,109 @@
     <w>40</w>
     <h>30</h>
   </frame>
- 
+  <frame>
+    <id>Spike1</id>
+    <image>data/trap_atlas.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>32</w>
+    <h>32</h>
+  </frame>
+  <frame>
+    <id>Cannon1</id>
+    <image>data/cannon_atlas.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>40</w>
+    <h>26</h>
+  </frame>
+  <frame>
+    <id>Cannon2</id>
+    <image>data/cannon_atlas.png</image>
+    <x>40</x>
+    <y>0</y>
+    <w>40</w>
+    <h>26</h>
+  </frame>
+  <frame>
+    <id>Cannon3</id>
+    <image>data/cannon_atlas.png</image>
+    <x>80</x>
+    <y>0</y>
+    <w>40</w>
+    <h>26</h>
+  </frame>
+  <frame>
+    <id>Cannon4</id>
+    <image>data/cannon_atlas.png</image>
+    <x>120</x>
+    <y>0</y>
+    <w>40</w>
+    <h>26</h>
+  </frame>
+  <frame>
+    <id>Cannon5</id>
+    <image>data/cannon_atlas.png</image>
+    <x>160</x>
+    <y>0</y>
+    <w>40</w>
+    <h>26</h>
+  </frame>
+  <frame>
+    <id>Cannon6</id>
+    <image>data/cannon_atlas.png</image>
+    <x>200</x>
+    <y>0</y>
+    <w>40</w>
+    <h>26</h>
+  </frame>
+  <frame>
+    <id>Cannon7</id>
+    <image>data/cannon_atlas.png</image>
+    <x>240</x>
+    <y>0</y>
+    <w>40</w>
+    <h>26</h>
+  </frame>
+   <frame>
+    <id>FireBall1</id>
+    <image>data/Fire Ball.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>48</w>
+    <h>48</h>
+  </frame>
+  <frame>
+    <id>FireBall2</id>
+    <image>data/Fire Ball.png</image>
+    <x>48</x>
+    <y>0</y>
+    <w>48</w>
+    <h>48</h>
+  </frame>
+  <frame>
+    <id>FireBall3</id>
+    <image>data/Fire Ball.png</image>
+    <x>96</x>
+    <y>0</y>
+    <w>48</w>
+    <h>48</h>
+  </frame>
+  <frame>
+    <id>FireBall4</id>
+    <image>data/Fire Ball.png</image>
+    <x>144</x>
+    <y>0</y>
+    <w>48</w>
+    <h>48</h>
+  </frame>
+  <frame>
+    <id>Ball1</id>
+    <image>data/ball.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>15</w>
+    <h>15</h>
+  </frame>
+  
 </frames>

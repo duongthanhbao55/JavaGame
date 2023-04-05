@@ -5,12 +5,26 @@ import main.Game;
 public class Constants {
 	public static final float GRAVITY = 0.04f * Game.SCALE;
 	
+	public static class Objecttiles{
+		public static final int CANNON_BALL_DEFAULT_WIDTH = 15 ;
+		public static final int CANNON_BALL_DEFAULT_HEIGHT = 15 ;
+		public static final int CANNON_BALL_WIDTH = (int) (CANNON_BALL_DEFAULT_WIDTH * Game.SCALE);
+		public static final int CANNON_BALL_HEIGHT = (int)(CANNON_BALL_DEFAULT_HEIGHT * Game.SCALE);
+		public static final float SPEED = 0.5f * Game.SCALE;
+		
+		
+		
+	}
 	
 	public static class ObjectConstants{
 		public static final int HEAL_POTION = 0;
 		public static final int MANA_POTION = 1;
 		public static final int BARREL = 2;
 		public static final int BOX = 3;
+		public static final int SPIKE = 4;
+		public static final int LEFT_CANNON = 5;
+		public static final int RIGHT_CANNON = 6;
+		
 		
 		public static final int HEAL_POTION_VALUE = 15;
 		public static final int MANA_POTION_VALUE = 10;
@@ -24,6 +38,26 @@ public class Constants {
 		public static final int POTION_HEIGHT_DEFAULT = 16;
 		public static final int POTION_WIDTH = (int)(Game.SCALE * POTION_WIDTH_DEFAULT);
 		public static final int POTION_HEIGHT = (int)(Game.SCALE * POTION_HEIGHT_DEFAULT);
+		
+		public static final int SPIKE_WIDTH_DEFAULT = 32;
+		public static final int SPIKE_HEIGHT_DEFAULT = 32;
+		public static final int SPIKE_WIDTH = (int)(Game.SCALE * SPIKE_WIDTH_DEFAULT);
+		public static final int SPIKE_HEIGHT = (int)(Game.SCALE * SPIKE_HEIGHT_DEFAULT);
+		
+		public static final int CANNON_WIDTH_DEFAULT = 40;
+		public static final int CANNON_HEIGHT_DEFAULT = 26;
+		public static final int CANNON_WIDTH = (int)(Game.SCALE * CANNON_WIDTH_DEFAULT);
+		public static final int CANNON_HEIGHT = (int)(Game.SCALE * CANNON_HEIGHT_DEFAULT);
+		public static int GetObjectDmg(int enemy_type) {
+			switch(enemy_type) {
+			case SPIKE:
+				return 15;
+			case LEFT_CANNON,RIGHT_CANNON:
+				return 20;
+			default:
+				return 0;
+			}
+		}
 		
 	}
 	

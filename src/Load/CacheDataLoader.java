@@ -32,12 +32,18 @@ import Map.Tileset;
 import entities.NightBorne;
 import gamestates.Playing;
 import main.Game;
+import objects.Cannon;
 import objects.GameContainer;
 import objects.Potion;
+import objects.Spike;
 
 import static untilz.Constants.ObjectConstants.HEAL_POTION;
 import static untilz.Constants.ObjectConstants.MANA_POTION;
 import static untilz.Constants.ObjectConstants.BOX;
+import static untilz.Constants.ObjectConstants.BARREL;
+import static untilz.Constants.ObjectConstants.LEFT_CANNON;
+import static untilz.Constants.ObjectConstants.RIGHT_CANNON;
+import static untilz.Constants.ObjectConstants.SPIKE;
 
 //Simpleton design (vô hiệu hóa CONSTRUCTOR bằng cách đưa nó vào private, không thể tạo instance(object) của class này
 //vì ta chỉ cần 1 instance để quản lý tất cả data, để truy cập được class này ta sử dụng static function)
@@ -148,8 +154,9 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 
 				// System.out.println(id + " " + imageFile + " " + x + " " + y + " " + width + "
 				// " + height);
-
+				doc.normalize();
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -191,6 +198,7 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 
 				}
 			}
+			doc.normalize();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -198,7 +206,6 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 
 	public void readObjectPos(Element tileElement, Playing playing, PhysicalMap physicalMap) {
 		ArrayList<NightBorne> nightBorneList = new ArrayList<>();
-		ArrayList<Potion> potions = new ArrayList<>();
 		ArrayList<GameContainer> containers = new ArrayList<>();
 		NodeList imageList = tileElement.getElementsByTagName("object");
 		for (int i = 0; i < imageList.getLength(); i++) {
@@ -216,20 +223,48 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 				double y = Double.parseDouble(imageElement.getAttribute("y"));
 				if (objectType != null) {
 					if (objectType.equals("point")) {
-						potions.add(new Potion((int) (x * Game.SCALE), (int) (y * Game.SCALE), HEAL_POTION));
+						containers.add(new GameContainer((int) (x * Game.SCALE), (int) (y * Game.SCALE), BARREL));
 					} else if (objectType.equals("ellipse")) {
 						containers.add(new GameContainer((int) (x * Game.SCALE), (int) (y * Game.SCALE), BOX));
 					}
 
 				} else
-					nightBorneList.add(new NightBorne((int) x * Game.SCALE, (int) y * Game.SCALE, playing));
+					nightBorneList.add(new NightBorne((int) (x * Game.SCALE), (int) (y * Game.SCALE), playing));
 			}
 		}
 		physicalMap.loadEnenmies(nightBorneList);
-		physicalMap.setPotions(potions);
 		physicalMap.setContainers(containers);
 	}
 
+	public void readSpikePos(Element tileElement, Playing playing, PhysicalMap physicalMap) {
+		ArrayList<Spike> spikes = new ArrayList<>();
+		ArrayList<Cannon> cannons = new ArrayList<>();
+		NodeList imageList = tileElement.getElementsByTagName("object");
+		for (int i = 0; i < imageList.getLength(); i++) {
+			Node imageNode = imageList.item(i);
+			if (imageNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element imageElement = (Element) imageNode;
+				String objectType = null;
+				if (imageElement.getElementsByTagName("point").item(0) != null) {
+					objectType = imageElement.getElementsByTagName("point").item(0).getNodeName();
+				}else if (imageElement.getElementsByTagName("ellipse").item(0) != null) {
+					objectType = imageElement.getElementsByTagName("ellipse").item(0).getNodeName();
+				}
+				double x = Double.parseDouble(imageElement.getAttribute("x"));
+				double y = Double.parseDouble(imageElement.getAttribute("y"));
+				if (objectType != null) {
+					if (objectType.equals("point")) {
+						cannons.add(new Cannon((int) (x * Game.SCALE), (int) (y * Game.SCALE), LEFT_CANNON));
+					} else
+						cannons.add(new Cannon((int) (x * Game.SCALE), (int) (y * Game.SCALE), RIGHT_CANNON));
+
+				} else
+					spikes.add(new Spike((int) (x * Game.SCALE), (int) (y * Game.SCALE),0));
+			}
+		}
+		physicalMap.setSpikes(spikes);
+		physicalMap.setCannons(cannons);
+	}
 	public Point GetPlayerSpawn(Element tileElement, Playing playing) {
 		NodeList imageList = tileElement.getElementsByTagName("object");
 		double x = 0, y = 0;
@@ -288,28 +323,20 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 				// Enemies
 				if (e.getNodeName().equals("objectgroup") && e.getAttribute("name").equals("NightBornes")) {
 					readObjectPos(e, playing, gamemap);
-				} else if (e.getNodeName().equals("objectgroup") && e.getAttribute("name").equals("Player")) {
+				}else if(e.getNodeName().equals("objectgroup") && e.getAttribute("name").equals("Spike,Cannon")){
+					readSpikePos(e, playing, gamemap);
+				}else if (e.getNodeName().equals("objectgroup") && e.getAttribute("name").equals("Player")) {
 					spawnPoint = GetPlayerSpawn(e, playing);
 				}
 				// Layer
 				if (e.getNodeName().equals("layer")) {
-					String layerName = e.getAttribute("name");
-					if (layerName.contains("Collision")) {
-						Pattern pattern = Pattern.compile("\\d+");
-						Matcher matcher = pattern.matcher(layerName);
-						while (matcher.find()) {
-							int num = Integer.parseInt(matcher.group());
-							gamemap.addCollisionIndex(num);
-						}
-					}
-					;
 					TileLayer tilelayer = readTileLayer(e, tilesets, tilesize, rowcount, colCount);
 					gamemap.mapLayer.add(tilelayer);
 				}
 
 			}
 		}
-
+		xml.normalize();
 		gamemap.addPlayerSpawn(spawnPoint);
 
 		instance.mapsDict.put(ID, gamemap);

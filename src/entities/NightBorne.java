@@ -33,9 +33,7 @@ public class NightBorne extends Enemy{
 		attackBoxOffsetX = (int)(Game.SCALE * 4);
 	}
 	private void updateBehavior(int[][] lvlData, Player player) {
-
-			
-			
+		
 		if(firstUpdate)
 			firstUpdateCheck(lvlData);
 			

@@ -7,8 +7,10 @@ import java.util.ArrayList;
 
 import entities.NightBorne;
 import main.Game;
+import objects.Cannon;
 import objects.GameContainer;
 import objects.Potion;
+import objects.Spike;
 
 
 public class PhysicalMap 
@@ -19,7 +21,9 @@ public class PhysicalMap
 	public ArrayList<TileLayer> mapLayer = new ArrayList<TileLayer>();
 	private ArrayList<NightBorne> nightBornes = new ArrayList<>();
 	private ArrayList<Potion> potions = new ArrayList<>();
+	private ArrayList<Spike> spikes = new ArrayList<>();
 	private ArrayList<GameContainer> containers = new ArrayList<>();
+	private ArrayList<Cannon> cannons = new ArrayList<>();
 	private int lvlTilesWide;
 	private int maxTilesOffset;
 	private int maxLvlOffsetX;
@@ -61,6 +65,12 @@ public class PhysicalMap
 		{
 			this.containers.add(c);
 		}
+		for(Spike s : physmap.getSpikes()) {
+			this.spikes.add(s);
+		}
+		for(Cannon c : physmap.getCannons()) {
+			this.cannons.add(c);
+		}
 		physmap.calcLvlOffsets();
 		this.maxLvlOffsetX = physmap.getLvlOffset();
 		this.lvlTilesWide = physmap.getLvlTilesWide();
@@ -69,6 +79,7 @@ public class PhysicalMap
 	}
 	
 	
+
 	public void setNightBornes(ArrayList<NightBorne> nightBornes) {
 		this.nightBornes = nightBornes;
 	}
@@ -135,8 +146,11 @@ public class PhysicalMap
 	public void setContainers(ArrayList<GameContainer> containers) {
 		this.containers = containers;
 	}
-	public void addCollisionIndex(int index) {
-		collisionIndex.add(index);
+	public void setSpikes(ArrayList<Spike> spikes) {
+		this.spikes = spikes;
+	}
+	public ArrayList<Spike> getSpikes() {
+		return spikes;
 	}
 	public ArrayList<Integer> getCollisionIndex() {
 		return collisionIndex;
@@ -150,4 +164,11 @@ public class PhysicalMap
 	public void addPlayerSpawn(Point playerSpawn) {
 		this.playerSpawn = playerSpawn;
 	}
+	public ArrayList<Cannon> getCannons() {
+		return cannons;
+	}
+	public void setCannons(ArrayList<Cannon> cannons) {
+		this.cannons = cannons;
+	}
+
 }

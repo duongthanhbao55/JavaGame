@@ -33,7 +33,7 @@ public class Player extends Entity {
 	private float yDrawOffset = 1 * Game.SCALE;
 
 	// JUMPING / GRAVITY
-	private float jumpSpeed = -2.25f * Game.SCALE;
+	private float jumpSpeed = -2.0f * Game.SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
 	private boolean inAir = false;
 
@@ -62,6 +62,7 @@ public class Player extends Entity {
 	// Flip
 	private int flipX = 0;
 	private int flipW = 1;
+	private int tileY = 0;
 
 	private int currFrame = 0;
 	private Playing playing;
@@ -78,6 +79,7 @@ public class Player extends Entity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		tileY = (int) (x / Game.TILES_SIZE);
 		this.state = IDLE;
 		this.maxHealth = 100;
 		this.currHealth = maxHealth;
@@ -117,6 +119,12 @@ public class Player extends Entity {
 		updateAttackBox();
 		updateHealthBar();
 		updatePos();
+		if(moving) {
+			checkPotionTouched();
+			checkSpikesTouched();
+			tileY = (int) (hitbox.y / Game.TILES_SIZE);
+		}
+			
 		
 		if (isAttacking)
 			Attack();
@@ -127,6 +135,13 @@ public class Player extends Entity {
 		// updateHitbox();
 	}
 
+	private void checkPotionTouched() {
+		playing.checkPotionTouched(hitbox);
+		
+	}
+	private void checkSpikesTouched() {
+		playing.checkSpikesTouched(this);
+	}
 	private void updateAniamtion() {
 		if (animList.get(this.state).isLastFrame()) {
 			animList.get(this.state).reset();
@@ -154,6 +169,7 @@ public class Player extends Entity {
 			}
 			if (hasDealtDamage) {
 				playing.checkEnemyHit(attackBox);
+				playing.checkObjectHit(attackBox);
 				hasDealtDamage = false;
 			}
 		}
@@ -215,6 +231,7 @@ public class Player extends Entity {
 				hitbox.y += airSpeed;
 				airSpeed += GRAVITY;// increase our speed
 				updateXPos(xSpeed);
+				
 			} else {
 				hitbox.y = GetEntityYPosUnderRoofOfAboveFloor(hitbox, airSpeed);
 				if (airSpeed > 0)
@@ -261,7 +278,10 @@ public class Player extends Entity {
 			currHealth = maxHealth;
 		}
 	}
-
+	public void changeMana(int value) {
+		System.out.println("+" + value + " mana!");
+		
+	}
 	private void setAnimation() {
 		int startAni = this.state;
 
@@ -290,7 +310,7 @@ public class Player extends Entity {
 	public void render(Graphics g, int xLvlOffset) {
 		animList.get(this.state).draw((int) (hitbox.x - xDrawOffset) - xLvlOffset + flipX,
 				(int) (hitbox.y - yDrawOffset), width * flipW, height, g);
-		// drawHitbox(g, xLvlOffset);
+		 drawHitbox(g, xLvlOffset);
 		// drawAttackBox(g, xLvlOffset);
 		renderUI(g);
 	}
@@ -377,5 +397,9 @@ public class Player extends Entity {
 			inAir = true;
 		
 	}
+	public int getTileY() {
+		return tileY;
+	}
+
 	
 }

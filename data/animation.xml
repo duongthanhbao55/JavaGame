@@ -136,7 +136,7 @@
 	<frame name="hitAttack5" value="60000000"/>
     <frame name="hitAttack6" value="60000000"/>
   </animation>
-    <animation name="healPotion">
+  <animation name="healPotion">
     <frame name="healPotion1" value="60000000"/>
     <frame name="healPotion2" value="60000000"/>
     <frame name="healPotion3" value="60000000"/>
@@ -176,6 +176,27 @@
     <frame name="Barrel6" value="60000000"/>
 	<frame name="Barrel7" value="60000000"/>
 	<frame name="Barrel8" value="60000000"/>
+  </animation>
+  <animation name="Spike">
+    <frame name="Spike1" value="60000000"/>
+  </animation>
+  <animation name="Cannon">
+    <frame name="Cannon1" value="60000000"/>
+    <frame name="Cannon2" value="60000000"/>
+    <frame name="Cannon3" value="60000000"/>
+    <frame name="Cannon4" value="60000000"/>
+	<frame name="Cannon5" value="60000000"/>
+    <frame name="Cannon6" value="60000000"/>
+	<frame name="Cannon7" value="60000000"/> 
+  </animation>
+  <animation name="Ball">
+    <frame name="Ball1" value="60000000"/>
+  </animation>
+    <animation name="FireBall">
+    <frame name="FireBall1" value="60000000"/>
+    <frame name="FireBall2" value="60000000"/>
+    <frame name="FireBall3" value="60000000"/>
+    <frame name="FireBall4" value="60000000"/>
   </animation>
   
 </animations>

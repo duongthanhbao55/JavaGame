@@ -11,6 +11,8 @@ import main.Game;
 public class Potion extends GameObject {
 
 	private Animation healPotion, manaPotion;
+	private float hoverOffset;
+	private int maxHoverOffset, hoverDir = 1;
 
 	public Potion(int x, int y, int objType) {
 		super(x, y, objType);
@@ -18,9 +20,10 @@ public class Potion extends GameObject {
 		doAnimation = true;
 		initHitbox(7, 14);
 
-		xDrawOffset = (int) (3 * Game.SCALE);
+		xDrawOffset = (int) (0 * Game.SCALE);
 		yDrawOffset = (int) (2 * Game.SCALE);
-		System.out.println(objType);
+		
+		maxHoverOffset = (int)(10 * Game.SCALE);
 	}
 
 	private void loadAnim() {
@@ -33,15 +36,29 @@ public class Potion extends GameObject {
 			healPotion.Update(currTime);
 		} else
 			manaPotion.Update(currTime);
+		
+		updateHover();
 	}
 
 	public void render(Graphics g, int xLvlOffset) {
 		if (this.objType == HEAL_POTION) {
 			healPotion.draw((int) ((getHitbox().x - xLvlOffset) - this.xDrawOffset),
 					(int) (getHitbox().y - this.yDrawOffset), POTION_WIDTH, POTION_HEIGHT, g);
-		} else
+		} else {
 			manaPotion.draw((int) ((getHitbox().x - xLvlOffset) - this.xDrawOffset),
 					(int) (getHitbox().y - this.yDrawOffset), POTION_WIDTH, POTION_HEIGHT, g);
+		}
+			
+	}
+	private void updateHover() {
+		hoverOffset += (0.075f * Game.SCALE * hoverDir);
+		if(hoverOffset >= maxHoverOffset) {
+			hoverDir = -1;
+		}else if(hoverOffset < 0) {
+			hoverDir = 1;
+		}
+		
+		hitbox.y = y + hoverOffset;	
 	}
 
 }

@@ -21,18 +21,16 @@ public class GameObject {
 		this.objType = objType;
 	}
 	
+	
+	
 	public void reset() {
 		active = true;
 		
-		if(objType == BARREL || objType == BOX) {
+		if(objType == BARREL || objType == BOX || objType == RIGHT_CANNON || objType == LEFT_CANNON) {
 			doAnimation = false;
-		}
+		} else
 		doAnimation = true;
 	}
-	protected void updateAnimation() {
-
-	}
-
 	
 	protected void initHitbox(int width, int height) {
 		hitbox = new Rectangle2D.Float((int)x,(int)y,width * Game.SCALE,height * Game.SCALE);
@@ -53,6 +51,9 @@ public class GameObject {
 	
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+	public void setAnimation(boolean doAnimation) {
+		this.doAnimation = doAnimation;
 	}
 
 	public Rectangle2D.Float getHitbox() {

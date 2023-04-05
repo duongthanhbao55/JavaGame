@@ -22,15 +22,12 @@ public class Game implements Runnable{
 	//private LevelManager levelManager;
 	
 	public final static int TILE_DEFAULT_SIZE = 16;
-	public final static float SCALE = 2.0f;
+	public final static float SCALE = 1.5f;
 	public final static int TILES_IN_WIDTH = 60;
 	public final static int TILES_IN_HEIGHT = 30;
 	public final static int TILES_SIZE = (int)(TILE_DEFAULT_SIZE * SCALE);
 	public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
 	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
-	public final static int COLLISION_LAYER_MAP1 = 0;
-	public final static int COLLISION_LAYER_MAP2_1 = 1;
-	public final static int COLLISION_LAYER_MAP2_2 = 3;
 	
 	public Game()
 	{
