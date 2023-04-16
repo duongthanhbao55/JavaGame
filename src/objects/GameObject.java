@@ -67,5 +67,4 @@ public class GameObject {
 	public int getyDrawOffset() {
 		return yDrawOffset;
 	}
-
 }

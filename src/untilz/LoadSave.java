@@ -35,6 +35,10 @@ public class LoadSave {
 	public static final String STATUS_BAR = "health_power_bar.png";
 	public static final String COMPLETED_IMG = "completed_sprite.png";
 	public static final String BACKGROUND_SCENE = "PIXEL SCENERY_BACKGROUNDS MASTERPOST.gif";
+	public static final String DEATH_SCREEN = "death_screen.png";
+	public static final String OPTION_BACKGROUND = "options_background.png";
+	public static final String TEXT_BOX = "panel_Example2.png";
+	public static final String LOGIN_BACKGROUND = "Login_BackGround.png";
 	
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;

@@ -10,9 +10,8 @@ public class Constants {
 		public static final int CANNON_BALL_DEFAULT_HEIGHT = 15 ;
 		public static final int CANNON_BALL_WIDTH = (int) (CANNON_BALL_DEFAULT_WIDTH * Game.SCALE);
 		public static final int CANNON_BALL_HEIGHT = (int)(CANNON_BALL_DEFAULT_HEIGHT * Game.SCALE);
-		public static final float SPEED = 0.5f * Game.SCALE;
-		
-		
+		public static final float SPEED = 0.75f * Game.SCALE;
+		public static final int CANNON_BALL_DAMAGE = 15;
 		
 	}
 	
@@ -177,6 +176,14 @@ public class Constants {
 			public static final int VOLUME_WIDTH = (int)(VOLUME_DEFAULT_WIDTH * Game.SCALE);
 			public static final int VOLUME_HEIGHT = (int)(VOLUME_DEFAULT_HEIGHT * Game.SCALE);
 			public static final int SLIDER_WIDTH = (int)(SLIDER_DEFAULT_WIDTH * Game.SCALE);
+		
+		}
+		public static class TextBox{
+			public static final int TEXTBOX_WIDTH_DEFAULT = 450;
+			public static final int TEXTBOX_HEIGHT_DEFAULT = 150;
+			
+			public static final int TEXTBOX_WIDTH = (int)(TEXTBOX_WIDTH_DEFAULT * Game.SCALE / 2);
+			public static final int TEXTBOX_HEIGHT = (int)(TEXTBOX_HEIGHT_DEFAULT * Game.SCALE / 4);
 			
 		}
 	}

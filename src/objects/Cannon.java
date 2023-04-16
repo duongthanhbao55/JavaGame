@@ -16,6 +16,9 @@ public class Cannon extends GameObject{
 
 	Animation cannon;
 	private int tileY;
+	private long previousTime = 0;
+	private long coolDownTime = 10000000000L;//10 seconds;
+	private boolean canShoot = false;
 	public Cannon(int x, int y, int objType) {
 		super(x, y, objType);		
 		initHitbox(40,26);
@@ -28,6 +31,12 @@ public class Cannon extends GameObject{
 		cannon = CacheDataLoader.getInstance().getAnimation("Cannon");
 	}
 	public void update(long currTime) {
+		
+		if(currTime - previousTime > coolDownTime) {
+			canShoot = true;
+			previousTime = currTime;
+		}
+		
 		if(doAnimation) {
 			cannon.Update(currTime);
 		}
@@ -62,5 +71,18 @@ public class Cannon extends GameObject{
 	}
 	public int getTileY() {
 		return tileY;
+	}
+	public int getCurrFrame() {
+		return cannon.getCurrentFrame();
+	}
+	public int getBeginTime() {
+		return (int) cannon.getBeginTime();//time begin a frame of animation
+										   //ex: delay time between of 2 frame is 700000000 beginTime of frame1 : 0 ,frame2:700000000, frame3: 700000000 + 700000000,.....
+	}
+	public boolean canShoot() {
+		return canShoot;
+	}
+	public void setShoot(boolean canShoot) {
+		this.canShoot = canShoot;
 	}
 }

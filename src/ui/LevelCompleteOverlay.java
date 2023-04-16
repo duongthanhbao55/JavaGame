@@ -71,13 +71,15 @@ public class LevelCompleteOverlay {
 		if(isIn(menu, e)) {
 			if( menu.isMousePressed()) {
 				playing.resetAll();
-				Gamestate.state = Gamestate.MENU;
+				playing.setGameState(Gamestate.MENU);
 			}
 				
 		}
 		else if(isIn(next, e))
-			if(next.isMousePressed())
+			if(next.isMousePressed()) {
 				playing.loadNextLevel();
+				playing.getGame().getAudioPlayer().setLevelSong(playing.getLevelManager().getLvlIndex());
+			}
 		
 		menu.resetBools();
 		next.resetBools();

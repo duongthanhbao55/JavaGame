@@ -1,11 +1,18 @@
 package main;
 
 import java.awt.Graphics;
+import java.sql.SQLException;
+import java.util.HashMap;
 
+import audio.AudioPlayer;
+import database.MySQL;
+import gamestates.GameOptions;
 import gamestates.Gamestate;
+import gamestates.Login;
 import gamestates.Menu;
 import gamestates.Playing;
-import untilz.LoadSave;
+import ui.AudioOptions;
+import untilz.HelpMethods;
 
 public class Game implements Runnable{
 	
@@ -17,7 +24,30 @@ public class Game implements Runnable{
 	
 	private Playing playing;
 	private Menu menu;
+	private Login login;
+	private GameOptions gameOptions;
+	private AudioOptions audioOptions;
+	private AudioPlayer audioPlayer;
 	
+	
+	protected static int post;
+    private static String host;
+    private static String mysql_host;
+    private static String mysql_database;
+    private static String mysql_user;
+    private static String mysql_pass;
+    protected static byte vData;
+    protected static byte vMap;
+    protected static byte vSkill;
+    protected static byte vItem;
+    protected static byte vEvent;
+    protected static byte vEvent_1;
+    protected static byte max_CreateChar;
+    protected static int max_upLevel;
+    protected static byte max_Friend;
+    protected static byte max_Enemies;
+    protected static byte qua_top;
+    protected static int up_exp;
 
 	//private LevelManager levelManager;
 	
@@ -31,16 +61,21 @@ public class Game implements Runnable{
 	
 	public Game()
 	{
+		gamePanel = new GamePanel(this);		
 		initClasses();
-		gamePanel = new GamePanel(this);
-		gameWindow = new GameWindow(gamePanel);
+		gameWindow = new GameWindow(gamePanel);	
 		gamePanel.setFocusable(true);
 		gamePanel.requestFocus();//input focus on this class
 		startGameLoop();
 	}
 	
 	private void initClasses() {
+		init();
+		audioOptions = new AudioOptions(this);
+		audioPlayer = new AudioPlayer();
+		gameOptions = new GameOptions(this);
 		menu = new Menu(this);
+		login = new Login(this);
 		playing = new Playing(this);
 		//LoadSave.GetAllLevels();
 	}
@@ -52,6 +87,9 @@ public class Game implements Runnable{
 	
 	public void update(long currTime) {
 		switch(Gamestate.state) {
+		case LOGIN:
+			login.update(currTime);
+			break;
 		case MENU:
 			menu.update(currTime);
 			break;
@@ -59,6 +97,8 @@ public class Game implements Runnable{
 			playing.update(currTime);
 			break;
 		case OPTIONS:
+			gameOptions.update(currTime);
+			break;
 		case QUIT:
 		default:
 			System.exit(0);
@@ -72,11 +112,17 @@ public class Game implements Runnable{
 		
 		
 		switch(Gamestate.state) {
+		case LOGIN:
+			login.render(g);
+			break;
 		case MENU:
 			menu.render(g);
 			break;
 		case PLAYING:
 			playing.render(g);
+			break;
+		case OPTIONS:
+			gameOptions.render(g);
 			break;
 		default:
 			break;
@@ -143,6 +189,191 @@ public class Game implements Runnable{
 	public Playing getPlaying() {
 		return playing;
 	}
-	
+	public Login getLogin() {
+		return login;
+	}
+	public GameOptions getGameOptions() {
+		return gameOptions;
+	}
+	public AudioOptions getAudioOptions() {
+		return audioOptions;
+	}
+	public AudioPlayer getAudioPlayer() {
+		return audioPlayer;
+	}
+	public GamePanel getGamePanel() {
+		return gamePanel;
+	}
+	private static void loadConfigFile() {
+        final byte[] ab = MainClass.getFile("ninja.conf");
+        if (ab == null) {
+            System.out.println("Config file not found!");
+            System.exit(0);
+        }
+        final String data = new String(ab);
+        final HashMap<String, String> configMap = new HashMap<String, String>();
+        final StringBuilder sbd = new StringBuilder();
+        boolean bo = false;
+        for (int i = 0; i <= data.length(); ++i) {
+            final char es;
+           
+            if (i == data.length() || (es = data.charAt(i)) == '\n') {
+                bo = false;
+                final String sbf = sbd.toString().trim();
+                if (sbf != null && !sbf.equals("") && sbf.charAt(0) != '#') {
+                    final int j = sbf.indexOf(58);
+                    if (j > 0) {
+                        final String key = sbf.substring(0, j).trim();
+                        final String value = sbf.substring(j + 1).trim();
+                        configMap.put(key, value);
+                        System.out.println("config: " + key + "-" + value);
+                    }
+                }
+                sbd.setLength(0);
+            }
+            else {
+                if (es == '#') {
+                    bo = true;
+                    System.out.println(true);
+                }
+                if (!bo) {
+                    sbd.append(es);
+                }
+            }
+        }
+        if (configMap.containsKey("debug")) {
+            HelpMethods.setDebug(Boolean.parseBoolean(configMap.get("debug")));
+        }
+        else {
+            HelpMethods.setDebug(false);
+        }
+        if (configMap.containsKey("host")) {
+        	Game.host = configMap.get("host");
+        }
+        else {
+        	Game.host = "localhost";
+        }
+        if (configMap.containsKey("post")) {
+        	Game.post = Short.parseShort(configMap.get("post"));
+        }
+        else {
+        	Game.post = 14444;
+        }
+        if (configMap.containsKey("mysql-host")) {
+        	Game.mysql_host = configMap.get("mysql-host");
+        }
+        else {
+        	Game.mysql_host = "localhost";
+        }
+        if (configMap.containsKey("mysql-user")) {
+        	Game.mysql_user = configMap.get("mysql-user");
+        }
+        else {
+        	Game.mysql_user = "root";
+        }
+        if (configMap.containsKey("mysql-password")) {
+        	Game.mysql_pass = configMap.get("mysql-password");
+        }
+        else {
+        	Game.mysql_pass = "";
+        }
+        if (configMap.containsKey("mysql-database")) {
+            Game.mysql_database = configMap.get("mysql-database");
+        }
+        else {
+            Game.mysql_database = "ninja";
+        }
+        if (configMap.containsKey("version-Data")) {
+            Game.vData = Byte.parseByte(configMap.get("version-Data"));
+            Game.vData += HelpMethods.nextInt(10);
+        }
+        else {
+            Game.vData = 1;
+        }
+        if (configMap.containsKey("version-Map")) {
+            Game.vMap = Byte.parseByte(configMap.get("version-Map"));
+            Game.vMap += HelpMethods.nextInt(10);
+        }
+        else {
+            Game.vMap = 1;
+        }
+        if (configMap.containsKey("version-Skill")) {
+            Game.vSkill = Byte.parseByte(configMap.get("version-Skill"));
+        }
+        else {
+            Game.vSkill = 1;
+        }
+        if (configMap.containsKey("version-Item")) {
+            Game.vItem = Byte.parseByte(configMap.get("version-Item"));
+            Game.vItem += HelpMethods.nextInt(10);
+        }
+        else {
+            Game.vItem = 1;
+        }
+        if (configMap.containsKey("version-Event")) {
+            Game.vEvent = Byte.parseByte(configMap.get("version-Event"));
+        }
+        else {
+            Game.vEvent = 0;
+        }
+        if (configMap.containsKey("version-Event_1")) {
+            Game.vEvent_1 = Byte.parseByte(configMap.get("version-Event_1"));
+        }
+        else {
+            Game.vEvent_1 = 0;
+        }
+        if (configMap.containsKey("max-taoNhanVat")) {
+            Game.max_CreateChar = Byte.parseByte(configMap.get("max-taoNhanVat"));
+        }
+        else {
+            Game.max_CreateChar = 3;
+        }
+        if (configMap.containsKey("max-upLevel")) {
+            Game.max_upLevel = Integer.parseInt(configMap.get("max-upLevel"));
+        }
+        else {
+            Game.max_upLevel = 130;
+        }
+        if (configMap.containsKey("max-Friend")) {
+            Game.max_Friend = Byte.parseByte(configMap.get("max-Friend"));
+        }
+        else {
+            Game.max_Friend = 50;
+        }
+        if (configMap.containsKey("max-Enemies")) {
+            Game.max_Enemies = Byte.parseByte(configMap.get("max-Enemies"));
+        }
+        else {
+            Game.max_Enemies = 20;
+        }
+        if (configMap.containsKey("qua-top")) {
+            Game.qua_top = Byte.parseByte(configMap.get("qua-top"));
+        }
+        else {
+            Game.qua_top = 0;
+        }
+        if (configMap.containsKey("up-exp")) {
+            Game.up_exp = Integer.parseInt(configMap.get("up-exp"));
+        }
+        else {
+            Game.up_exp = 1;
+        }
+    }
+    
+    protected static void init() {
+        loadConfigFile();
+        try {
+            //MySQL.createConnection(0, Game.mysql_host, "hiepsiro_nsodata", Game.mysql_user, Game.mysql_pass);
+            MySQL.createConnection(0, Game.mysql_host, Game.mysql_database, Game.mysql_user, Game.mysql_pass);
+            //Init.init();
+            final MySQL mySQL = new MySQL(0);
+            //mySQL.stat.executeUpdate("UPDATE `user` SET `online` = 0;");
+            //mySQL.stat.executeUpdate("UPDATE `player` SET `caveId` = -1;");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+    } 
 	
 }

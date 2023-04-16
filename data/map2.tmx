@@ -51,18 +51,18 @@
 </data>
  </layer>
  <objectgroup id="2" name="NightBornes">
-  <object id="1" x="816" y="342.667"/>
-  <object id="2" x="1090.67" y="369.333"/>
-  <object id="5" x="2485.33" y="393.333">
+  <object id="1" x="1581.33" y="413.334"/>
+  <object id="2" x="1846.67" y="404"/>
+  <object id="5" x="2485.33" y="446.333">
    <point/>
   </object>
-  <object id="6" x="2352" y="406.667">
+  <object id="6" x="2352" y="446.667">
    <point/>
   </object>
-  <object id="7" x="2229.33" y="406.667">
+  <object id="7" x="2229.33" y="436.667">
    <ellipse/>
   </object>
-  <object id="8" x="2133.33" y="414.667">
+  <object id="8" x="2133.33" y="438.667">
    <ellipse/>
   </object>
  </objectgroup>

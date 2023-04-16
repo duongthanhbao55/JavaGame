@@ -94,7 +94,11 @@ public class Menu extends State implements Statemethods {
 			if (isIn(e, mb)) {
 				if (mb.isMousePressed()) {
 					mb.applyGamestate();// apply only when Pressed before and Release after if pressed in button but
-										// when release mouse position is out side bound of button, we didn't apply that
+				if(mb.getState() == Gamestate.PLAYING) {
+					game.getAudioPlayer().setLevelSong(game.getPlaying().getLevelManager().getLvlIndex());
+				}
+					
+					// when release mouse position is out side bound of button, we didn't apply that
 										// state
 					break;
 				}

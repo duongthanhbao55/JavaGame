@@ -1,11 +1,14 @@
 package untilz;
 
 import java.awt.geom.Rectangle2D;
+import java.util.Random;
 
 import main.Game;
+import objects.Projectiles;
 
 public class HelpMethods {
-
+	private static boolean debug = false;
+	 private static final Random rand = new Random();
 	
 	
 	public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
@@ -36,6 +39,9 @@ public class HelpMethods {
 		if(value <= 128*120 && value > 0) //LIMTIT TILEID COLLISION 
 			return true;		
 		return false;
+	}
+	public static boolean IsProjectileHittingLevel(Projectiles p, int[][] lvlData) {
+		return IsSolid(p.getHitbox().x,p.getHitbox().y,lvlData);
 	}
 	
 	public static float GetEntityXPosNextToWall(Rectangle2D.Float hitbox,float xSpeed) {
@@ -126,4 +132,10 @@ public class HelpMethods {
        int y = (int)Math.max(hitbox1.y, hitbox2.y);
        return y;
 	}
+    public static int nextInt(final int max) {
+        return HelpMethods.rand.nextInt(max);
+    }
+    public static void setDebug(final boolean v) {
+        HelpMethods.debug = v;
+    }
 }

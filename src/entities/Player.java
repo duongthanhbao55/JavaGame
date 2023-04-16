@@ -2,6 +2,7 @@ package entities;
 
 import Effect.Animation;
 import Load.CacheDataLoader;
+import audio.AudioPlayer;
 import gamestates.Playing;
 import main.Game;
 import untilz.LoadSave;
@@ -33,7 +34,7 @@ public class Player extends Entity {
 	private float yDrawOffset = 1 * Game.SCALE;
 
 	// JUMPING / GRAVITY
-	private float jumpSpeed = -2.0f * Game.SCALE;
+	private float jumpSpeed = -2.3f * Game.SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
 	private boolean inAir = false;
 
@@ -57,7 +58,7 @@ public class Player extends Entity {
 	// Attack Box
 
 	private int attackBoxWidth = (int) (20 * Game.SCALE);
-	private int attackBoxHeight = (int) (20 * Game.SCALE);
+	private int attackBoxHeight = (int) (20 * Game.SCALE);	
 
 	// Flip
 	private int flipX = 0;
@@ -89,6 +90,8 @@ public class Player extends Entity {
 		initHitbox(20,28);
 		initAttackBox();
 	}
+	
+	
 	public void setSpawn(Point spawn) {
 		this.x = spawn.x;
 		this.y = spawn.y;
@@ -105,6 +108,7 @@ public class Player extends Entity {
 		animList.add(CacheDataLoader.getInstance().getAnimation("attack1"));
 		animList.add(CacheDataLoader.getInstance().getAnimation("jump"));
 		animList.add(CacheDataLoader.getInstance().getAnimation("falling"));
+		animList.add(CacheDataLoader.getInstance().getAnimation("death"));
 
 		statusBarImg = LoadSave.GetSpriteAtlas(LoadSave.STATUS_BAR);
 	}
@@ -112,7 +116,19 @@ public class Player extends Entity {
 	// UPDATE
 	public void update(long currTime) {
 		if (currHealth <= 0) {
-			playing.setGameOver(true);
+			
+			if(state != DEAD) {
+				animList.get(state).reset();
+				state = DEAD;
+				playing.setPlayerDying(true);
+				playing.getGame().getAudioPlayer().playEffect(AudioPlayer.DIE);
+				
+			}else if(animList.get(state).isLastFrame() && 
+					 animList.get(state).getDeltaTime() >= animList.get(state).getDelayFrames().get(0) - 1) {
+				playing.setGameOver(true);
+			}else{
+				animList.get(this.state).Update(currTime);
+			}		
 			return;
 		}
 
@@ -166,12 +182,14 @@ public class Player extends Entity {
 		if (changeFrame) {
 			if (animList.get(ATTACK_1).getCurrentFrame() == 3) {// UPS_SET 180
 				hasDealtDamage = true;
+				playing.getGame().getAudioPlayer().playAttackSound();
 			}
 			if (hasDealtDamage) {
 				playing.checkEnemyHit(attackBox);
 				playing.checkObjectHit(attackBox);
 				hasDealtDamage = false;
 			}
+			
 		}
 
 	}
@@ -190,9 +208,13 @@ public class Player extends Entity {
 	private void updateHealthBar() {
 		
 		healthWidth = (int) ((currHealth / (float) maxHealth) * healthBarWidth);	
+		
 		if(healthWidth < lostHealthWidth) {
 			lostHealthWidth -= 0.3;
+		} else if(healthWidth >= lostHealthWidth) {//update when health change
+			lostHealthWidth = healthWidth;
 		}
+
 	}
 
 	private void updatePos() {
@@ -251,6 +273,7 @@ public class Player extends Entity {
 			return;
 		inAir = true;
 		airSpeed = jumpSpeed;
+		playing.getGame().getAudioPlayer().playEffect(AudioPlayer.JUMP);
 
 	}
 

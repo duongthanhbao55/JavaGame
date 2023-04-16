@@ -27,6 +27,8 @@ public class Animation
 	private long beginTime;
 	
 	private boolean drawRectFrame;
+	
+	private long delayTime;
 
 
 	
@@ -223,7 +225,7 @@ public class Animation
 		
 		else
 		{
-			//currentTime - beginTime = deltaTimeOfOneFrame;
+			delayTime = currentTime - beginTime;
 			if(currentTime - beginTime > delayFrames.get(currentFrame))//kiểm tra 'thời gian' từ lúc 'bắt đầu' 1 khung hình cho đến khi 
 																	 //'kết thúc' 1 khung hình có bằng delayTime(thời gian chuyển giao giữa 2 frame)
 																	 //Nếu bằng nhau thì có thể chuyển sang frame tiếp theo và set lại begin time bằng thời gian hiện tại
@@ -280,5 +282,8 @@ public class Animation
 		BufferedImage image = getCurrentImage();
 		
 		g.drawImage(image, (int)(x - image.getWidth()/2 * Game.SCALE), (int)(y - image.getHeight()/2 * Game.SCALE), width, height, null);
+	}
+	public long getDeltaTime() {
+		return this.delayTime;
 	}
 }

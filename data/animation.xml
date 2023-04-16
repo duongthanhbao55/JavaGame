@@ -54,6 +54,20 @@
     <frame name="NBidle8" value="60000000"/>
 	<frame name="NBidle9" value="60000000"/>
   </animation>
+    <animation name="death">
+    <frame name="death1" value="100000000"/>
+    <frame name="death2" value="100000000"/>
+    <frame name="death3" value="100000000"/>
+    <frame name="death4" value="100000000"/>
+    <frame name="death5" value="100000000"/>
+    <frame name="death6" value="100000000"/>
+    <frame name="death7" value="100000000"/>
+    <frame name="death8" value="100000000"/>
+	<frame name="death9" value="100000000"/>
+	<frame name="death10" value="100000000"/>
+    <frame name="death11" value="100000000"/>
+    <frame name="death12" value="100000000"/>
+  </animation>
   <animation name="NBrun">
     <frame name="NBrun1" value="100000000"/>
     <frame name="NBrun2" value="100000000"/>
@@ -181,13 +195,13 @@
     <frame name="Spike1" value="60000000"/>
   </animation>
   <animation name="Cannon">
-    <frame name="Cannon1" value="60000000"/>
-    <frame name="Cannon2" value="60000000"/>
-    <frame name="Cannon3" value="60000000"/>
-    <frame name="Cannon4" value="60000000"/>
-	<frame name="Cannon5" value="60000000"/>
-    <frame name="Cannon6" value="60000000"/>
-	<frame name="Cannon7" value="60000000"/> 
+    <frame name="Cannon1" value="100000000"/>
+    <frame name="Cannon2" value="100000000"/>
+    <frame name="Cannon3" value="100000000"/>
+    <frame name="Cannon4" value="100000000"/>
+	<frame name="Cannon5" value="100000000"/>
+    <frame name="Cannon6" value="100000000"/>
+	<frame name="Cannon7" value="100000000"/> 
   </animation>
   <animation name="Ball">
     <frame name="Ball1" value="60000000"/>
@@ -198,5 +212,6 @@
     <frame name="FireBall3" value="60000000"/>
     <frame name="FireBall4" value="60000000"/>
   </animation>
+  
   
 </animations>

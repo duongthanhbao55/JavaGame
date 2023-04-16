@@ -1,5 +1,8 @@
 package Load;
 
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -110,8 +113,24 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 	}
 
 	// LOAD FUNCTION
-
+	public void loadFont() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Font myFont = null;
+		    try {
+				myFont = Font.createFont(Font.TRUETYPE_FONT, new File("data/antiquity-print.ttf"));
+				ge.registerFont(myFont);
+			} catch (FontFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    
+		
+	}
 	public void LoadData(String mapID, String frameFile, String aniFile) throws IOException {
+		
 		readXML(CacheDataLoader.PLAYER_FRAME);
 		LoadXMLAnim(CacheDataLoader.PLAYER_ANIMATION);
 		// readXMLMap(physmapfile,mapID);

@@ -49,6 +49,7 @@ public class Playing extends State implements Statemethods {
 
 	private boolean gameOver;
 	private boolean lvlCompleted;
+	private boolean playerDying;
 
 	// CONSTRUCTOR
 	public Playing(Game game) {
@@ -62,7 +63,6 @@ public class Playing extends State implements Statemethods {
 		for (int i = 0; i < smallCloudsPos.length; i++) {
 			smallCloudsPos[i] = (int) (70 * Game.SCALE) + rnd.nextInt((int) (150 * Game.SCALE));
 		}
-		
 	}
 
 	public void loadNextLevel() {
@@ -107,8 +107,6 @@ public class Playing extends State implements Statemethods {
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
 	}
 
-	
-
 	@Override
 	public void update(long currTime) {
 		int[][] collisionLayer = levelManager.getCurrLevel().getMapLayer().get(0).getTileMap();
@@ -116,7 +114,11 @@ public class Playing extends State implements Statemethods {
 			pauseOverlay.update();
 		} else if (lvlCompleted) {
 			levelCompleteOverlay.update();
-		} else if (!gameOver) {
+		} else if (gameOver) {
+			gameOverOverlay.update();
+		} else if (playerDying) {
+			player.update(currTime);
+		} else {
 			levelManager.getCurrLevel().Update();
 			objectManager.update(currTime, collisionLayer, player);
 			player.update(currTime);
@@ -159,7 +161,7 @@ public class Playing extends State implements Statemethods {
 		} else if (lvlCompleted) {
 			levelCompleteOverlay.render(g);
 		}
-			
+
 	}
 
 	public ObjectManager getObjectManager() {
@@ -197,6 +199,7 @@ public class Playing extends State implements Statemethods {
 		gameOver = false;
 		paused = false;
 		lvlCompleted = false;
+		playerDying = false;
 		player.resetAll();
 		enemyManager.resetAllEnemies();
 		objectManager.resetAllObject();
@@ -226,6 +229,8 @@ public class Playing extends State implements Statemethods {
 				pauseOverlay.mousePressed(e);
 			else if (lvlCompleted)
 				levelCompleteOverlay.MousePressed(e);
+		}else {
+			gameOverOverlay.MousePressed(e);
 		}
 
 	}
@@ -237,6 +242,8 @@ public class Playing extends State implements Statemethods {
 				pauseOverlay.mouseReleased(e);
 			else if (lvlCompleted)
 				levelCompleteOverlay.MouseRelease(e);
+		}else {
+			gameOverOverlay.MouseRelease(e);
 		}
 
 	}
@@ -248,6 +255,8 @@ public class Playing extends State implements Statemethods {
 				pauseOverlay.mouseMoved(e);
 			else if (lvlCompleted)
 				levelCompleteOverlay.MouseMoved(e);
+		}else {
+			gameOverOverlay.MouseMoved(e);
 		}
 	}
 
@@ -265,7 +274,7 @@ public class Playing extends State implements Statemethods {
 			case KeyEvent.VK_D:
 				player.setRight(true);
 				break;
-			case KeyEvent.VK_SPACE:
+			case KeyEvent.VK_W:
 				player.setJump(true);
 				break;
 			case KeyEvent.VK_J:
@@ -283,14 +292,13 @@ public class Playing extends State implements Statemethods {
 		if (!gameOver)
 			switch (e.getKeyCode()) {
 
-
 			case KeyEvent.VK_A:
 				player.setLeft(false);
 				break;
 			case KeyEvent.VK_D:
 				player.setRight(false);
 				break;
-			case KeyEvent.VK_SPACE:
+			case KeyEvent.VK_W:
 				player.setJump(false);
 				break;
 			}
@@ -311,19 +319,23 @@ public class Playing extends State implements Statemethods {
 	public void checkEnemyHit(Rectangle2D.Float attackBox) {
 		enemyManager.checkEnemyHited(attackBox, player);
 	}
+
 	public void checkPotionTouched(Rectangle2D.Float hitbox) {
 		objectManager.checkObjectTouched(hitbox);
 	}
+
 	public void checkObjectHit(Rectangle2D.Float attackBox) {
 		objectManager.checkObjectHit(attackBox);
 	}
+
 	public void checkSpikesTouched(Player player) {
 		objectManager.checkSpikesTouched(player);
 	}
-	
+
 	public EnemyManager getEnemyManager() {
 		return enemyManager;
 	}
+
 	public int getMaxLvlOffsetX() {
 		return maxLvlOffsetX;
 	}
@@ -331,10 +343,17 @@ public class Playing extends State implements Statemethods {
 	public void setMaxLvlOffsetX(int maxLvlOffsetX) {
 		this.maxLvlOffsetX = maxLvlOffsetX;
 	}
+
 	public void setLevelCompleted(boolean lvlCompleted) {
 		this.lvlCompleted = lvlCompleted;
 	}
+
 	public LevelManager getLevelManager() {
 		return this.levelManager;
+	}
+
+	public void setPlayerDying(boolean playerDying) {
+		this.playerDying = playerDying;
+
 	}
 }
