@@ -11,6 +11,8 @@ import gamestates.Gamestate;
 import gamestates.Login;
 import gamestates.Menu;
 import gamestates.Playing;
+import gamestates.Register;
+import gamestates.SetPlayerName;
 import ui.AudioOptions;
 import untilz.HelpMethods;
 
@@ -25,6 +27,8 @@ public class Game implements Runnable{
 	private Playing playing;
 	private Menu menu;
 	private Login login;
+	private Register register;
+	private SetPlayerName setPlayerName;
 	private GameOptions gameOptions;
 	private AudioOptions audioOptions;
 	private AudioPlayer audioPlayer;
@@ -76,7 +80,9 @@ public class Game implements Runnable{
 		gameOptions = new GameOptions(this);
 		menu = new Menu(this);
 		login = new Login(this);
+		register = new Register(this);
 		playing = new Playing(this);
+		setPlayerName = new SetPlayerName(this);
 		//LoadSave.GetAllLevels();
 	}
 
@@ -89,6 +95,12 @@ public class Game implements Runnable{
 		switch(Gamestate.state) {
 		case LOGIN:
 			login.update(currTime);
+			break;
+		case REGISTER:
+			register.update(currTime);
+			break;
+		case SETNAME:
+			setPlayerName.update(currTime);
 			break;
 		case MENU:
 			menu.update(currTime);
@@ -114,6 +126,12 @@ public class Game implements Runnable{
 		switch(Gamestate.state) {
 		case LOGIN:
 			login.render(g);
+			break;
+		case REGISTER:
+			register.render(g);
+			break;
+		case SETNAME:
+			setPlayerName.render(g);
 			break;
 		case MENU:
 			menu.render(g);
@@ -192,6 +210,9 @@ public class Game implements Runnable{
 	public Login getLogin() {
 		return login;
 	}
+	public Register getRegister() {
+		return register;
+	}
 	public GameOptions getGameOptions() {
 		return gameOptions;
 	}
@@ -201,8 +222,14 @@ public class Game implements Runnable{
 	public AudioPlayer getAudioPlayer() {
 		return audioPlayer;
 	}
+	public SetPlayerName getSetNamePlayer() {
+		return setPlayerName;
+	}
 	public GamePanel getGamePanel() {
 		return gamePanel;
+	}
+	public void initRegister() {
+		register = new Register(this);
 	}
 	private static void loadConfigFile() {
         final byte[] ab = MainClass.getFile("ninja.conf");

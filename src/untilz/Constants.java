@@ -186,6 +186,20 @@ public class Constants {
 			public static final int TEXTBOX_HEIGHT = (int)(TEXTBOX_HEIGHT_DEFAULT * Game.SCALE / 4);
 			
 		}
+		public static class Banner{
+			public static final int WELCOME_BANNER_WIDTH_DEFAULT = 224;
+			public static final int WELCOME_BANNER_HEIGHT_DEFAULT = 73;
+			
+			public static final int WELCOME_BANNER_WIDTH = (int)(WELCOME_BANNER_WIDTH_DEFAULT * Game.SCALE);
+			public static final int WELCOME_BANNER_HEIGHT = (int)(WELCOME_BANNER_HEIGHT_DEFAULT * Game.SCALE);
+		}
+		public static class Tick {
+			public static final int TICK_WIDTH_DEFAULT = 14;
+			public static final int TICK_HEIGHT_DEFAULT = 11;
+			
+			public static final int TICK_WIDTH = (int)(TICK_WIDTH_DEFAULT * Game.SCALE);
+			public static final int TICK_HEIGHT = (int)(TICK_HEIGHT_DEFAULT * Game.SCALE);
+		}
 	}
 	
 	

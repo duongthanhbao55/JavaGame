@@ -138,4 +138,7 @@ public class HelpMethods {
     public static void setDebug(final boolean v) {
         HelpMethods.debug = v;
     }
+    public static String strSQL(final String str) {
+        return str.replaceAll("['\"\\\\%]", "\\\\$0");
+    }
 }

@@ -2,6 +2,7 @@ package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class MySQL
         this.LOCK = new Object();
         synchronized (MySQL.LOCK_MYSQL) {
             this.MySQL_ID = MySQL.baseId++;
-            this.stat = MySQL.conn_map.get(connId).createStatement();
+            this.stat = MySQL.conn_map.get(connId).createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         }
     }
     

@@ -39,6 +39,12 @@ public class LoadSave {
 	public static final String OPTION_BACKGROUND = "options_background.png";
 	public static final String TEXT_BOX = "panel_Example2.png";
 	public static final String LOGIN_BACKGROUND = "Login_BackGround.png";
+	public static final String LOGIN_BUTTON = "LoginButton.png";
+	public static final String UI_BUTTON = "UIButton.png";
+	public static final String WELCOME_BANNER = "WelcomeBanner.png";
+	public static final String EMPTY_BACKGROUND = "EmptyBoard.png";
+	public static final String TICK = "tick.png";
+	public static final String SUCCESS_BACKGROUND = "RegisterSuccess.png";
 	
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;

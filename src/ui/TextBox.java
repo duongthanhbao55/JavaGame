@@ -14,15 +14,17 @@ import untilz.LoadSave;
 
 public class TextBox {
 	private int x, y;
+	private float scale;
 	private int index;
 	private int xDrawOffset, yDrawOffset;
 	private BufferedImage textBox;
 	private Rectangle bounds;
 	private boolean mouseOver, mousePressed;
 	
-	public TextBox(int x, int y,int index){
+	public TextBox(int x, int y,float scale, int index){
 		this.x = x;
 		this.y = y;
+		this.scale = scale;
 		this.index = index;
 		xDrawOffset =(int)( 13 * Game.SCALE );
 		yDrawOffset = (int)(7 * Game.SCALE);
@@ -45,11 +47,11 @@ public class TextBox {
 	
 	//RENDER
 	public void render(Graphics g) {
-		g.drawImage(textBox, x , y, TEXTBOX_WIDTH, TEXTBOX_HEIGHT,null);
-		if(index == 1) {
-			g.setColor(new Color(0,0,0,80));
-			g.fillRect((int)(bounds.x + 4* Game.SCALE),(int)( bounds.y + 2 * Game.SCALE),(int)( bounds.width - 9 * Game.SCALE),(int)( bounds.height - 4 * Game.SCALE));
-		}
+		g.drawImage(textBox, x , y, (int)(TEXTBOX_WIDTH * scale),(int)( TEXTBOX_HEIGHT * scale),null);
+//		if(index == 1) {
+//			g.setColor(new Color(0,0,0,80));
+//			g.fillRect((int)(bounds.x + 4* Game.SCALE),(int)( bounds.y + 2 * Game.SCALE),(int)( bounds.width - 9 * Game.SCALE),(int)( bounds.height - 4 * Game.SCALE));
+//		}
 	}
 	
 	//UPDATE
