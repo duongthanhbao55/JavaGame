@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+import Template.TaskTemplate;
 import audio.AudioPlayer;
 import database.MySQL;
 import gamestates.GameOptions;
@@ -24,7 +25,7 @@ public class Game implements Runnable{
 	private final int FPS_SET = 120;
 	private final int UPS_SET = 180;
 	
-	private Playing playing;
+	private Playing playing = null;
 	private Menu menu;
 	private Login login;
 	private Register register;
@@ -52,8 +53,12 @@ public class Game implements Runnable{
     protected static byte max_Enemies;
     protected static byte qua_top;
     protected static int up_exp;
+    
+    public static byte[][] tasks;//id npc u need to talk( -1 talk with npc or orther mission, -2 kill enemies task or)
+    public static byte[][] mapTasks;// index map of task( -1 talk with npc or orther mission,if(-2) if(tasks == idmap) => kill enemeis else if(task == -2) => useItemTask}
+ 
+    public static TaskTemplate[] taskTemplates;
 
-	//private LevelManager levelManager;
 	
 	public final static int TILE_DEFAULT_SIZE = 16;
 	public final static float SCALE = 1.5f;
@@ -75,14 +80,15 @@ public class Game implements Runnable{
 	
 	private void initClasses() {
 		init();
+		Init.init();
 		audioOptions = new AudioOptions(this);
 		audioPlayer = new AudioPlayer();
 		gameOptions = new GameOptions(this);
 		menu = new Menu(this);
 		login = new Login(this);
 		register = new Register(this);
-		playing = new Playing(this);
 		setPlayerName = new SetPlayerName(this);
+		playing = new Playing(this);
 		//LoadSave.GetAllLevels();
 	}
 

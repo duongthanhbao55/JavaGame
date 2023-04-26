@@ -13,8 +13,11 @@ import java.util.Random;
 
 import Level.EnemyManager;
 import Level.LevelManager;
+import Level.NPCManager;
 import Load.CacheDataLoader;
 import Map.TileLayer;
+import Task.Task;
+import entities.NPC_Wizard1;
 import entities.Player;
 import main.Game;
 import objects.ObjectManager;
@@ -23,6 +26,7 @@ import ui.LevelCompleteOverlay;
 import ui.PauseOverlay;
 import untilz.LoadSave;
 import static untilz.Constants.Enviroment.*;
+import static untilz.Constants.NPC_Wizard1.WIZARD1_SIZE;
 
 public class Playing extends State implements Statemethods {
 	// VARIABLE
@@ -33,6 +37,10 @@ public class Playing extends State implements Statemethods {
 	private PauseOverlay pauseOverlay;
 	private GameOverOverlay gameOverOverlay;
 	private LevelCompleteOverlay levelCompleteOverlay;
+	private NPCManager npcManager;
+	
+	//TASK
+    
 	//
 	private boolean paused = false;
 
@@ -55,10 +63,6 @@ public class Playing extends State implements Statemethods {
 	public Playing(Game game) {
 		super(game);
 		initClasses();
-
-		calcLvlOffset();
-		loadStartLevel();
-		loadImages();
 		smallCloudsPos = new int[8];
 		for (int i = 0; i < smallCloudsPos.length; i++) {
 			smallCloudsPos[i] = (int) (70 * Game.SCALE) + rnd.nextInt((int) (150 * Game.SCALE));
@@ -80,7 +84,11 @@ public class Playing extends State implements Statemethods {
 		maxLvlOffsetX = levelManager.getCurrLevel().getLvlOffset();
 		mapWidth = levelManager.getCurrLevel().getLvlTilesWide() * Game.TILES_SIZE;
 	}
-
+	public void loadAll() {
+		calcLvlOffset();
+		loadStartLevel();
+		loadImages();
+	}
 	// FUNCTION
 	private void loadImages() {
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.BG_SKY);
@@ -91,20 +99,37 @@ public class Playing extends State implements Statemethods {
 		tree = LoadSave.GetSpriteAtlas(LoadSave.BG_TREES);
 
 	}
-
-	private void initClasses() {
-		player = new Player(200, 200, (int) (Game.TILES_SIZE * 4), (int) (Game.TILES_SIZE * 2), this);
-		CacheDataLoader.getInstance().readAllMap(this);
+	private void initTask() {
+		
+		for(NPC_Wizard1 w : npcManager.getNpcWizard1s()) {
+			if(Task.isTaskNPC(player, (short) w.getNpcId())) {
+				w.setHaveTask(true,player);
+				break;
+			}
+		}
+		
+	}
+	public void initPlayer(Player player) {
+		this.player = player;
+		this.player.setPlaying(this);
 		levelManager = new LevelManager(game);
-
 		ArrayList<TileLayer> mapLayer = levelManager.getCurrLevel().getMapLayer();
 		player.LoadLvlData(mapLayer.get(0).getTileMap());
-		player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
 		enemyManager = new EnemyManager(this);
+		loadAll();
+		initTask();
+	}
+	private void initClasses() {
+		
+		//player = new Player(200, 200, (int) (Game.TILES_SIZE * 4), (int) (Game.TILES_SIZE * 2), this);
+		CacheDataLoader.getInstance().readAllMap(this);		
 		objectManager = new ObjectManager(this);
+		npcManager = new NPCManager(this);
 		pauseOverlay = new PauseOverlay(this);
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
+		
+		
 	}
 
 	@Override
@@ -121,8 +146,9 @@ public class Playing extends State implements Statemethods {
 		} else {
 			levelManager.getCurrLevel().Update();
 			objectManager.update(currTime, collisionLayer, player);
+			npcManager.update(currTime, collisionLayer, player);
 			player.update(currTime);
-			enemyManager.update(currTime, collisionLayer, player);
+			enemyManager.update(currTime, collisionLayer, player);		
 			CheckCloseToBorder();
 		}
 	}
@@ -151,9 +177,10 @@ public class Playing extends State implements Statemethods {
 
 		levelManager.getCurrLevel().Render(g, xLvlOffset);
 		objectManager.render(g, xLvlOffset);
+		npcManager.render(g, xLvlOffset);
 		player.render(g, xLvlOffset);
-		enemyManager.render(g, xLvlOffset);
-
+		enemyManager.render(g, xLvlOffset);	
+		npcManager.drawDialogue(g);
 		if (paused) {
 			pauseOverlay.render(g);
 		} else if (gameOver) {
@@ -203,6 +230,7 @@ public class Playing extends State implements Statemethods {
 		player.resetAll();
 		enemyManager.resetAllEnemies();
 		objectManager.resetAllObject();
+		npcManager.resetNPC();
 	}
 
 	public void setGameOver(boolean gameOver) {
@@ -280,6 +308,9 @@ public class Playing extends State implements Statemethods {
 			case KeyEvent.VK_J:
 				player.setAttack1(true);
 				break;
+			case KeyEvent.VK_F:
+				checkNPCContact(player.getHitbox());
+				break;
 			case KeyEvent.VK_ESCAPE:
 				paused = !paused;
 				break;
@@ -322,6 +353,9 @@ public class Playing extends State implements Statemethods {
 
 	public void checkPotionTouched(Rectangle2D.Float hitbox) {
 		objectManager.checkObjectTouched(hitbox);
+	}
+	public void checkNPCContact(Rectangle2D.Float hitbox) {
+		npcManager.checkNPCTouched(hitbox,player);
 	}
 
 	public void checkObjectHit(Rectangle2D.Float attackBox) {

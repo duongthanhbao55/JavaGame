@@ -123,25 +123,6 @@
     <frame name="NBdeath23" value="60000000"/>
   </animation>
   
-    <animation name="WZ1Idle">
-    <frame name="WZ1Idle1" value="60000000"/>
-    <frame name="WZ1Idle2" value="60000000"/>
-    <frame name="WZ1Idle3" value="60000000"/>
-    <frame name="WZ1Idle4" value="60000000"/>
-    <frame name="WZ1Idle5" value="60000000"/>
-    <frame name="WZ1Idle6" value="60000000"/>
-    <frame name="WZ1Idle7" value="60000000"/>
-  </animation>
-  <animation name="WZ1Run">
-    <frame name="WZ1Run1" value="60000000"/>
-    <frame name="WZ1Run2" value="60000000"/>
-    <frame name="WZ1Run3" value="60000000"/>
-    <frame name="WZ1Run4" value="60000000"/>
-    <frame name="WZ1Run5" value="60000000"/>
-    <frame name="WZ1Run6" value="60000000"/>
-    <frame name="WZ1Run7" value="60000000"/>
-	<frame name="WZ1Run8" value="60000000"/>
-  </animation>
   <animation name="hitAttack">
     <frame name="hitAttack1" value="60000000"/>
     <frame name="hitAttack2" value="60000000"/>
@@ -211,6 +192,22 @@
     <frame name="FireBall2" value="60000000"/>
     <frame name="FireBall3" value="60000000"/>
     <frame name="FireBall4" value="60000000"/>
+  </animation>
+    <animation name="Wizard1_Idle">
+    <frame name="Wizard1_Idle1" value="60000000"/>
+    <frame name="Wizard1_Idle2" value="60000000"/>
+    <frame name="Wizard1_Idle3" value="60000000"/>
+    <frame name="Wizard1_Idle4" value="60000000"/>
+	<frame name="Wizard1_Idle5" value="60000000"/>
+	<frame name="Wizard1_Idle6" value="60000000"/>
+	<frame name="Wizard1_Idle7" value="60000000"/>
+	<frame name="Wizard1_Idle8" value="60000000"/>
+	<frame name="Wizard1_Idle9" value="60000000"/>
+	<frame name="Wizard1_Idle10" value="60000000"/>
+	<frame name="Wizard1_Idle11" value="60000000"/>
+	<frame name="Wizard1_Idle12" value="60000000"/>
+	<frame name="Wizard1_Idle13" value="60000000"/>
+	<frame name="Wizard1_Idle14" value="60000000"/>
   </animation>
   
   

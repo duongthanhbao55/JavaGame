@@ -102,11 +102,11 @@ public class Constants {
 		public static final int IDLE = 0;
 		public static final int RUNNING = 1;
 		
-		public static final int WIZARD1_SIZE_DEFAULT = 80;
+		public static final int WIZARD1_SIZE_DEFAULT = 64;
 		public static final int WIZARD1_SIZE = (int)(WIZARD1_SIZE_DEFAULT * Game.SCALE);
 		
-		public static final int WIZARD1_DRAWOFFSET_X = (int)(2 * Game.SCALE);
-		public static final int WIZARD1_DRAWOFFSET_Y = (int)(7 * Game.SCALE);
+		public static final int WIZARD1_DRAWOFFSET_X = (int)(0 * Game.SCALE);
+		public static final int WIZARD1_DRAWOFFSET_Y = (int)(0 * Game.SCALE);
 
 	}
 	public static class Enviroment{
@@ -199,6 +199,16 @@ public class Constants {
 			
 			public static final int TICK_WIDTH = (int)(TICK_WIDTH_DEFAULT * Game.SCALE);
 			public static final int TICK_HEIGHT = (int)(TICK_HEIGHT_DEFAULT * Game.SCALE);
+		}
+		public static class Message {
+			public static final int EXCLAMATION = 0;
+			public static final int QUESTION = 1;
+			
+			public static final int MESSAGE_WIDTH_DEFAULT = 14;
+			public static final int MESSAGE_HEIGHT_DEFAULT = 13;
+			
+			public static final int MESSAGE_WIDTH = (int)(MESSAGE_WIDTH_DEFAULT * Game.SCALE);
+			public static final int MESSAGE_HEIGHT = (int)(MESSAGE_HEIGHT_DEFAULT * Game.SCALE);
 		}
 	}
 	

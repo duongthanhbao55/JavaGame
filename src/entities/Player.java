@@ -3,6 +3,8 @@ package entities;
 import Effect.Animation;
 import Load.CacheDataLoader;
 import audio.AudioPlayer;
+import database.MySQL;
+import database.User;
 import gamestates.Playing;
 import main.Game;
 import untilz.LoadSave;
@@ -13,21 +15,34 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 
 import static untilz.HelpMethods.*;
 import static untilz.Constants.PlayerConstants.*;
 import static untilz.Constants.GRAVITY;
 
-
-
 public class Player extends Entity {
 
-	// VARIABLE
+	// INFO
+	private int playerId;
+	private String Name;
+	private int Level;
+	private long EXP;
+	private long ExpDown;
+	private int vip;
+	private int mapId;
+	private User user;
+	
+
 	private boolean moving = false, isAttacking = false;
 	private boolean hasDealtDamage = false;
 	private boolean changeFrame = false;
 	private boolean left, right, jump;
+	private boolean interact = false;
 
 	private int[][] lvlData;
 	private float xDrawOffset = 2 * Game.SCALE;
@@ -37,6 +52,12 @@ public class Player extends Entity {
 	private float jumpSpeed = -2.3f * Game.SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
 	private boolean inAir = false;
+
+	// TASK
+	protected int charID;
+	protected byte ctaskId = 0;
+	protected byte ctaskIndex = -1;
+	protected short ctaskCount = 0;
 
 	// StatusBarUI
 	private BufferedImage statusBarImg;
@@ -51,14 +72,13 @@ public class Player extends Entity {
 	private int healthBarYStart = (int) (14 * Game.SCALE);// offsetY
 	private float lostHealthWidth = healthBarWidth;
 
-
 	private int healthWidth = healthBarWidth;
 	private int damage = DEFAULT_DAMAGE;
 
 	// Attack Box
 
 	private int attackBoxWidth = (int) (20 * Game.SCALE);
-	private int attackBoxHeight = (int) (20 * Game.SCALE);	
+	private int attackBoxHeight = (int) (20 * Game.SCALE);
 
 	// Flip
 	private int flipX = 0;
@@ -70,34 +90,33 @@ public class Player extends Entity {
 
 	ArrayList<Animation> animList = new ArrayList<Animation>();
 
-	public Player(float x, float y, int width, int height, Playing playing) {
-		super(x, y, width, height, playing);
-		this.playing = playing;
-		try {
-			CacheDataLoader.getInstance().readXML(CacheDataLoader.PLAYER_FRAME);
-			CacheDataLoader.getInstance().LoadXMLAnim(CacheDataLoader.PLAYER_ANIMATION);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public Player(User user,float x, float y, int width, int height) {
+		super(x, y, width, height);
+		this.user = user;
 		tileY = (int) (x / Game.TILES_SIZE);
 		this.state = IDLE;
 		this.maxHealth = 100;
 		this.currHealth = maxHealth;
-		this.walkSpeed = Game.SCALE * 1.0f;	
+		this.walkSpeed = Game.SCALE * 1.0f;
 		loadAnim();
+		
+		this.EXP = 0;
+		this.ExpDown = 0;
+		this.Level = 1;
+		this.mapId = 0;
+		this.playerId = -9999;
 
-		initHitbox(20,28);
+		initHitbox(20, 28);
 		initAttackBox();
 	}
-	
-	
+
 	public void setSpawn(Point spawn) {
 		this.x = spawn.x;
 		this.y = spawn.y;
 		hitbox.x = x;
 		hitbox.y = y;
 	}
+
 	private void initAttackBox() {
 		attackBox = new Rectangle2D.Float(hitbox.x, hitbox.y, attackBoxWidth, attackBoxHeight);
 	}
@@ -116,32 +135,31 @@ public class Player extends Entity {
 	// UPDATE
 	public void update(long currTime) {
 		if (currHealth <= 0) {
-			
-			if(state != DEAD) {
+
+			if (state != DEAD) {
 				animList.get(state).reset();
 				state = DEAD;
 				playing.setPlayerDying(true);
 				playing.getGame().getAudioPlayer().playEffect(AudioPlayer.DIE);
-				
-			}else if(animList.get(state).isLastFrame() && 
-					 animList.get(state).getDeltaTime() >= animList.get(state).getDelayFrames().get(0) - 1) {
+
+			} else if (animList.get(state).isLastFrame()
+					&& animList.get(state).getDeltaTime() >= animList.get(state).getDelayFrames().get(0) - 1) {
 				playing.setGameOver(true);
-			}else{
+			} else {
 				animList.get(this.state).Update(currTime);
-			}		
+			}
 			return;
 		}
 
 		updateAttackBox();
 		updateHealthBar();
 		updatePos();
-		if(moving) {
+		if (moving) {
 			checkPotionTouched();
 			checkSpikesTouched();
 			tileY = (int) (hitbox.y / Game.TILES_SIZE);
 		}
-			
-		
+
 		if (isAttacking)
 			Attack();
 
@@ -153,11 +171,17 @@ public class Player extends Entity {
 
 	private void checkPotionTouched() {
 		playing.checkPotionTouched(hitbox);
-		
+
 	}
+
 	private void checkSpikesTouched() {
 		playing.checkSpikesTouched(this);
 	}
+
+	private void checkNPCContact() {
+		playing.checkNPCContact(hitbox);
+	}
+
 	private void updateAniamtion() {
 		if (animList.get(this.state).isLastFrame()) {
 			animList.get(this.state).reset();
@@ -189,7 +213,7 @@ public class Player extends Entity {
 				playing.checkObjectHit(attackBox);
 				hasDealtDamage = false;
 			}
-			
+
 		}
 
 	}
@@ -206,12 +230,12 @@ public class Player extends Entity {
 	}
 
 	private void updateHealthBar() {
-		
-		healthWidth = (int) ((currHealth / (float) maxHealth) * healthBarWidth);	
-		
-		if(healthWidth < lostHealthWidth) {
+
+		healthWidth = (int) ((currHealth / (float) maxHealth) * healthBarWidth);
+
+		if (healthWidth < lostHealthWidth) {
 			lostHealthWidth -= 0.3;
-		} else if(healthWidth >= lostHealthWidth) {//update when health change
+		} else if (healthWidth >= lostHealthWidth) {// update when health change
 			lostHealthWidth = healthWidth;
 		}
 
@@ -220,52 +244,56 @@ public class Player extends Entity {
 	private void updatePos() {
 		moving = false;
 
-		if (jump) {
-			jump();
-		}
+		if (!interact) {
 
-		if (!inAir)
-			if ((!left && !right) || (left && right))
-				return;
-
-		float xSpeed = 0;
-
-		if (left) {
-			xSpeed -= walkSpeed;
-			flipX = width;
-			flipW = -1;
-		}
-
-		if (right) {
-			xSpeed += walkSpeed;
-			flipX = 0;
-			flipW = 1;
-		}
-
-		if (!inAir) {
-			if (!IsEntityOnFloor(hitbox, lvlData))
-				inAir = true;
-		}
-
-		if (inAir) {
-			if (CanMoveHere((hitbox.x - hitbox.width / 2), (hitbox.y - hitbox.height / 2) + airSpeed, hitbox.width,
-					hitbox.height, lvlData)) {
-				hitbox.y += airSpeed;
-				airSpeed += GRAVITY;// increase our speed
-				updateXPos(xSpeed);
-				
-			} else {
-				hitbox.y = GetEntityYPosUnderRoofOfAboveFloor(hitbox, airSpeed);
-				if (airSpeed > 0)
-					resetInAir();
-				else
-					airSpeed = fallSpeedAfterCollision;
-				updateXPos(xSpeed);
+			if (jump) {
+				jump();
 			}
-		} else
-			updateXPos(xSpeed);
 
-		moving = true;
+			if (!inAir)
+				if ((!left && !right) || (left && right))
+					return;
+
+			float xSpeed = 0;
+
+			if (left) {
+				xSpeed -= walkSpeed;
+				flipX = width;
+				flipW = -1;
+			}
+
+			if (right) {
+				xSpeed += walkSpeed;
+				flipX = 0;
+				flipW = 1;
+			}
+
+			if (!inAir) {
+				if (!IsEntityOnFloor(hitbox, lvlData)) {
+					inAir = true;
+				}
+					
+			}
+
+			if (inAir) {
+				if (CanMoveHere((hitbox.x - hitbox.width / 2), (hitbox.y - hitbox.height / 2) + airSpeed, hitbox.width,
+						hitbox.height, lvlData)) {
+					hitbox.y += airSpeed;
+					airSpeed += GRAVITY;// increase our speed
+					updateXPos(xSpeed);
+
+				} else {
+					hitbox.y = GetEntityYPosUnderRoofOfAboveFloor(hitbox, airSpeed);
+					if (airSpeed > 0)
+						resetInAir();
+					else
+						airSpeed = fallSpeedAfterCollision;
+					updateXPos(xSpeed);
+				}
+			} else
+				updateXPos(xSpeed);
+			moving = true;
+		}
 	}
 
 	private void jump() {
@@ -285,7 +313,7 @@ public class Player extends Entity {
 	private void updateXPos(float xSpeed) {
 		if (CanMoveHere((hitbox.x - hitbox.width / 2) + xSpeed, (hitbox.y - hitbox.height / 2), hitbox.width,
 				hitbox.height, lvlData)) {// x+xSpeed,y+ySpeed is next position of player
-			if (!isAttacking)
+			if (!isAttacking && !interact)// ATTACK IN AIR IS HERE
 				hitbox.x += xSpeed;
 		} else {
 			hitbox.x = GetEntityXPosNextToWall(hitbox, xSpeed);
@@ -301,31 +329,37 @@ public class Player extends Entity {
 			currHealth = maxHealth;
 		}
 	}
+
 	public void changeMana(int value) {
 		System.out.println("+" + value + " mana!");
-		
+
 	}
+
 	private void setAnimation() {
 		int startAni = this.state;
 
-		if (moving)
-			this.state = RUNNING;
-		else
+		if (interact)
 			this.state = IDLE;
-
-		if (inAir) {
-			if (airSpeed < 0)
-				this.state = JUMP;
+		else {
+			if (moving)
+				this.state = RUNNING;
 			else
-				this.state = FALLING;
-		}
+				this.state = IDLE;
 
-		if (isAttacking) {
-			this.state = ATTACK_1;
-		}
+			if (inAir) {
+				if (airSpeed < 0)
+					this.state = JUMP;
+				else
+					this.state = FALLING;
+			}
 
-		if (startAni != this.state) {
-			animList.get(this.state).reset();
+			if (isAttacking) {
+				this.state = ATTACK_1;
+			}
+
+			if (startAni != this.state) {
+				animList.get(this.state).reset();
+			}
 		}
 	}
 
@@ -333,19 +367,19 @@ public class Player extends Entity {
 	public void render(Graphics g, int xLvlOffset) {
 		animList.get(this.state).draw((int) (hitbox.x - xDrawOffset) - xLvlOffset + flipX,
 				(int) (hitbox.y - yDrawOffset), width * flipW, height, g);
-		 drawHitbox(g, xLvlOffset);
+		drawHitbox(g, xLvlOffset);
 		// drawAttackBox(g, xLvlOffset);
 		renderUI(g);
 	}
 
 	private void renderUI(Graphics g) {
-		
+
 		g.drawImage(statusBarImg, statusBarX, statusBarY, statusBarWidth, statusBarHeight, null);
 		g.setColor(Color.YELLOW);
-		g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, (int)lostHealthWidth, healthBarHeight);	
+		g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, (int) lostHealthWidth, healthBarHeight);
 		g.setColor(Color.RED);
 		g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
-		
+
 	}
 
 	// FUNCTION
@@ -362,16 +396,17 @@ public class Player extends Entity {
 	}
 
 	public void setLeft(boolean left) {
-		this.left = left;
+		if (!interact)
+			this.left = left;
 	}
-
 
 	public boolean isRight() {
 		return right;
 	}
 
 	public void setRight(boolean right) {
-		this.right = right;
+		if (!interact)
+			this.right = right;
 	}
 
 	public void resetDirBooleans() {
@@ -400,9 +435,49 @@ public class Player extends Entity {
 		this.damage = damage;
 	}
 
+	public boolean isInteract() {
+		return interact;
+	}
+
+	public void setInteract(boolean interact) {
+		this.interact = interact;
+
+	}
+
 	public void setAttackBoxPos(int x, int y) {
 		this.attackBox.x = x;
 		this.attackBox.y = y;
+	}
+
+	public byte getCtaskId() {
+		return ctaskId;
+	}
+	public void setCtaskId(byte ctaskId) {
+		this.ctaskId = ctaskId;
+	}
+	public byte getCtaskIndex() {
+		return ctaskIndex;
+	}
+
+	public void setCtaskIndex(byte ctaskIndex) {
+		this.ctaskIndex = ctaskIndex;
+	}
+
+	public short getCtaskCount() {
+		return ctaskCount;
+	}
+	public String getPlayerName() {
+		return this.Name;
+	}
+
+	public void setCtaskCount(short ctaskCount) {
+		this.ctaskCount = ctaskCount;
+	}
+	public int getPlayerId() {
+		return this.playerId;
+	}
+	public void setPlaying(Playing playing) {
+		this.playing = playing;
 	}
 
 	public void resetAll() {
@@ -418,11 +493,48 @@ public class Player extends Entity {
 
 		if (!IsEntityOnFloor(hitbox, lvlData))
 			inAir = true;
-		
+
 	}
+
 	public int getTileY() {
 		return tileY;
 	}
 
-	
+	public static Player getPlayer(User user, int id) {
+		final Player player = new Player(user,0, 0, (int) (Game.TILES_SIZE * 4), (int) (Game.TILES_SIZE * 2));
+		try {
+			MySQL mySQL = new MySQL(0);
+			ResultSet red = mySQL.stat.executeQuery("SELECT * FROM `player` WHERE `playerId`=" + id + " LIMIT 1;");
+			if (red.first()) {
+				player.playerId = red.getInt("playerId");
+				player.ctaskId = red.getByte("ctaskId");
+				player.ctaskIndex = red.getByte("ctaskIndex");
+				player.ctaskCount = red.getShort("ctaskCount");
+				//player.cspeed = red.getByte("cspeed");
+				player.Name = red.getString("cName");
+				player.EXP = red.getLong("cEXP");
+				player.ExpDown = red.getLong("cExpDown");
+				player.Level = red.getInt("cLevel");
+				player.vip = red.getInt("vip");
+				// bộ sưu tập KMT
+
+				
+				JSONArray jarr2 = (JSONArray) JSONValue.parseWithException(red.getString("InfoMap"));
+				player.mapId = Integer.parseInt(jarr2.get(0).toString());
+				player.x = Short.parseShort(jarr2.get(1).toString());
+				player.y = Short.parseShort(jarr2.get(2).toString());
+				player.hitbox.x = player.x;
+				player.hitbox.y = player.y;
+			
+			} else {
+				return null;
+			}
+			mySQL.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//System.out.println(player.x);
+		return player;
+	}
+
 }

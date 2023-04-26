@@ -22,10 +22,11 @@ public abstract class Enemy extends Entity{
 	protected float attackDistance = Game.TILES_SIZE;
 	protected boolean active = true;
 	protected boolean attackChecked = false;
+	protected int enemyId;
 	
 
-	public Enemy(float x, float y, int width, int height, int enemyType,Playing playing) {
-		super(x, y, width, height, playing);
+	public Enemy(float x, float y, int width, int height, int enemyType) {
+		super(x, y, width, height);
 		this.enemyType = enemyType;
 		this.state = IDLE;
 		maxHealth = GetMaxHealth(enemyType);
@@ -120,6 +121,9 @@ public abstract class Enemy extends Entity{
 	}		
 	public boolean isActive() {
 		return active;
+	}
+	public int getEnemyId() {
+		return this.enemyId;
 	}
 	public void resetEnemy() {
 		hitbox.x = x;

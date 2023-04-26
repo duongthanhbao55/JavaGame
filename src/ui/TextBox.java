@@ -3,6 +3,7 @@ package ui;
 import static untilz.Constants.UI.TextBox.TEXTBOX_WIDTH;
 import static untilz.Constants.UI.TextBox.TEXTBOX_HEIGHT;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -15,26 +16,22 @@ import untilz.LoadSave;
 public class TextBox {
 	private int x, y;
 	private float scale;
-	private int index;
 	private int xDrawOffset, yDrawOffset;
 	private BufferedImage textBox;
 	private Rectangle bounds;
 	private boolean mouseOver, mousePressed;
 	
-	public TextBox(int x, int y,float scale, int index){
+	public TextBox(int x, int y,float scale){
 		this.x = x;
 		this.y = y;
 		this.scale = scale;
-		this.index = index;
 		xDrawOffset =(int)( 13 * Game.SCALE );
 		yDrawOffset = (int)(7 * Game.SCALE);
 		loadImgs();
 		initBounds();
 	}
 	private void loadImgs() {
-		
 		textBox = LoadSave.GetSpriteAtlas(LoadSave.TEXT_BOX);
-		
 	}
 	private void initBounds() {
 		bounds = new Rectangle(x + xDrawOffset, y + yDrawOffset,(int)(TEXTBOX_WIDTH - xDrawOffset * Game.SCALE) - 10,(int)(TEXTBOX_HEIGHT - yDrawOffset * Game.SCALE) - 4);
@@ -47,6 +44,7 @@ public class TextBox {
 	
 	//RENDER
 	public void render(Graphics g) {
+		
 		g.drawImage(textBox, x , y, (int)(TEXTBOX_WIDTH * scale),(int)( TEXTBOX_HEIGHT * scale),null);
 //		if(index == 1) {
 //			g.setColor(new Color(0,0,0,80));
@@ -56,13 +54,6 @@ public class TextBox {
 	
 	//UPDATE
 	public void update() {
-		index = 0;
-		if(mouseOver) {
-			index = 1;
-		}
-		if(mousePressed) {
-			index = 2;
-		}
 			
 	}
 	

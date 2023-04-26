@@ -23,7 +23,8 @@ public class NightBorne extends Enemy{
 	private boolean hurt, dead = false;
 
 	public NightBorne(float x, float y,Playing playing) {
-		super(x, y, NIGHTBORNE_SIZE, NIGHTBORNE_SIZE,NIGHTBORNE,playing);
+		super(x, y, NIGHTBORNE_SIZE, NIGHTBORNE_SIZE,NIGHTBORNE);
+		enemyId = 0;
 		initHitbox(20,30);
 		initAttackBox();
 		LoadEnemyAnim();
@@ -102,8 +103,8 @@ public class NightBorne extends Enemy{
 		attackBox.y = hitbox.y;
 	}
 	public void render(Graphics g, int xLvlOffset) {
-		NightborneAnimList.get(this.state).draw((int)((getHitbox().x - xLvlOffset) - NIGHTBORNE_DRAWOFFSET_X + flipX())
-											   ,(int)(getHitbox().y - NIGHTBORNE_DRAWOFFSET_Y)
+		NightborneAnimList.get(this.state).draw((int)((getHitbox().getX() - xLvlOffset) - NIGHTBORNE_DRAWOFFSET_X + flipX())
+											   ,(int)(getHitbox().getY() - NIGHTBORNE_DRAWOFFSET_Y)
 											   , NIGHTBORNE_SIZE * flipW(), NIGHTBORNE_SIZE, g);
 		//drawAttackBox(g,xLvlOffset);
 		//drawHitbox(g,xLvlOffset);
@@ -112,7 +113,6 @@ public class NightBorne extends Enemy{
 	public void hurt(int amount) {
 		
 		if(!dead) {
-			System.out.println("true");
 			currHealth -= amount;
 			if(currHealth <= 0) {
 				currHealth = 0;

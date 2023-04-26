@@ -50,7 +50,7 @@ public class SetPlayerName extends State implements Statemethods{
 	}
 	public void loadContainer() {
 		SetUpComponent();
-		playerNameBox = new TextBox((int)(menuX + 25 * 1.3), menuY + 125, 1.3f,0);	
+		playerNameBox = new TextBox((int)(menuX + 25 * 1.3), menuY + 125, 1.3f);	
 	}
 	@Override
 	public void update(long currTime) {
@@ -98,8 +98,7 @@ public class SetPlayerName extends State implements Statemethods{
 			if (isIn(e, lg)) {
 				if (lg.isMousePressed()) {
 					lg.applyGamestate();// apply only when Pressed before and Release after if pressed in button but
-					if (lg.getState() == Gamestate.SETNAME) {
-						
+					if (lg.getState() == Gamestate.SETNAME) {				
 						game.getMenu().setPlayerName(playerName.getText());
 						Gamestate.state = Gamestate.MENU;
 						resetTextField();

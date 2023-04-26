@@ -79,9 +79,9 @@ public class Register extends State implements Statemethods {
 
 	public void loadContainer() {
 		SetUpComponent();
-		userIDBox = new TextBox(menuX + 20, menuY + 185, 1, 0);
-		passwordBox = new TextBox(menuX + 20, menuY + 235, 1, 0);
-		confirmPasswordBox = new TextBox(menuX + 20, menuY + 285, 1, 0);
+		userIDBox = new TextBox(menuX + 20, menuY + 185, 1);
+		passwordBox = new TextBox(menuX + 20, menuY + 235, 1);
+		confirmPasswordBox = new TextBox(menuX + 20, menuY + 285, 1);
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class Register extends State implements Statemethods {
 		g.drawImage(scaledGif, gifX, gifY, null);
 
 		g.drawImage(backgroundImg, menuX, menuY, menuWidth, menuHeight, null);
-		g.drawImage(ticks[0], 200, 200, TICK_WIDTH, TICK_HEIGHT, null);
+			g.drawImage(ticks[0], 200, 200, TICK_WIDTH, TICK_HEIGHT, null);
 		for (LoginButton lg : loginButton) {
 			lg.render(g);
 		}

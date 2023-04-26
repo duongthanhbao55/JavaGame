@@ -11,7 +11,6 @@ import main.Game;
 public abstract class Entity {
 	
 	//VARIABLE
-	Playing playing;
 	protected float x,y;
 	protected int width, height;
 	protected Rectangle2D.Float hitbox;
@@ -24,7 +23,7 @@ public abstract class Entity {
 	protected int tileY;
 	
 	//CONSTRUCTOR
-	public Entity(float x, float y, int width, int height,Playing playing) {
+	public Entity(float x, float y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import Effect.HitEffect;
 import Load.CacheDataLoader;
 import Map.PhysicalMap;
+import Template.EnemyTemplate;
 import entities.Enemy;
 import entities.NightBorne;
 import entities.Player;
@@ -17,6 +18,7 @@ import static untilz.HelpMethods.*;
 
 public class EnemyManager {
 	
+	public static EnemyTemplate[] arrEnemyTemplate;
 	private Playing playing;
 	private ArrayList<NightBorne> NightBornes = new ArrayList<>();
 	private HitEffect hitEffect = null;

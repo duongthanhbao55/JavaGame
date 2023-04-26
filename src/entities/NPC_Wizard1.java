@@ -1,79 +1,138 @@
 package entities;
 
-import static untilz.Constants.EnemyConstants.ATTACK;
-import static untilz.Constants.EnemyConstants.HURT;
-import static untilz.Constants.EnemyConstants.IDLE;
-import static untilz.Constants.EnemyConstants.RUNNING;
+import static untilz.Constants.NPC_Wizard1.*;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 import Effect.Animation;
 import Load.CacheDataLoader;
 import gamestates.Playing;
 import main.Game;
+import ui.MessageIcon;
+import ui.TextBox;
 
-public class NPC_Wizard1 extends NPC{
+import static untilz.Constants.UI.Message.EXCLAMATION;
+import static untilz.Constants.UI.Message.QUESTION;
 
-	//VARIBALE
+public class NPC_Wizard1 extends NPC {
+
+	// VARIBALE
 	ArrayList<Animation> Wizard1AnimList = new ArrayList<Animation>();
-	
-	public NPC_Wizard1(float x, float y, int width, int height, int enemyType, Playing playing) {
-		super(x, y, width, height, enemyType, playing);
-		initHitbox(30,30);
+	private MessageIcon messageIcon;
+	private TextBox dialogueBox;
+	private boolean isContact = false;
+	private int index = -1;
+	private String[] conversation;
+	private int Wizard1Id;
+
+	public NPC_Wizard1(float x, float y, int enemyType) {
+		super(x, y, WIZARD1_SIZE, WIZARD1_SIZE, enemyType);
+		npcId = 0;
+		initHitbox(30, 50);
+		loadConversation();
 		LoadAnimNPC();
+		loadMessage();
 	}
-	
+
+	private void loadConversation() {
+		conversation = new String[4];
+		conversation[0] = "Chúc mừng";
+		conversation[1] = "Bạn";
+		conversation[2] = "Đã mất";
+		conversation[3] = "15 Giây";
+	}
+
+	private void loadMessage() {
+		dialogueBox = new TextBox(Game.TILES_SIZE * 15, Game.TILES_SIZE * 26, 2);
+		System.out.println(Game.GAME_WIDTH - Game.TILES_SIZE);
+		messageIcon = new MessageIcon((int) (x), (int) (y - 10 * Game.SCALE), EXCLAMATION);
+	}
+
 	private void LoadAnimNPC() {
-		
-		Wizard1AnimList.add(CacheDataLoader.getInstance().getAnimation("WZ1Idle"));
-		Wizard1AnimList.add(CacheDataLoader.getInstance().getAnimation("WZ1Run"));
+		Wizard1AnimList.add(CacheDataLoader.getInstance().getAnimation("Wizard1_Idle"));
 	}
-	//UPDATE
-	public void update(long currTime,int[][] lvlData,Player player) {
-		super.update(lvlData, Wizard1AnimList.get(npcState));
-		updateBehavior(lvlData,player);
-		//updateAttackBox();
-		Wizard1AnimList.get(npcState).Update(currTime);
+
+	// UPDATE
+	public void update(long currTime, int[][] lvlData, Player player) {
+		Wizard1AnimList.get(state).Update(currTime);
+		super.update(lvlData, Wizard1AnimList.get(state));
+		updateBehavior(lvlData, player);
+		if (haveTask)
+			messageIcon.update();
+		if (isContact)
+			dialogueBox.update();
+		// updateAttackBox();
+
 	}
-	private void updateBehavior(int[][] lvlData, Player player) {
 
-		if(firstUpdate)
-			firstUpdateCheck(lvlData);
-			
-		if(inAir) {
-			updateInAir(lvlData);
-		}else {
+	public void render(Graphics g, int xLvlOffset) {
+		Wizard1AnimList.get(this.state).draw((int) (getHitbox().getX() - xLvlOffset) - WIZARD1_DRAWOFFSET_X,
+				(int) (getHitbox().getY() - WIZARD1_DRAWOFFSET_Y), WIZARD1_SIZE, WIZARD1_SIZE, g);
+		if (haveTask)
+			messageIcon.render(g, xLvlOffset);
 
-			switch(npcState) {
-			case IDLE:
-				newState(RUNNING,Wizard1AnimList.get(npcState));
-				break;
-			case RUNNING:			
-				move(lvlData);
-				break;
-			case ATTACK:
-//				if(NightborneAnimList.get(enemyState).getCurrentFrame() == 0)
-//						attackChecked = false;
-//				
-//				if(NightborneAnimList.get(enemyState).getCurrentFrame() == 5
-//					&& !attackChecked) {
-//					checkPlayerHit(attackBox,player);
-//				}
-					
-				break;
-			}
+		// drawHitbox(g,xLvlOffset);
+	}
+
+	public void drawDialogueBox(Graphics g) {
+		dialogueBox.render(g);
+		g.setColor(new Color(0, 0, 0));
+		int y = dialogueBox.getBounds().y + Game.TILES_SIZE * 2 - (int) (Game.SCALE * 4);
+		int x = dialogueBox.getBounds().x + Game.TILES_SIZE * 2;
+		g.setFont(new Font("Arial", Font.PLAIN, 20));
+		for (String line : conversation[index].split("\n")) {
+			g.drawString(line, x, y);
+			y += 20;
 		}
 
 	}
 
-	private void updateInAir(int[][] lvlData) {
-		// TODO Auto-generated method stub
-		
+	private void updateBehavior(int[][] lvlData, Player player) {
+
+		if (firstUpdate)
+			firstUpdateCheck(lvlData);
+
+		if (inAir) {
+			updateInAir(lvlData);
+		} else {
+
+//			switch(npcState) {
+//			case IDLE:
+//				newState(IDLE,Wizard1AnimList.get(state));
+//				break;
+//			}
+		}
+
 	}
 
-	private void firstUpdateCheck(int[][] lvlData) {
-		// TODO Auto-generated method stub
-		
+	public boolean isContact() {
+		return isContact;
+	}
+
+	public void setContact(boolean isContact) {
+		this.isContact = isContact;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	public int getNpcId() {
+		return this.npcId;
+	}
+	public String[] getConversation() {
+		return this.conversation;
+	}
+	public void reset() {
+		super.resetNPC();
+		isContact = false;
+		index = -1;
 	}
 
 }

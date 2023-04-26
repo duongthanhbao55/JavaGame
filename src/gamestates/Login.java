@@ -15,6 +15,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import database.User;
+import entities.Player;
 import main.Game;
 import ui.LoginButton;
 import ui.TextBox;
@@ -31,12 +32,11 @@ public class Login extends State implements Statemethods {
 	private Image scaledGif;
 	private int gifX, gifY;
 	private int menuX, menuY, menuWidth, menuHeight;
-	private String username = "";
-	private String password = "";
 	private TextBox userIDBox, passwordBox;
 	private JTextField userID;
 	private JPasswordField pw;
 	private User user;
+	private Player player;
 
 	public Login(Game game) {
 		super(game);
@@ -44,7 +44,6 @@ public class Login extends State implements Statemethods {
 	}
 
 	private void loadBackGround() {
-		user = new User();
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.LOGIN_BACKGROUND);
 		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE));
 		gifX = 0;
@@ -66,8 +65,8 @@ public class Login extends State implements Statemethods {
 	public void loadContainer() {
 		SetUpComponent();
 		addComponent();
-		userIDBox = new TextBox(menuX + 20, menuY + 185,1, 0);
-		passwordBox = new TextBox(menuX + 20, menuY + 235,1, 0);
+		userIDBox = new TextBox(menuX + 20, menuY + 185, 1);
+		passwordBox = new TextBox(menuX + 20, menuY + 235, 1);
 	}
 
 	@Override
@@ -128,9 +127,17 @@ public class Login extends State implements Statemethods {
 					lg.applyGamestate();// apply only when Pressed before and Release after if pressed in button but
 					if (lg.getState() == Gamestate.LOGIN) {
 						user = User.Login(userID.getText(), pw.getText());
-						game.getSetNamePlayer().addComponent();
-						Gamestate.state = Gamestate.SETNAME;
-						resetTextField();
+						player = user.getPlayer();				
+						game.getPlaying().initPlayer(this.player);
+						if (player.getPlayerName() == "") {
+							game.getSetNamePlayer().addComponent();
+							Gamestate.state = Gamestate.SETNAME;
+							resetTextField();
+						} else {
+							Gamestate.state = Gamestate.MENU;
+							game.getMenu().setPlayerName(player.getPlayerName());
+							resetTextField();
+						}
 					} else if (lg.getState() == Gamestate.REGISTER) {
 						Gamestate.state = Gamestate.REGISTER;
 						game.getRegister().SetUpComponent();
@@ -166,12 +173,9 @@ public class Login extends State implements Statemethods {
 		// TODO Auto-generated method stub
 
 	}
-
-	private boolean isIn(MouseEvent e, TextBox b) {
-		return b.getBounds().contains(e.getX(), e.getY());
-
+	public Player getPlayer() {
+		return this.player;
 	}
-
 	private boolean isIn(MouseEvent e, LoginButton b) {
 		return b.getBounds().contains(e.getX(), e.getY());
 
@@ -219,12 +223,13 @@ public class Login extends State implements Statemethods {
 					pw.setText("");
 				}
 			}
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				if (String.valueOf(pw.getPassword()).isEmpty()) {
 					pw.setEchoChar('\0');
 					pw.setText("password");
-				}	
+				}
 			}
 		});
 		userID.setBorder(null);
@@ -238,5 +243,4 @@ public class Login extends State implements Statemethods {
 		game.getGamePanel().add(userID);
 		game.getGamePanel().add(pw);
 	}
-
 }

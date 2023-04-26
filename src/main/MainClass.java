@@ -11,7 +11,6 @@ import database.Message;
 public class MainClass {
 
 	public static void main(String[] args) {
-
 		new Game();
 	}
 	public static byte[] getFile(final String url) {
