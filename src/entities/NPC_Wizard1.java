@@ -47,7 +47,6 @@ public class NPC_Wizard1 extends NPC {
 
 	private void loadMessage() {
 		dialogueBox = new TextBox(Game.TILES_SIZE * 15, Game.TILES_SIZE * 26, 2);
-		System.out.println(Game.GAME_WIDTH - Game.TILES_SIZE);
 		messageIcon = new MessageIcon((int) (x), (int) (y - 10 * Game.SCALE), EXCLAMATION);
 	}
 
@@ -64,7 +63,7 @@ public class NPC_Wizard1 extends NPC {
 			messageIcon.update();
 		if (isContact)
 			dialogueBox.update();
-		// updateAttackBox();
+		// upd
 
 	}
 

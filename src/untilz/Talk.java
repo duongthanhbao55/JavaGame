@@ -39,7 +39,8 @@ public class Talk {
     static {
         TEXTVIE = new String[][]{new String[0], new String[0], new String[0], {}, {}};
         TEXTVIETASK = new String[]{
-                "Kill 2 NightBorne"//0
+        		"Welcome to my World!",// 0
+                "Kill 2 NightBorne"//1
         };
         TEXTFINISH = new String[]{
                 "Good job",// 0

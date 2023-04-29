@@ -8,8 +8,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
 import Level.EnemyManager;
+import Level.NPCManager;
 import Load.CacheDataLoader;
 import Template.EnemyTemplate;
+import Template.NpcTemplate;
 import Template.TaskTemplate;
 import database.MySQL;
 
@@ -80,6 +82,29 @@ public class Init {
                 mobTemplate.speed = res.getByte("speed");
                 mobTemplate.isAttack = res.getBoolean("isAttack");
                 EnemyManager.arrEnemyTemplate[i] = mobTemplate;
+                ++i;
+            }
+            res.close();
+            res = mySQL.stat.executeQuery("SELECT * FROM `npctemplate`;");
+            if (res.last()) {
+                NPCManager.arrNpcTemplate = new NpcTemplate[res.getRow()];
+                res.beforeFirst();
+            }
+            i = 0;
+            while (res.next()) {
+                final NpcTemplate npcTemplate = new NpcTemplate();
+                npcTemplate.npcTemplateId = res.getByte("id");
+                npcTemplate.name = res.getString("name");
+                final JSONArray jarr = (JSONArray)JSONValue.parse(res.getString("menu"));
+                npcTemplate.menu = new String[jarr.size()][];
+                for (int j = 0; j < npcTemplate.menu.length; ++j) {
+                    final JSONArray jarr2 = (JSONArray)jarr.get(j);
+                    npcTemplate.menu[j] = new String[jarr2.size()];
+                    for (int k2 = 0; k2 < npcTemplate.menu[j].length; ++k2) {
+                        npcTemplate.menu[j][k2] = jarr2.get(k2).toString();
+                    }
+                }
+                NPCManager.arrNpcTemplate[i] = npcTemplate;
                 ++i;
             }
 		} catch (SQLException e) {

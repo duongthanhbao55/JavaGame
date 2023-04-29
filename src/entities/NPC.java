@@ -88,6 +88,9 @@ public void update(int[][] lvlData,Animation anim) {
 	public void setHaveTask(boolean haveTask,Player player) {
 		this.haveTask = haveTask;
 	}
+	public boolean getHaveTask() {
+		return this.haveTask;
+	}
 	public boolean isActive() {
 		return active;
 	}

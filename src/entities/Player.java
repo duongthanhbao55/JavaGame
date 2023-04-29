@@ -2,6 +2,7 @@ package entities;
 
 import Effect.Animation;
 import Load.CacheDataLoader;
+import Task.Task;
 import audio.AudioPlayer;
 import database.MySQL;
 import database.User;
@@ -10,6 +11,7 @@ import main.Game;
 import untilz.LoadSave;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
@@ -36,7 +38,6 @@ public class Player extends Entity {
 	private int vip;
 	private int mapId;
 	private User user;
-	
 
 	private boolean moving = false, isAttacking = false;
 	private boolean hasDealtDamage = false;
@@ -58,6 +59,7 @@ public class Player extends Entity {
 	protected byte ctaskId = 0;
 	protected byte ctaskIndex = -1;
 	protected short ctaskCount = 0;
+	protected boolean isDoTask = false;
 
 	// StatusBarUI
 	private BufferedImage statusBarImg;
@@ -87,10 +89,11 @@ public class Player extends Entity {
 
 	private int currFrame = 0;
 	private Playing playing;
+	private String descriptionTask = "";
 
 	ArrayList<Animation> animList = new ArrayList<Animation>();
 
-	public Player(User user,float x, float y, int width, int height) {
+	public Player(User user, float x, float y, int width, int height) {
 		super(x, y, width, height);
 		this.user = user;
 		tileY = (int) (x / Game.TILES_SIZE);
@@ -99,7 +102,7 @@ public class Player extends Entity {
 		this.currHealth = maxHealth;
 		this.walkSpeed = Game.SCALE * 1.0f;
 		loadAnim();
-		
+
 		this.EXP = 0;
 		this.ExpDown = 0;
 		this.Level = 1;
@@ -162,6 +165,8 @@ public class Player extends Entity {
 
 		if (isAttacking)
 			Attack();
+		if (isDoTask)
+			Task.doTask(this,playing);
 
 		updateAniamtion();
 		setAnimation();
@@ -272,7 +277,7 @@ public class Player extends Entity {
 				if (!IsEntityOnFloor(hitbox, lvlData)) {
 					inAir = true;
 				}
-					
+
 			}
 
 			if (inAir) {
@@ -368,6 +373,11 @@ public class Player extends Entity {
 		animList.get(this.state).draw((int) (hitbox.x - xDrawOffset) - xLvlOffset + flipX,
 				(int) (hitbox.y - yDrawOffset), width * flipW, height, g);
 		drawHitbox(g, xLvlOffset);
+		g.setColor(new Color(255, 255, 255));
+		g.setFont(new Font("Arial", Font.PLAIN, 20));
+		if(isDoTask) {
+			g.drawString(descriptionTask, 20, 14);
+		}
 		// drawAttackBox(g, xLvlOffset);
 		renderUI(g);
 	}
@@ -452,9 +462,11 @@ public class Player extends Entity {
 	public byte getCtaskId() {
 		return ctaskId;
 	}
+
 	public void setCtaskId(byte ctaskId) {
 		this.ctaskId = ctaskId;
 	}
+
 	public byte getCtaskIndex() {
 		return ctaskIndex;
 	}
@@ -466,6 +478,7 @@ public class Player extends Entity {
 	public short getCtaskCount() {
 		return ctaskCount;
 	}
+
 	public String getPlayerName() {
 		return this.Name;
 	}
@@ -473,11 +486,19 @@ public class Player extends Entity {
 	public void setCtaskCount(short ctaskCount) {
 		this.ctaskCount = ctaskCount;
 	}
+
 	public int getPlayerId() {
 		return this.playerId;
 	}
+
 	public void setPlaying(Playing playing) {
 		this.playing = playing;
+	}
+	public void setDoTask(boolean isDoTask) {
+		this.isDoTask = isDoTask;
+	}
+	public void setDescriptionTask(String descriptionTask) {
+		this.descriptionTask = descriptionTask;
 	}
 
 	public void resetAll() {
@@ -501,7 +522,7 @@ public class Player extends Entity {
 	}
 
 	public static Player getPlayer(User user, int id) {
-		final Player player = new Player(user,0, 0, (int) (Game.TILES_SIZE * 4), (int) (Game.TILES_SIZE * 2));
+		final Player player = new Player(user, 0, 0, (int) (Game.TILES_SIZE * 4), (int) (Game.TILES_SIZE * 2));
 		try {
 			MySQL mySQL = new MySQL(0);
 			ResultSet red = mySQL.stat.executeQuery("SELECT * FROM `player` WHERE `playerId`=" + id + " LIMIT 1;");
@@ -510,7 +531,7 @@ public class Player extends Entity {
 				player.ctaskId = red.getByte("ctaskId");
 				player.ctaskIndex = red.getByte("ctaskIndex");
 				player.ctaskCount = red.getShort("ctaskCount");
-				//player.cspeed = red.getByte("cspeed");
+				// player.cspeed = red.getByte("cspeed");
 				player.Name = red.getString("cName");
 				player.EXP = red.getLong("cEXP");
 				player.ExpDown = red.getLong("cExpDown");
@@ -518,14 +539,13 @@ public class Player extends Entity {
 				player.vip = red.getInt("vip");
 				// bộ sưu tập KMT
 
-				
 				JSONArray jarr2 = (JSONArray) JSONValue.parseWithException(red.getString("InfoMap"));
 				player.mapId = Integer.parseInt(jarr2.get(0).toString());
 				player.x = Short.parseShort(jarr2.get(1).toString());
 				player.y = Short.parseShort(jarr2.get(2).toString());
 				player.hitbox.x = player.x;
 				player.hitbox.y = player.y;
-			
+
 			} else {
 				return null;
 			}
@@ -533,7 +553,7 @@ public class Player extends Entity {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//System.out.println(player.x);
+		// System.out.println(player.x);
 		return player;
 	}
 

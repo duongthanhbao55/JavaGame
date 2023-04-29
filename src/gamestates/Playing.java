@@ -17,14 +17,19 @@ import Level.NPCManager;
 import Load.CacheDataLoader;
 import Map.TileLayer;
 import Task.Task;
+import Template.NpcTemplate;
 import entities.NPC_Wizard1;
 import entities.Player;
 import main.Game;
 import objects.ObjectManager;
+import ui.Confirm;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
 import ui.PauseOverlay;
 import untilz.LoadSave;
+import untilz.Talk;
+import untilz.Text;
+
 import static untilz.Constants.Enviroment.*;
 import static untilz.Constants.NPC_Wizard1.WIZARD1_SIZE;
 
@@ -38,6 +43,7 @@ public class Playing extends State implements Statemethods {
 	private GameOverOverlay gameOverOverlay;
 	private LevelCompleteOverlay levelCompleteOverlay;
 	private NPCManager npcManager;
+	private Confirm confirmUI;
 	
 	//TASK
     
@@ -100,7 +106,12 @@ public class Playing extends State implements Statemethods {
 
 	}
 	private void initTask() {
-		
+		for(NpcTemplate npc : NPCManager.arrNpcTemplate){
+			if(Task.isTaskNPC(player, (short) npc.npcTemplateId)) {
+				npcManager.getNpcWizard1s().get(npc.npcTemplateId).setHaveTask(true, player);
+				break;
+			}
+		}
 		for(NPC_Wizard1 w : npcManager.getNpcWizard1s()) {
 			if(Task.isTaskNPC(player, (short) w.getNpcId())) {
 				w.setHaveTask(true,player);
@@ -128,8 +139,8 @@ public class Playing extends State implements Statemethods {
 		pauseOverlay = new PauseOverlay(this);
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
-		
-		
+		confirmUI = new Confirm();
+		Confirm.OpenComfirmUI(player,(short) 0, Talk.getTask(0,0),new String[] {Text.get(0, 0),Text.get(0, 1)});
 	}
 
 	@Override
@@ -149,6 +160,7 @@ public class Playing extends State implements Statemethods {
 			npcManager.update(currTime, collisionLayer, player);
 			player.update(currTime);
 			enemyManager.update(currTime, collisionLayer, player);		
+			//confirmUI.update();
 			CheckCloseToBorder();
 		}
 	}
@@ -181,6 +193,7 @@ public class Playing extends State implements Statemethods {
 		player.render(g, xLvlOffset);
 		enemyManager.render(g, xLvlOffset);	
 		npcManager.drawDialogue(g);
+		//confirmUI.render(g);
 		if (paused) {
 			pauseOverlay.render(g);
 		} else if (gameOver) {
@@ -293,7 +306,6 @@ public class Playing extends State implements Statemethods {
 		if (gameOver)
 			gameOverOverlay.keyPressed(e);
 		else
-
 			switch (e.getKeyCode()) {
 
 			case KeyEvent.VK_A:
@@ -385,7 +397,9 @@ public class Playing extends State implements Statemethods {
 	public LevelManager getLevelManager() {
 		return this.levelManager;
 	}
-
+	public NPCManager getNpcManager() {
+		return this.npcManager;
+	}
 	public void setPlayerDying(boolean playerDying) {
 		this.playerDying = playerDying;
 
