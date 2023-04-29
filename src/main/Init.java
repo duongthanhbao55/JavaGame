@@ -119,7 +119,7 @@ public class Init {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		ItemManager.loadItemData();
+		
+		//ItemManager.loadItemData();
 	}
 }

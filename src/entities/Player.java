@@ -179,10 +179,6 @@ public class Player extends Entity {
 		playing.checkPotionTouched(hitbox);
 
 	}
-	private void checkItemContact(){
-		playing.checkItemContact(hitbox);
-	}
-
 	private void checkSpikesTouched() {
 		playing.checkSpikesTouched(this);
 	}

@@ -17,11 +17,8 @@ import Level.NPCManager;
 import Load.CacheDataLoader;
 import Map.TileLayer;
 import Task.Task;
-<<<<<<< HEAD
 import Template.NpcTemplate;
-=======
 import database.ItemManager;
->>>>>>> 2e0fe1f29417166c8f82c63d36dcab4c2bbf724c
 import entities.NPC_Wizard1;
 import entities.Player;
 import main.Game;
@@ -32,17 +29,14 @@ import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
 import ui.PauseOverlay;
 import untilz.LoadSave;
-<<<<<<< HEAD
 import untilz.Talk;
 import untilz.Text;
-=======
->>>>>>> 2e0fe1f29417166c8f82c63d36dcab4c2bbf724c
+
 
 import static untilz.Constants.Enviroment.*;
 import static untilz.Constants.NPC_Wizard1.WIZARD1_SIZE;
 
 public class Playing extends State implements Statemethods {
-<<<<<<< HEAD
 	// VARIABLE
 	private Player player;
 	private LevelManager levelManager;
@@ -54,23 +48,6 @@ public class Playing extends State implements Statemethods {
 	private NPCManager npcManager;
 	private Confirm confirmUI;
 	
-	//TASK
-    
-	//
-	private boolean paused = false;
-=======
-    // VARIABLE
-    private Player player;
-    private LevelManager levelManager;
-    private EnemyManager enemyManager;
-    private ObjectManager objectManager;
-    private PauseOverlay pauseOverlay;
-    private GameOverOverlay gameOverOverlay;
-    private LevelCompleteOverlay levelCompleteOverlay;
-    private NPCManager npcManager;
-    private ItemManager itemManager;
-    private InventoryManager inventoryManager;
->>>>>>> 2e0fe1f29417166c8f82c63d36dcab4c2bbf724c
 
     //TASK
 
@@ -107,9 +84,6 @@ public class Playing extends State implements Statemethods {
         levelManager.loadNextLevel();
         player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
     }
-
-<<<<<<< HEAD
-	}
 	private void initTask() {
 		for(NpcTemplate npc : NPCManager.arrNpcTemplate){
 			if(Task.isTaskNPC(player, (short) npc.npcTemplateId)) {
@@ -169,7 +143,6 @@ public class Playing extends State implements Statemethods {
 			CheckCloseToBorder();
 		}
 	}
-=======
     private void loadStartLevel() {
         enemyManager.loadEnimies(levelManager.getCurrLevel());
         objectManager.loadObject(levelManager.getCurrLevel());
@@ -179,7 +152,6 @@ public class Playing extends State implements Statemethods {
         maxLvlOffsetX = levelManager.getCurrLevel().getLvlOffset();
         mapWidth = levelManager.getCurrLevel().getLvlTilesWide() * Game.TILES_SIZE;
     }
->>>>>>> 2e0fe1f29417166c8f82c63d36dcab4c2bbf724c
 
     public void loadAll() {
         calcLvlOffset();
@@ -198,82 +170,6 @@ public class Playing extends State implements Statemethods {
 
     }
 
-    private void initTask() {
-
-        for (NPC_Wizard1 w : npcManager.getNpcWizard1s()) {
-            if (Task.isTaskNPC(player, (short) w.getNpcId())) {
-                w.setHaveTask(true, player);
-                break;
-            }
-        }
-
-    }
-
-<<<<<<< HEAD
-		levelManager.getCurrLevel().Render(g, xLvlOffset);
-		objectManager.render(g, xLvlOffset);
-		npcManager.render(g, xLvlOffset);
-		player.render(g, xLvlOffset);
-		enemyManager.render(g, xLvlOffset);	
-		npcManager.drawDialogue(g);
-		//confirmUI.render(g);
-		if (paused) {
-			pauseOverlay.render(g);
-		} else if (gameOver) {
-			gameOverOverlay.Draw(g);
-		} else if (lvlCompleted) {
-			levelCompleteOverlay.render(g);
-		}
-=======
-    public void initPlayer(Player player) {
-        this.player = player;
-        this.player.setPlaying(this);
-        levelManager = new LevelManager(game);
-        ArrayList<TileLayer> mapLayer = levelManager.getCurrLevel().getMapLayer();
-        player.LoadLvlData(mapLayer.get(0).getTileMap());
-        enemyManager = new EnemyManager(this);
-        loadAll();
-        initTask();
-    }
->>>>>>> 2e0fe1f29417166c8f82c63d36dcab4c2bbf724c
-
-    private void initClasses() {
-
-        //player = new Player(200, 200, (int) (Game.TILES_SIZE * 4), (int) (Game.TILES_SIZE * 2), this);
-        CacheDataLoader.getInstance().readAllMap(this);
-        objectManager = new ObjectManager(this);
-        npcManager = new NPCManager(this);
-        pauseOverlay = new PauseOverlay(this);
-        gameOverOverlay = new GameOverOverlay(this);
-        levelCompleteOverlay = new LevelCompleteOverlay(this);
-        itemManager = new ItemManager(this);
-        inventoryManager = new InventoryManager(this);
-
-
-    }
-
-    @Override
-    public void update(long currTime) {
-        int[][] collisionLayer = levelManager.getCurrLevel().getMapLayer().get(0).getTileMap();
-        if (paused) {
-            pauseOverlay.update();
-        } else if (lvlCompleted) {
-            levelCompleteOverlay.update();
-        } else if (gameOver) {
-            gameOverOverlay.update();
-        } else if (playerDying) {
-            player.update(currTime);
-        } else {
-            levelManager.getCurrLevel().Update();
-            objectManager.update(currTime, collisionLayer, player);
-            itemManager.update();
-            npcManager.update(currTime, collisionLayer, player);
-            player.update(currTime);
-            enemyManager.update(currTime, collisionLayer, player);
-
-            CheckCloseToBorder();
-        }
-    }
 
     private void CheckCloseToBorder() {
         int playerX = (int) player.getHitbox().x;
@@ -299,7 +195,6 @@ public class Playing extends State implements Statemethods {
 
         levelManager.getCurrLevel().Render(g, xLvlOffset);
         objectManager.render(g, xLvlOffset);
-        itemManager.render(g, xLvlOffset);
         npcManager.render(g, xLvlOffset);
         player.render(g, xLvlOffset);
         enemyManager.render(g, xLvlOffset);
@@ -411,14 +306,6 @@ public class Playing extends State implements Statemethods {
         }
     }
 
-<<<<<<< HEAD
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (gameOver)
-			gameOverOverlay.keyPressed(e);
-		else
-			switch (e.getKeyCode()) {
-=======
     @Override
     public void keyPressed(KeyEvent e) {
         if (gameOver)
@@ -426,7 +313,6 @@ public class Playing extends State implements Statemethods {
         else
 
             switch (e.getKeyCode()) {
->>>>>>> 2e0fe1f29417166c8f82c63d36dcab4c2bbf724c
 
                 case KeyEvent.VK_A:
                     player.setLeft(true);
@@ -442,7 +328,6 @@ public class Playing extends State implements Statemethods {
                     break;
                 case KeyEvent.VK_F:
                     checkNPCContact(player.getHitbox());
-                    checkItemContact(player.getHitbox());
                     checkPotionTouched(player.getHitbox());
                     break;
                 case KeyEvent.VK_ESCAPE:
@@ -500,7 +385,6 @@ public class Playing extends State implements Statemethods {
     public void checkSpikesTouched(Player player) {
         objectManager.checkSpikesTouched(player);
     }
-    public void checkItemContact(Rectangle2D.Float hitbox){itemManager.checkItemContact(player);}
 
     public EnemyManager getEnemyManager() {
         return enemyManager;
@@ -514,7 +398,6 @@ public class Playing extends State implements Statemethods {
         this.maxLvlOffsetX = maxLvlOffsetX;
     }
 
-<<<<<<< HEAD
 	public LevelManager getLevelManager() {
 		return this.levelManager;
 	}
@@ -523,26 +406,9 @@ public class Playing extends State implements Statemethods {
 	}
 	public void setPlayerDying(boolean playerDying) {
 		this.playerDying = playerDying;
-=======
+	}
     public void setLevelCompleted(boolean lvlCompleted) {
         this.lvlCompleted = lvlCompleted;
     }
 
-    public LevelManager getLevelManager() {
-        return this.levelManager;
-    }
->>>>>>> 2e0fe1f29417166c8f82c63d36dcab4c2bbf724c
-
-    public void setPlayerDying(boolean playerDying) {
-        this.playerDying = playerDying;
-
-    }
-
-    public ItemManager getItemManager() {
-        return itemManager;
-    }
-
-    public InventoryManager getInventoryManager() {
-        return inventoryManager;
-    }
 }
