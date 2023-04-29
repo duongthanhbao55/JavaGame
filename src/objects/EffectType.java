@@ -14,3 +14,14 @@ public enum EffectType {
     MANA, // Restore Mana points
     OTHER; // Others
 }
+/*
+index	effect
+0	ATK_UP
+1	HP_UP
+2	DEF_UP
+3	SPEED_UP
+4	DMG_UP
+5	DMG_DOWN
+6	HEAL
+7	MANA
+*/
