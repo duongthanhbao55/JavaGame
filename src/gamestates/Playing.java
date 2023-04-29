@@ -17,377 +17,404 @@ import Level.NPCManager;
 import Load.CacheDataLoader;
 import Map.TileLayer;
 import Task.Task;
+import database.ItemManager;
 import entities.NPC_Wizard1;
 import entities.Player;
 import main.Game;
+import objects.InventoryManager;
 import objects.ObjectManager;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
 import ui.PauseOverlay;
 import untilz.LoadSave;
+
 import static untilz.Constants.Enviroment.*;
 import static untilz.Constants.NPC_Wizard1.WIZARD1_SIZE;
 
 public class Playing extends State implements Statemethods {
-	// VARIABLE
-	private Player player;
-	private LevelManager levelManager;
-	private EnemyManager enemyManager;
-	private ObjectManager objectManager;
-	private PauseOverlay pauseOverlay;
-	private GameOverOverlay gameOverOverlay;
-	private LevelCompleteOverlay levelCompleteOverlay;
-	private NPCManager npcManager;
-	
-	//TASK
-    
-	//
-	private boolean paused = false;
+    // VARIABLE
+    private Player player;
+    private LevelManager levelManager;
+    private EnemyManager enemyManager;
+    private ObjectManager objectManager;
+    private PauseOverlay pauseOverlay;
+    private GameOverOverlay gameOverOverlay;
+    private LevelCompleteOverlay levelCompleteOverlay;
+    private NPCManager npcManager;
+    private ItemManager itemManager;
+    private InventoryManager inventoryManager;
 
-	// CAMERA
-	private int xLvlOffset = 0;
-	private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
-	private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
-	private int maxLvlOffsetX;
-	private int mapWidth;
-	// BACKGROUND
-	private BufferedImage backgroundImg, farCloud, nearCloud, farMountain, Mountain, tree;
-	private int[] smallCloudsPos;
-	private Random rnd = new Random();
+    //TASK
 
-	private boolean gameOver;
-	private boolean lvlCompleted;
-	private boolean playerDying;
+    //
+    private boolean paused = false;
 
-	// CONSTRUCTOR
-	public Playing(Game game) {
-		super(game);
-		initClasses();
-		smallCloudsPos = new int[8];
-		for (int i = 0; i < smallCloudsPos.length; i++) {
-			smallCloudsPos[i] = (int) (70 * Game.SCALE) + rnd.nextInt((int) (150 * Game.SCALE));
-		}
-	}
+    // CAMERA
+    private int xLvlOffset = 0;
+    private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
+    private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
+    private int maxLvlOffsetX;
+    private int mapWidth;
+    // BACKGROUND
+    private BufferedImage backgroundImg, farCloud, nearCloud, farMountain, Mountain, tree;
+    private int[] smallCloudsPos;
+    private Random rnd = new Random();
 
-	public void loadNextLevel() {
-		resetAll();
-		levelManager.loadNextLevel();
-		player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
-	}
+    private boolean gameOver;
+    private boolean lvlCompleted;
+    private boolean playerDying;
 
-	private void loadStartLevel() {
-		enemyManager.loadEnimies(levelManager.getCurrLevel());
-		objectManager.loadObject(levelManager.getCurrLevel());
-	}
+    // CONSTRUCTOR
+    public Playing(Game game) {
+        super(game);
+        initClasses();
+        smallCloudsPos = new int[8];
+        for (int i = 0; i < smallCloudsPos.length; i++) {
+            smallCloudsPos[i] = (int) (70 * Game.SCALE) + rnd.nextInt((int) (150 * Game.SCALE));
+        }
+    }
 
-	private void calcLvlOffset() {
-		maxLvlOffsetX = levelManager.getCurrLevel().getLvlOffset();
-		mapWidth = levelManager.getCurrLevel().getLvlTilesWide() * Game.TILES_SIZE;
-	}
-	public void loadAll() {
-		calcLvlOffset();
-		loadStartLevel();
-		loadImages();
-	}
-	// FUNCTION
-	private void loadImages() {
-		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.BG_SKY);
-		farCloud = LoadSave.GetSpriteAtlas(LoadSave.BG_FAR_CLOUDS);
-		nearCloud = LoadSave.GetSpriteAtlas(LoadSave.BG_NEAR_CLOUDS);
-		farMountain = LoadSave.GetSpriteAtlas(LoadSave.BG_FAR_MOUNTAINS);
-		Mountain = LoadSave.GetSpriteAtlas(LoadSave.BG_MOUNTAINS);
-		tree = LoadSave.GetSpriteAtlas(LoadSave.BG_TREES);
+    public void loadNextLevel() {
+        resetAll();
+        levelManager.loadNextLevel();
+        player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
+    }
 
-	}
-	private void initTask() {
-		
-		for(NPC_Wizard1 w : npcManager.getNpcWizard1s()) {
-			if(Task.isTaskNPC(player, (short) w.getNpcId())) {
-				w.setHaveTask(true,player);
-				break;
-			}
-		}
-		
-	}
-	public void initPlayer(Player player) {
-		this.player = player;
-		this.player.setPlaying(this);
-		levelManager = new LevelManager(game);
-		ArrayList<TileLayer> mapLayer = levelManager.getCurrLevel().getMapLayer();
-		player.LoadLvlData(mapLayer.get(0).getTileMap());
-		enemyManager = new EnemyManager(this);
-		loadAll();
-		initTask();
-	}
-	private void initClasses() {
-		
-		//player = new Player(200, 200, (int) (Game.TILES_SIZE * 4), (int) (Game.TILES_SIZE * 2), this);
-		CacheDataLoader.getInstance().readAllMap(this);		
-		objectManager = new ObjectManager(this);
-		npcManager = new NPCManager(this);
-		pauseOverlay = new PauseOverlay(this);
-		gameOverOverlay = new GameOverOverlay(this);
-		levelCompleteOverlay = new LevelCompleteOverlay(this);
-		
-		
-	}
+    private void loadStartLevel() {
+        enemyManager.loadEnimies(levelManager.getCurrLevel());
+        objectManager.loadObject(levelManager.getCurrLevel());
+    }
 
-	@Override
-	public void update(long currTime) {
-		int[][] collisionLayer = levelManager.getCurrLevel().getMapLayer().get(0).getTileMap();
-		if (paused) {
-			pauseOverlay.update();
-		} else if (lvlCompleted) {
-			levelCompleteOverlay.update();
-		} else if (gameOver) {
-			gameOverOverlay.update();
-		} else if (playerDying) {
-			player.update(currTime);
-		} else {
-			levelManager.getCurrLevel().Update();
-			objectManager.update(currTime, collisionLayer, player);
-			npcManager.update(currTime, collisionLayer, player);
-			player.update(currTime);
-			enemyManager.update(currTime, collisionLayer, player);		
-			CheckCloseToBorder();
-		}
-	}
+    private void calcLvlOffset() {
+        maxLvlOffsetX = levelManager.getCurrLevel().getLvlOffset();
+        mapWidth = levelManager.getCurrLevel().getLvlTilesWide() * Game.TILES_SIZE;
+    }
 
-	private void CheckCloseToBorder() {
-		int playerX = (int) player.getHitbox().x;
-		int diff = playerX - xLvlOffset;
+    public void loadAll() {
+        calcLvlOffset();
+        loadStartLevel();
+        loadImages();
+    }
 
-		if (diff > rightBorder)
-			xLvlOffset += diff - rightBorder;
-		else if (diff < leftBorder)
-			xLvlOffset += diff - leftBorder;
+    // FUNCTION
+    private void loadImages() {
+        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.BG_SKY);
+        farCloud = LoadSave.GetSpriteAtlas(LoadSave.BG_FAR_CLOUDS);
+        nearCloud = LoadSave.GetSpriteAtlas(LoadSave.BG_NEAR_CLOUDS);
+        farMountain = LoadSave.GetSpriteAtlas(LoadSave.BG_FAR_MOUNTAINS);
+        Mountain = LoadSave.GetSpriteAtlas(LoadSave.BG_MOUNTAINS);
+        tree = LoadSave.GetSpriteAtlas(LoadSave.BG_TREES);
 
-		if (xLvlOffset > maxLvlOffsetX)
-			xLvlOffset = maxLvlOffsetX;
-		else if (xLvlOffset < 0)
-			xLvlOffset = 0;
+    }
 
-	}
+    private void initTask() {
 
-	@Override
-	public void render(Graphics g) {
-		g.drawImage(backgroundImg, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        for (NPC_Wizard1 w : npcManager.getNpcWizard1s()) {
+            if (Task.isTaskNPC(player, (short) w.getNpcId())) {
+                w.setHaveTask(true, player);
+                break;
+            }
+        }
 
-		drawClouds(g);
+    }
 
-		levelManager.getCurrLevel().Render(g, xLvlOffset);
-		objectManager.render(g, xLvlOffset);
-		npcManager.render(g, xLvlOffset);
-		player.render(g, xLvlOffset);
-		enemyManager.render(g, xLvlOffset);	
-		npcManager.drawDialogue(g);
-		if (paused) {
-			pauseOverlay.render(g);
-		} else if (gameOver) {
-			gameOverOverlay.Draw(g);
-		} else if (lvlCompleted) {
-			levelCompleteOverlay.render(g);
-		}
+    public void initPlayer(Player player) {
+        this.player = player;
+        this.player.setPlaying(this);
+        levelManager = new LevelManager(game);
+        ArrayList<TileLayer> mapLayer = levelManager.getCurrLevel().getMapLayer();
+        player.LoadLvlData(mapLayer.get(0).getTileMap());
+        enemyManager = new EnemyManager(this);
+        loadAll();
+        initTask();
+    }
 
-	}
+    private void initClasses() {
 
-	public ObjectManager getObjectManager() {
-		return objectManager;
-	}
+        //player = new Player(200, 200, (int) (Game.TILES_SIZE * 4), (int) (Game.TILES_SIZE * 2), this);
+        CacheDataLoader.getInstance().readAllMap(this);
+        objectManager = new ObjectManager(this);
+        npcManager = new NPCManager(this);
+        pauseOverlay = new PauseOverlay(this);
+        gameOverOverlay = new GameOverOverlay(this);
+        levelCompleteOverlay = new LevelCompleteOverlay(this);
+        itemManager = new ItemManager(this);
+        inventoryManager = new InventoryManager(this);
 
-	private void drawClouds(Graphics g) {
-		for (int i = 0; i < (int) (mapWidth / FAR_CLOUD_WIDTH); i++) {
-			g.drawImage(farCloud, i * FAR_CLOUD_WIDTH - (int) (xLvlOffset * 0.1), (int) (236 * Game.SCALE),
-					FAR_CLOUD_WIDTH, FAR_CLOUD_HEIGHT, null);
-		}
-		for (int i = 0; i < (int) (mapWidth / NEAR_CLOUD_WIDTH); i++) {
-			g.drawImage(nearCloud, i * NEAR_CLOUD_WIDTH - (int) (xLvlOffset * 0.2), (int) (236 * Game.SCALE),
-					NEAR_CLOUD_WIDTH, NEAR_CLOUD_HEIGHT, null);
-		}
-		for (int i = 0; i < (int) (mapWidth / FAR_MOUNTAIN_WIDTH); i++) {
-			g.drawImage(farMountain, i * FAR_MOUNTAIN_WIDTH - (int) (xLvlOffset * 0.4), (int) (236 * Game.SCALE),
-					FAR_MOUNTAIN_WIDTH, FAR_MOUNTAIN_HEIGHT, null);
-		}
-		for (int i = 0; i < (int) (mapWidth / MOUNTAIN_WIDTH); i++) {
-			g.drawImage(Mountain, i * MOUNTAIN_WIDTH - (int) (xLvlOffset * 0.6), (int) (236 * Game.SCALE),
-					MOUNTAIN_WIDTH, MOUNTAIN_HEIGHT, null);
-		}
-		for (int i = 0; i < (int) (mapWidth / TREE_SIZE); i++) {
-			g.drawImage(tree, i * TREE_SIZE - (int) (xLvlOffset * 0.8), (int) (236 * Game.SCALE), TREE_SIZE, TREE_SIZE,
-					null);
-		}
+
+    }
+
+    @Override
+    public void update(long currTime) {
+        int[][] collisionLayer = levelManager.getCurrLevel().getMapLayer().get(0).getTileMap();
+        if (paused) {
+            pauseOverlay.update();
+        } else if (lvlCompleted) {
+            levelCompleteOverlay.update();
+        } else if (gameOver) {
+            gameOverOverlay.update();
+        } else if (playerDying) {
+            player.update(currTime);
+        } else {
+            levelManager.getCurrLevel().Update();
+            objectManager.update(currTime, collisionLayer, player);
+            itemManager.update();
+            npcManager.update(currTime, collisionLayer, player);
+            player.update(currTime);
+            enemyManager.update(currTime, collisionLayer, player);
+
+            CheckCloseToBorder();
+        }
+    }
+
+    private void CheckCloseToBorder() {
+        int playerX = (int) player.getHitbox().x;
+        int diff = playerX - xLvlOffset;
+
+        if (diff > rightBorder)
+            xLvlOffset += diff - rightBorder;
+        else if (diff < leftBorder)
+            xLvlOffset += diff - leftBorder;
+
+        if (xLvlOffset > maxLvlOffsetX)
+            xLvlOffset = maxLvlOffsetX;
+        else if (xLvlOffset < 0)
+            xLvlOffset = 0;
+
+    }
+
+    @Override
+    public void render(Graphics g) {
+        g.drawImage(backgroundImg, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+
+        drawClouds(g);
+
+        levelManager.getCurrLevel().Render(g, xLvlOffset);
+        objectManager.render(g, xLvlOffset);
+        itemManager.render(g, xLvlOffset);
+        npcManager.render(g, xLvlOffset);
+        player.render(g, xLvlOffset);
+        enemyManager.render(g, xLvlOffset);
+        npcManager.drawDialogue(g);
+        if (paused) {
+            pauseOverlay.render(g);
+        } else if (gameOver) {
+            gameOverOverlay.Draw(g);
+        } else if (lvlCompleted) {
+            levelCompleteOverlay.render(g);
+        }
+
+    }
+
+    public ObjectManager getObjectManager() {
+        return objectManager;
+    }
+
+    private void drawClouds(Graphics g) {
+        for (int i = 0; i < (int) (mapWidth / FAR_CLOUD_WIDTH); i++) {
+            g.drawImage(farCloud, i * FAR_CLOUD_WIDTH - (int) (xLvlOffset * 0.1), (int) (236 * Game.SCALE),
+                    FAR_CLOUD_WIDTH, FAR_CLOUD_HEIGHT, null);
+        }
+        for (int i = 0; i < (int) (mapWidth / NEAR_CLOUD_WIDTH); i++) {
+            g.drawImage(nearCloud, i * NEAR_CLOUD_WIDTH - (int) (xLvlOffset * 0.2), (int) (236 * Game.SCALE),
+                    NEAR_CLOUD_WIDTH, NEAR_CLOUD_HEIGHT, null);
+        }
+        for (int i = 0; i < (int) (mapWidth / FAR_MOUNTAIN_WIDTH); i++) {
+            g.drawImage(farMountain, i * FAR_MOUNTAIN_WIDTH - (int) (xLvlOffset * 0.4), (int) (236 * Game.SCALE),
+                    FAR_MOUNTAIN_WIDTH, FAR_MOUNTAIN_HEIGHT, null);
+        }
+        for (int i = 0; i < (int) (mapWidth / MOUNTAIN_WIDTH); i++) {
+            g.drawImage(Mountain, i * MOUNTAIN_WIDTH - (int) (xLvlOffset * 0.6), (int) (236 * Game.SCALE),
+                    MOUNTAIN_WIDTH, MOUNTAIN_HEIGHT, null);
+        }
+        for (int i = 0; i < (int) (mapWidth / TREE_SIZE); i++) {
+            g.drawImage(tree, i * TREE_SIZE - (int) (xLvlOffset * 0.8), (int) (236 * Game.SCALE), TREE_SIZE, TREE_SIZE,
+                    null);
+        }
 //		for(int i = 0; i < smallCloudsPos.length; i++) {
 //			g.drawImage(smallCloud, (SMALL_CLOUD_WIDTH * 4 * i) - (int)(xLvlOffset * 0.7), smallCloudsPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
 //		}
 
-	}
+    }
 
-	public void resetAll() {
-		gameOver = false;
-		paused = false;
-		lvlCompleted = false;
-		playerDying = false;
-		player.resetAll();
-		enemyManager.resetAllEnemies();
-		objectManager.resetAllObject();
-		npcManager.resetNPC();
-	}
+    public void resetAll() {
+        gameOver = false;
+        paused = false;
+        lvlCompleted = false;
+        playerDying = false;
+        player.resetAll();
+        enemyManager.resetAllEnemies();
+        objectManager.resetAllObject();
+        npcManager.resetNPC();
+    }
 
-	public void setGameOver(boolean gameOver) {
-		this.gameOver = gameOver;
-	}
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
 
-	public void mouseDragged(MouseEvent e) {
-		if (!gameOver) {
-			if (paused)
-				pauseOverlay.mouseDragged(e);
-		}
-	}
+    public void mouseDragged(MouseEvent e) {
+        if (!gameOver) {
+            if (paused)
+                pauseOverlay.mouseDragged(e);
+        }
+    }
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if (!gameOver) {
-			if (paused)
-				pauseOverlay.mousePressed(e);
-			else if (lvlCompleted)
-				levelCompleteOverlay.MousePressed(e);
-		}else {
-			gameOverOverlay.MousePressed(e);
-		}
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (!gameOver) {
+            if (paused)
+                pauseOverlay.mousePressed(e);
+            else if (lvlCompleted)
+                levelCompleteOverlay.MousePressed(e);
+        } else {
+            gameOverOverlay.MousePressed(e);
+        }
 
-	}
+    }
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if (!gameOver) {
-			if (paused)
-				pauseOverlay.mouseReleased(e);
-			else if (lvlCompleted)
-				levelCompleteOverlay.MouseRelease(e);
-		}else {
-			gameOverOverlay.MouseRelease(e);
-		}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (!gameOver) {
+            if (paused)
+                pauseOverlay.mouseReleased(e);
+            else if (lvlCompleted)
+                levelCompleteOverlay.MouseRelease(e);
+        } else {
+            gameOverOverlay.MouseRelease(e);
+        }
 
-	}
+    }
 
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		if (!gameOver) {
-			if (paused)
-				pauseOverlay.mouseMoved(e);
-			else if (lvlCompleted)
-				levelCompleteOverlay.MouseMoved(e);
-		}else {
-			gameOverOverlay.MouseMoved(e);
-		}
-	}
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (!gameOver) {
+            if (paused)
+                pauseOverlay.mouseMoved(e);
+            else if (lvlCompleted)
+                levelCompleteOverlay.MouseMoved(e);
+        } else {
+            gameOverOverlay.MouseMoved(e);
+        }
+    }
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (gameOver)
-			gameOverOverlay.keyPressed(e);
-		else
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (gameOver)
+            gameOverOverlay.keyPressed(e);
+        else
 
-			switch (e.getKeyCode()) {
+            switch (e.getKeyCode()) {
 
-			case KeyEvent.VK_A:
-				player.setLeft(true);
-				break;
-			case KeyEvent.VK_D:
-				player.setRight(true);
-				break;
-			case KeyEvent.VK_W:
-				player.setJump(true);
-				break;
-			case KeyEvent.VK_J:
-				player.setAttack1(true);
-				break;
-			case KeyEvent.VK_F:
-				checkNPCContact(player.getHitbox());
-				break;
-			case KeyEvent.VK_ESCAPE:
-				paused = !paused;
-				break;
-			}
+                case KeyEvent.VK_A:
+                    player.setLeft(true);
+                    break;
+                case KeyEvent.VK_D:
+                    player.setRight(true);
+                    break;
+                case KeyEvent.VK_W:
+                    player.setJump(true);
+                    break;
+                case KeyEvent.VK_J:
+                    player.setAttack1(true);
+                    break;
+                case KeyEvent.VK_F:
+                    checkNPCContact(player.getHitbox());
+                    checkItemContact(player.getHitbox());
+                    checkPotionTouched(player.getHitbox());
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    paused = !paused;
+                    break;
+            }
 
-	}
+    }
 
-	@Override
-	public void keyReleased(KeyEvent e) {
-		if (!gameOver)
-			switch (e.getKeyCode()) {
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (!gameOver)
+            switch (e.getKeyCode()) {
 
-			case KeyEvent.VK_A:
-				player.setLeft(false);
-				break;
-			case KeyEvent.VK_D:
-				player.setRight(false);
-				break;
-			case KeyEvent.VK_W:
-				player.setJump(false);
-				break;
-			}
-	}
+                case KeyEvent.VK_A:
+                    player.setLeft(false);
+                    break;
+                case KeyEvent.VK_D:
+                    player.setRight(false);
+                    break;
+                case KeyEvent.VK_W:
+                    player.setJump(false);
+                    break;
+            }
+    }
 
-	public void unpauseGame() {
-		paused = false;
-	}
+    public void unpauseGame() {
+        paused = false;
+    }
 
-	public Player getPlayer() {
-		return player;
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	public void WindowFocusLost() {
-		player.resetDirBooleans();
-	}
+    public void WindowFocusLost() {
+        player.resetDirBooleans();
+    }
 
-	public void checkEnemyHit(Rectangle2D.Float attackBox) {
-		enemyManager.checkEnemyHited(attackBox, player);
-	}
+    public void checkEnemyHit(Rectangle2D.Float attackBox) {
+        enemyManager.checkEnemyHited(attackBox, player);
+    }
 
-	public void checkPotionTouched(Rectangle2D.Float hitbox) {
-		objectManager.checkObjectTouched(hitbox);
-	}
-	public void checkNPCContact(Rectangle2D.Float hitbox) {
-		npcManager.checkNPCTouched(hitbox,player);
-	}
+    public void checkPotionTouched(Rectangle2D.Float hitbox) {
+        objectManager.checkObjectTouched(hitbox);
+    }
 
-	public void checkObjectHit(Rectangle2D.Float attackBox) {
-		objectManager.checkObjectHit(attackBox);
-	}
+    public void checkNPCContact(Rectangle2D.Float hitbox) {
+        npcManager.checkNPCTouched(hitbox, player);
+    }
 
-	public void checkSpikesTouched(Player player) {
-		objectManager.checkSpikesTouched(player);
-	}
+    public void checkObjectHit(Rectangle2D.Float attackBox) {
+        objectManager.checkObjectHit(attackBox);
+    }
 
-	public EnemyManager getEnemyManager() {
-		return enemyManager;
-	}
+    public void checkSpikesTouched(Player player) {
+        objectManager.checkSpikesTouched(player);
+    }
+    public void checkItemContact(Rectangle2D.Float hitbox){itemManager.checkItemContact(player);}
 
-	public int getMaxLvlOffsetX() {
-		return maxLvlOffsetX;
-	}
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
+    }
 
-	public void setMaxLvlOffsetX(int maxLvlOffsetX) {
-		this.maxLvlOffsetX = maxLvlOffsetX;
-	}
+    public int getMaxLvlOffsetX() {
+        return maxLvlOffsetX;
+    }
 
-	public void setLevelCompleted(boolean lvlCompleted) {
-		this.lvlCompleted = lvlCompleted;
-	}
+    public void setMaxLvlOffsetX(int maxLvlOffsetX) {
+        this.maxLvlOffsetX = maxLvlOffsetX;
+    }
 
-	public LevelManager getLevelManager() {
-		return this.levelManager;
-	}
+    public void setLevelCompleted(boolean lvlCompleted) {
+        this.lvlCompleted = lvlCompleted;
+    }
 
-	public void setPlayerDying(boolean playerDying) {
-		this.playerDying = playerDying;
+    public LevelManager getLevelManager() {
+        return this.levelManager;
+    }
 
-	}
+    public void setPlayerDying(boolean playerDying) {
+        this.playerDying = playerDying;
+
+    }
+
+    public ItemManager getItemManager() {
+        return itemManager;
+    }
+
+    public InventoryManager getInventoryManager() {
+        return inventoryManager;
+    }
 }

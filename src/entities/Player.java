@@ -44,6 +44,8 @@ public class Player extends Entity {
 	private boolean left, right, jump;
 	private boolean interact = false;
 
+	private boolean collect = false;
+
 	private int[][] lvlData;
 	private float xDrawOffset = 2 * Game.SCALE;
 	private float yDrawOffset = 1 * Game.SCALE;
@@ -155,7 +157,6 @@ public class Player extends Entity {
 		updateHealthBar();
 		updatePos();
 		if (moving) {
-			checkPotionTouched();
 			checkSpikesTouched();
 			tileY = (int) (hitbox.y / Game.TILES_SIZE);
 		}
@@ -172,6 +173,9 @@ public class Player extends Entity {
 	private void checkPotionTouched() {
 		playing.checkPotionTouched(hitbox);
 
+	}
+	private void checkItemContact(){
+		playing.checkItemContact(hitbox);
 	}
 
 	private void checkSpikesTouched() {
@@ -417,7 +421,7 @@ public class Player extends Entity {
 	public void setJump(boolean jump) {
 		this.jump = jump;
 	}
-
+	public void setCollect(boolean collect){this.collect = collect;}
 	public void setAttack1(boolean isAttacking) {
 		this.isAttacking = isAttacking;
 	}
