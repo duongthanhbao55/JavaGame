@@ -7,12 +7,13 @@ CREATE TABLE IF NOT EXISTS Item  (
     itemID INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     atk INT DEFAULT 0,
-    def INT DEFAULT 0,
     hp INT DEFAULT 0,
+    def INT DEFAULT 0,
     slot TINYINT NOT NULL DEFAULT 0,
     filename VARCHAR(30) NOT NULL,
     ability TEXT DEFAULT NULL,
-    itemDesc TEXT DEFAULT NULL
+    itemDesc TEXT DEFAULT NULL,
+    effect TEXT DEFAULT NULL,
 );
 -- set first id value
 ALTER TABLE Item AUTO_INCREMENT=2001;
@@ -29,7 +30,8 @@ FOR EACH ROW
 	BEGIN
 		SET 
         NEW.ability = if (NEW.ability IS NULL,'None',NEW.ability),
-		NEW.itemdesc = if ( NEW.itemdesc IS NULL , 'None' , NEW.itemdesc);
+		NEW.itemdesc = if ( NEW.itemdesc IS NULL , 'None' , NEW.itemdesc),
+		NEW.effect = if (NEW.effect IS NULL , '[]',NEW.effect);
 	END//
 DELIMITER ;
 

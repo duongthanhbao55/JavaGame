@@ -9,5 +9,5 @@ public class ItemTemplate {
     public int slot;
     public String ability;
     public String description;
-    boolean isEquiped = false;
+    public String filename;
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import database.ItemManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
@@ -93,5 +94,7 @@ public class Init {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		ItemManager.loadItemData();
 	}
 }
