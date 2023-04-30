@@ -46,6 +46,8 @@ public class Playing extends State implements Statemethods {
 	private GameOverOverlay gameOverOverlay;
 	private LevelCompleteOverlay levelCompleteOverlay;
 	private NPCManager npcManager;
+	private ItemManager itemManager;
+	private InventoryManager inventoryManager;
 	private Confirm confirmUI;
 	
 
@@ -120,6 +122,8 @@ public class Playing extends State implements Statemethods {
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
 		confirmUI = new Confirm();
 		Confirm.OpenComfirmUI(player,(short) 0, Talk.getTask(0,0),new String[] {Text.get(0, 0),Text.get(0, 1)});
+		itemManager = new ItemManager(this);
+		inventoryManager = new InventoryManager(this);
 	}
 
 	@Override
@@ -138,8 +142,9 @@ public class Playing extends State implements Statemethods {
 			objectManager.update(currTime, collisionLayer, player);
 			npcManager.update(currTime, collisionLayer, player);
 			player.update(currTime);
-			enemyManager.update(currTime, collisionLayer, player);		
-			//confirmUI.update();
+			enemyManager.update(currTime, collisionLayer, player);
+			itemManager.update();
+			confirmUI.update();
 			CheckCloseToBorder();
 		}
 	}
@@ -196,9 +201,11 @@ public class Playing extends State implements Statemethods {
         levelManager.getCurrLevel().Render(g, xLvlOffset);
         objectManager.render(g, xLvlOffset);
         npcManager.render(g, xLvlOffset);
+        itemManager.render(g, xLvlOffset);
         player.render(g, xLvlOffset);
         enemyManager.render(g, xLvlOffset);
         npcManager.drawDialogue(g);
+        confirmUI.render(g);
         if (paused) {
             pauseOverlay.render(g);
         } else if (gameOver) {
@@ -329,6 +336,7 @@ public class Playing extends State implements Statemethods {
                 case KeyEvent.VK_F:
                     checkNPCContact(player.getHitbox());
                     checkPotionTouched(player.getHitbox());
+                    checkItemContact(player);
                     break;
                 case KeyEvent.VK_ESCAPE:
                     paused = !paused;
@@ -385,7 +393,9 @@ public class Playing extends State implements Statemethods {
     public void checkSpikesTouched(Player player) {
         objectManager.checkSpikesTouched(player);
     }
-
+    public void checkItemContact(Player player) {
+    	itemManager.checkItemContact(player);
+    }
     public EnemyManager getEnemyManager() {
         return enemyManager;
     }
@@ -403,6 +413,12 @@ public class Playing extends State implements Statemethods {
 	}
 	public NPCManager getNpcManager() {
 		return this.npcManager;
+	}
+	public ItemManager getItemManager() {
+		return this.itemManager;
+	}
+	public InventoryManager getInventoryManager() {
+		return this.inventoryManager;
 	}
 	public void setPlayerDying(boolean playerDying) {
 		this.playerDying = playerDying;

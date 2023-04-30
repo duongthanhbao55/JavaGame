@@ -120,6 +120,6 @@ public class Init {
 			e.printStackTrace();
 		}
 		
-		//ItemManager.loadItemData();
+		ItemManager.loadItemData();
 	}
 }

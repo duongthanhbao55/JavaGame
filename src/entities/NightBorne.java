@@ -13,6 +13,7 @@ import Effect.Animation;
 import Load.CacheDataLoader;
 import database.ItemManager;
 import gamestates.Playing;
+import objects.Item;
 import main.Game;
 
 public class NightBorne extends Enemy {
@@ -135,8 +136,9 @@ public class NightBorne extends Enemy {
 				if (NightBorne.isExtermination) {
 						NightBorne.deadCount++;
 				}
-
+				
 				dead = true;
+				playing.getItemManager().add(new Item((int)hitbox.getX(),(int)(hitbox.getY() - 5 *Game.SCALE),0,ItemManager.arrItemTemplate[10]));
 			}
 
 			else {
