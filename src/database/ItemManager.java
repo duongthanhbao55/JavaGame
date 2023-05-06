@@ -44,14 +44,34 @@ public class ItemManager {
 				while (read.next()) {
 					final ItemTemplate itemTemplate = new ItemTemplate();
 
+
+					// Parse effect
+					try {
+						final String[] effect = read.getString("effect").trim().split(",");
+						itemTemplate.atk = Integer.parseInt(effect[0].trim());
+						itemTemplate.hp = Integer.parseInt(effect[1].trim());
+						itemTemplate.def = Integer.parseInt(effect[2].trim());
+						itemTemplate.atk_up = Float.parseFloat(effect[3].trim());
+						itemTemplate.hp_up = Float.parseFloat(effect[4].trim());
+						itemTemplate.def_up = Float.parseFloat(effect[5].trim());
+						itemTemplate.speed_up = Float.parseFloat(effect[6].trim());
+						itemTemplate.dmg_up = Float.parseFloat(effect[7].trim());
+						itemTemplate.dmg_down = Float.parseFloat(effect[8].trim());
+						itemTemplate.heal = Integer.parseInt(effect[9].trim());
+						itemTemplate.mana = Integer.parseInt(effect[10].trim());
+					} catch (SQLException | NumberFormatException e) {
+						System.out.println("Parse Error");
+						throw new RuntimeException(e);
+					}
+
+					// OTHER VARIABLES
+					itemTemplate.id = (byte) read.getInt("itemID");
 					itemTemplate.name = read.getString("name");
-					itemTemplate.atk = read.getInt("atk");
-					itemTemplate.hp = read.getInt("hp");
-					itemTemplate.def = read.getInt("def");
-					itemTemplate.slot = read.getInt("slot");
+					itemTemplate.slot = (byte) read.getInt("slot");
 					itemTemplate.ability = read.getString("ability");
 					itemTemplate.description = read.getString("itemdesc");
 					itemTemplate.filename = read.getString("filename");
+
 
 					ItemManager.arrItemTemplate[i] = itemTemplate;
 
