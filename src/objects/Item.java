@@ -16,18 +16,26 @@ import java.sql.SQLException;
 
 public class Item extends GameObject {
 
-    private String name;
-    private int atk;
-    private int def;
-    private int hp;
-    private int slot;
-    private String ability;
-    private String description;
-    private int quantity = 0;
+    protected String name;
+    protected int atk;
+    protected int def;
+    protected int hp;
+    protected float atk_up;
+    protected float hp_up;
+    protected float def_up;
+    protected float speed_up;
+    protected float dmg_up;
+    protected float dmg_down;
+    protected int heal;
+    protected int mana;
+    protected byte slot;
+    protected String ability;
+    protected String description;
+    protected int quantity = 0;
     public boolean isContact = false;
-    private int maxHoverOffset, hoverDir = 1;
-    private float hoverOffset;
-    private BufferedImage img;
+    protected int maxHoverOffset, hoverDir = 1;
+    protected float hoverOffset;
+    protected BufferedImage img;
 
     public Item(int x, int y, int objType, ItemTemplate itemTemplate) {
         super(x, y, objType);
@@ -127,7 +135,7 @@ public class Item extends GameObject {
     public void update() {
         updateHover();
     }
-    private void updateHover() {
+    protected void updateHover() {
         hoverOffset += (0.075f * Game.SCALE * hoverDir);
         if(hoverOffset >= maxHoverOffset) {
             hoverDir = -1;
@@ -136,6 +144,7 @@ public class Item extends GameObject {
         }
         hitbox.y = y + hoverOffset;
     }
+
 }
 
 

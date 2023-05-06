@@ -76,7 +76,8 @@ public class Player extends Entity {
 	private float lostHealthWidth = healthBarWidth;
 
 	private int healthWidth = healthBarWidth;
-	private int damage = DEFAULT_DAMAGE;
+	private int ATK = DEFAULT_DAMAGE;
+	private int damage = ATK;
 
 	// Attack Box
 
@@ -428,6 +429,15 @@ public class Player extends Entity {
 	public void setAttackBoxSize(int width, int height) {
 		this.attackBox.width = width;
 		this.attackBox.height = height;
+	}
+
+	public int getATK() {
+		return ATK;
+	}
+
+	public void setATK(int ATK) {
+		this.ATK = ATK;
+		this.damage = this.ATK;
 	}
 
 	public int getDamage() {
