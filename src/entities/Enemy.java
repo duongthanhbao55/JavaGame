@@ -14,6 +14,7 @@ import static untilz.Constants.GRAVITY;
 
 import main.Game;
 import objects.Item;
+import untilz.HelpMethods;
 
 public abstract class Enemy extends Entity {
 	// VARIBALE
@@ -53,7 +54,7 @@ public abstract class Enemy extends Entity {
 					NightBorne.setDeadCount(NightBorne.getDeadCount() + 1);
 				}
 				playing.getItemManager().add(new Item((int) hitbox.getX(), (int) (hitbox.getY() - 5 * Game.SCALE), 0,
-						ItemManager.arrItemTemplate[10]));
+						ItemManager.arrItemTemplate[HelpMethods.nextInt(70)]));
 				active = false;
 				break;
 			}
