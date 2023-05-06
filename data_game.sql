@@ -85,3 +85,19 @@ CREATE TABLE `mobtemplate` (
 
 INSERT INTO `mobtemplate` (`mobTemplateId`, `type`, `name`, `hp`, `isBoss`, `rangeMove`, `speed`, `isAttack`) VALUES
 (0, 0, 'NightBorne', 15, 0, 0, 1, 0);
+
+--
+-- Cấu trúc bảng cho bảng `npctemplate`
+--
+
+CREATE TABLE `npctemplate` (
+  `id` tinyint(4) NOT NULL,
+  `name` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
+  `menu` varchar(2000) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `npctemplate` (`id`, `name`, `menu`) VALUES
+(0, 'NPC_Wizard1', '[["Nói chuyện"]]');
+--
+-- Đang đổ dữ liệu cho bảng `npctemplate`
+--
