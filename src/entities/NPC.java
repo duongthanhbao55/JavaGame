@@ -30,7 +30,9 @@ public abstract class NPC extends Entity{
 	protected float contactDistance = Game.TILES_SIZE;
 	protected boolean active = true;
 	protected boolean haveTask = false;
+	protected boolean finishTask = false;
 	protected int npcId;
+	protected static int currNpcId;
 	
 	public NPC(float x, float y, int width, int height, int enemyType) {
 		super(x, y, width, height);
@@ -88,11 +90,23 @@ public void update(int[][] lvlData,Animation anim) {
 	public void setHaveTask(boolean haveTask,Player player) {
 		this.haveTask = haveTask;
 	}
+	public void setFinishTask(boolean finishTask) {
+		this.finishTask = finishTask;
+	}
+	public boolean getFinishTask() {
+		return this.finishTask;
+	}
 	public boolean getHaveTask() {
 		return this.haveTask;
 	}
 	public boolean isActive() {
 		return active;
+	}
+	public static void setCurrNpcId(int currNpcId) {
+		NPC.currNpcId = currNpcId;
+	}
+	public static int getCurrNpcId() {
+		return NPC.currNpcId; 
 	}
 	public void resetNPC() {
 		hitbox.x = x;

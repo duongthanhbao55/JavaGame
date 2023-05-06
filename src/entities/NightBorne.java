@@ -28,7 +28,7 @@ public class NightBorne extends Enemy {
 	private static int deadCount = 0;
 
 	public NightBorne(float x, float y, Playing playing) {
-		super(x, y, NIGHTBORNE_SIZE, NIGHTBORNE_SIZE, NIGHTBORNE,playing);
+		super(x, y, NIGHTBORNE_SIZE, NIGHTBORNE_SIZE, NIGHTBORNE, playing);
 		enemyId = 0;
 		initHitbox(20, 30);
 		initAttackBox();
@@ -77,7 +77,7 @@ public class NightBorne extends Enemy {
 
 			}
 		}
-		//System.out.println(NightBorne.isExtermination);
+		// System.out.println(NightBorne.isExtermination);
 //		if(NightBorne.isExtermination) {
 //			deadCount();
 //		}
@@ -133,15 +133,8 @@ public class NightBorne extends Enemy {
 			}
 			if (currHealth <= 0) {
 				newState(DEAD, NightborneAnimList.get(this.state));
-				if (NightBorne.isExtermination) {
-						NightBorne.deadCount++;
-				}
-				
 				dead = true;
-				playing.getItemManager().add(new Item((int)hitbox.getX(),(int)(hitbox.getY() - 5 *Game.SCALE),0,ItemManager.arrItemTemplate[10]));
-			}
-
-			else {
+			} else {
 				newState(HURT, NightborneAnimList.get(this.state));
 			}
 		}
@@ -178,7 +171,7 @@ public class NightBorne extends Enemy {
 	}
 
 	public static void setTaskExtermination(boolean isExtermination) {
-		if(!isExtermination) {
+		if (!isExtermination) {
 			NightBorne.deadCount = 0;
 		}
 		NightBorne.isExtermination = isExtermination;
@@ -186,15 +179,21 @@ public class NightBorne extends Enemy {
 
 	public void deadCount() {
 		if (NightBorne.isExtermination) {
-			if(dead) {
+			if (dead) {
 				NightBorne.deadCount++;
-			}		
+			}
 		}
 	}
+
 	public static boolean getExtermination() {
 		return NightBorne.isExtermination;
 	}
+
 	public static int getDeadCount() {
 		return NightBorne.deadCount;
+	}
+
+	public static void setDeadCount(int deadCount) {
+		NightBorne.deadCount = deadCount;
 	}
 }

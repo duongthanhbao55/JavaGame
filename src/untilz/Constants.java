@@ -99,8 +99,8 @@ public class Constants {
 	public static class NPC_Wizard1{
 		public static final int WIZARD1 = 0;
 		
-		public static final int IDLE = 0;
-		public static final int RUNNING = 1;
+		public static final int CONVERSATION = 4;
+		public static final int WARNING = 5;
 		
 		public static final int WIZARD1_SIZE_DEFAULT = 64;
 		public static final int WIZARD1_SIZE = (int)(WIZARD1_SIZE_DEFAULT * Game.SCALE);
@@ -175,6 +175,11 @@ public class Constants {
 			public static final int SLIDER_WIDTH = (int)(SLIDER_DEFAULT_WIDTH * Game.SCALE);
 		
 		}
+		public static class ConfirmButton{
+			public static final int CONFIRM_BUTTON_SIZE_DEFAULT = 14;
+			public static final int CONFIRM_BUTTON_SIZE = (int)(CONFIRM_BUTTON_SIZE_DEFAULT * Game.SCALE);
+			
+		}
 		public static class TextBox{
 			public static final int TEXTBOX_WIDTH_DEFAULT = 450;
 			public static final int TEXTBOX_HEIGHT_DEFAULT = 150;
@@ -206,6 +211,25 @@ public class Constants {
 			
 			public static final int MESSAGE_WIDTH = (int)(MESSAGE_WIDTH_DEFAULT * Game.SCALE);
 			public static final int MESSAGE_HEIGHT = (int)(MESSAGE_HEIGHT_DEFAULT * Game.SCALE);
+		}
+		public static class Inventory{
+			public static final int INVENTORY_WIDTH_DEFAULT = 192;
+			public static final int INVENTORY_HEIGHT_DEFAULT = 346;
+			public static final int GRID_WIDTH_DEFAULT = 144;
+			public static final int GRID_HEIGHT_DEFAULT = 216;
+			
+			
+			public static final int INVENTORY_WIDTH = (int)(INVENTORY_WIDTH_DEFAULT * Game.SCALE);
+			public static final int INVENTORY_HEIGHT =(int)(INVENTORY_HEIGHT_DEFAULT * Game.SCALE);
+			public static final int GRID_WIDTH = (int)(GRID_WIDTH_DEFAULT * Game.SCALE);
+			public static final int GRID_HEIGHT = (int)(GRID_HEIGHT_DEFAULT * Game.SCALE);
+		}
+		public static class EquipmentUI {
+			public static final int EQUIPMENT_UI_WIDTH_DEFAULT = 142;
+			public static final int EQUIPMENT_UI_HEIGHT_DEFAULT = 345;
+			
+			public static final int EQUIPMENT_UI_WIDTH = (int)(EQUIPMENT_UI_WIDTH_DEFAULT * Game.SCALE);
+			public static final int EQUIPMENT_UI_HEIGHT = (int)(EQUIPMENT_UI_HEIGHT_DEFAULT * Game.SCALE);
 		}
 	}
 	

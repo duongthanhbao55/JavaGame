@@ -24,8 +24,10 @@ public class NPC_Wizard1 extends NPC {
 	private MessageIcon messageIcon;
 	private TextBox dialogueBox;
 	private boolean isContact = false;
+	private boolean isPlayerDoingTask = false;;
 	private int index = -1;
 	private String[] conversation;
+	private String warning;
 	private int Wizard1Id;
 
 	public NPC_Wizard1(float x, float y, int enemyType) {
@@ -86,7 +88,6 @@ public class NPC_Wizard1 extends NPC {
 			g.drawString(line, x, y);
 			y += 20;
 		}
-
 	}
 
 	private void updateBehavior(int[][] lvlData, Player player) {
@@ -115,6 +116,16 @@ public class NPC_Wizard1 extends NPC {
 		this.isContact = isContact;
 	}
 
+	public void setIsPlayerDoingTask(boolean isPlayerDoingTask) {
+		if (isPlayerDoingTask) {
+			conversation = new String[1];
+			conversation[0] = "Vui lòng hoàn thành nhiệm vụ để nhận vật phẩm";
+		} else {
+			loadConversation();
+		}
+		this.isPlayerDoingTask = isPlayerDoingTask;
+	}
+
 	public int getIndex() {
 		return index;
 	}
@@ -122,12 +133,15 @@ public class NPC_Wizard1 extends NPC {
 	public void setIndex(int index) {
 		this.index = index;
 	}
+
 	public int getNpcId() {
 		return this.npcId;
 	}
+
 	public String[] getConversation() {
 		return this.conversation;
 	}
+
 	public void reset() {
 		super.resetNPC();
 		isContact = false;

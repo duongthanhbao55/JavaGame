@@ -5,5 +5,5 @@ public class TaskTemplate {
     public String name;
     public String detail;
     public String[] subNames;
-    public short[] counts;    
+    public short[] counts;
 }
