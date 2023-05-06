@@ -43,7 +43,7 @@ public class Talk {
                 "Kill 2 NightBorne"//1
         };
         TEXTFINISH = new String[]{
-                "Good job",// 0
+                "Mission success! here is your prize",// 0
 
         };
         TEXTGETTASK = new String[]{

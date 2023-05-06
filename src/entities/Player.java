@@ -45,8 +45,6 @@ public class Player extends Entity {
 	private boolean left, right, jump;
 	private boolean interact = false;
 
-	private boolean collect = false;
-
 	private int[][] lvlData;
 	private float xDrawOffset = 2 * Game.SCALE;
 	private float yDrawOffset = 1 * Game.SCALE;
@@ -62,6 +60,7 @@ public class Player extends Entity {
 	protected byte ctaskIndex = -1;
 	protected short ctaskCount = 0;
 	protected boolean isDoTask = false;
+	protected boolean isDoneTask = false;
 
 	// StatusBarUI
 	private BufferedImage statusBarImg;
@@ -175,16 +174,8 @@ public class Player extends Entity {
 		// updateHitbox();
 	}
 
-	private void checkPotionTouched() {
-		playing.checkPotionTouched(hitbox);
-
-	}
 	private void checkSpikesTouched() {
 		playing.checkSpikesTouched(this);
-	}
-
-	private void checkNPCContact() {
-		playing.checkNPCContact(hitbox);
 	}
 
 	private void updateAniamtion() {
@@ -277,7 +268,6 @@ public class Player extends Entity {
 				if (!IsEntityOnFloor(hitbox, lvlData)) {
 					inAir = true;
 				}
-
 			}
 
 			if (inAir) {
@@ -373,10 +363,14 @@ public class Player extends Entity {
 		animList.get(this.state).draw((int) (hitbox.x - xDrawOffset) - xLvlOffset + flipX,
 				(int) (hitbox.y - yDrawOffset), width * flipW, height, g);
 		drawHitbox(g, xLvlOffset);
-		g.setColor(new Color(255, 255, 255));
+		g.setColor(new Color(255, 255, nextInt(255)));
 		g.setFont(new Font("Arial", Font.PLAIN, 20));
 		if(isDoTask) {
-			g.drawString(descriptionTask, 20, 14);
+			g.drawString(descriptionTask + "  " + NightBorne.getDeadCount() + "/" + Game.taskTemplates[ctaskId].counts[ctaskIndex + 1], (int)(10*Game.SCALE), (int)(140* Game.SCALE));
+		}
+		if(isDoneTask) {
+			g.setColor(new Color(255, nextInt(255), 255));
+			g.drawString(descriptionTask, (int)(10*Game.SCALE), (int)(140* Game.SCALE));
 		}
 		// drawAttackBox(g, xLvlOffset);
 		renderUI(g);
@@ -427,7 +421,6 @@ public class Player extends Entity {
 	public void setJump(boolean jump) {
 		this.jump = jump;
 	}
-	public void setCollect(boolean collect){this.collect = collect;}
 	public void setAttack1(boolean isAttacking) {
 		this.isAttacking = isAttacking;
 	}
@@ -444,7 +437,9 @@ public class Player extends Entity {
 	public void setDamage(int damage) {
 		this.damage = damage;
 	}
-
+	public void updateExp(long exp) {
+		this.EXP += exp;
+	}
 	public boolean isInteract() {
 		return interact;
 	}
@@ -478,7 +473,12 @@ public class Player extends Entity {
 	public short getCtaskCount() {
 		return ctaskCount;
 	}
-
+	public void setDoneTask(boolean isDoneTask) {
+		this.isDoneTask = isDoneTask;
+	}
+	public boolean isDoneTask() {
+		return isDoneTask;
+	}
 	public String getPlayerName() {
 		return this.Name;
 	}
@@ -496,6 +496,9 @@ public class Player extends Entity {
 	}
 	public void setDoTask(boolean isDoTask) {
 		this.isDoTask = isDoTask;
+	}
+	public boolean isDoTask() {
+		return this.isDoTask;
 	}
 	public void setDescriptionTask(String descriptionTask) {
 		this.descriptionTask = descriptionTask;

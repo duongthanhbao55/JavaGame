@@ -48,6 +48,9 @@ public class LoadSave {
 	public static final String MESSAGE_EXCLAMATION = "Message-Exclamation.png";
 	public static final String MESSAGE_QUESTION = "Message-Question.png";
 	public static final String DEFAULT_BUTTON = "DefaultButton.png";
+	public static final String CONFIRM_BUTTON = "ConfirmButton.png";
+	public static final String INVENTORY_BACKGROUND = "inventory.png";
+	public static final String EQUIPMENT_BACKGROUND = "EquipmentUI.png";
 	
 	
 	public static BufferedImage GetSpriteAtlas(String fileName) {

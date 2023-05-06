@@ -120,6 +120,9 @@ public class Item extends GameObject {
     public void render(Graphics g, int xLvlOffset) {
         g.drawImage(img, (int) hitbox.getX() - xLvlOffset, (int) hitbox.getY(), (int) (16 * Game.SCALE) , (int) (16 * Game.SCALE), null);
     }
+    public void renderIcon(Graphics g,int x, int y, float scale) {
+    	g.drawImage(img, x, y, (int) (16 * Game.SCALE * scale) , (int) (16 * Game.SCALE * scale), null);
+    }
 
     public void update() {
         updateHover();
