@@ -23,6 +23,7 @@ import entities.NPC;
 import entities.NPC_Wizard1;
 import entities.Player;
 import main.Game;
+import objects.Equipment;
 import objects.InventoryManager;
 import objects.ObjectManager;
 import ui.Confirm;
@@ -48,6 +49,7 @@ public class Playing extends State implements Statemethods {
 	private NPCManager npcManager;
 	private ItemManager itemManager;
 	private InventoryManager inventoryManager;
+	private Equipment equipment;
 	private Confirm confirmUI;
 
 	// TASK
@@ -122,6 +124,7 @@ public class Playing extends State implements Statemethods {
 		// {Text.get(0, 0),Text.get(0, 1)});
 		itemManager = new ItemManager(this);
 		inventoryManager = new InventoryManager(this);
+		equipment = new Equipment(this);
 	}
 
 	@Override
@@ -145,7 +148,8 @@ public class Playing extends State implements Statemethods {
 			if (Confirm.isShow())
 				confirmUI.update();
 			if(inventoryManager.isOpen()) {
-				inventoryManager.update();;
+				inventoryManager.update();
+				equipment.update();
 			}
 			CheckCloseToBorder();
 		}
@@ -208,8 +212,8 @@ public class Playing extends State implements Statemethods {
 		enemyManager.render(g, xLvlOffset);
 		npcManager.drawDialogue(g);
 		if(inventoryManager.isOpen()) {
-			
 			inventoryManager.render(g);
+			equipment.render(g);
 		}
 		if (Confirm.isShow())
 			confirmUI.render(g,xLvlOffset);
@@ -291,6 +295,9 @@ public class Playing extends State implements Statemethods {
 				levelCompleteOverlay.MousePressed(e);
 			else if (Confirm.isShow())
 				confirmUI.MousePressed(e);
+			else if(inventoryManager.isOpen())
+				inventoryManager.mousePressed(e);
+			
 		} else {
 			gameOverOverlay.MousePressed(e);
 		}
@@ -306,6 +313,8 @@ public class Playing extends State implements Statemethods {
 				levelCompleteOverlay.MouseRelease(e);
 			else if (Confirm.isShow())
 				confirmUI.MouseRelease(e);
+			else if(inventoryManager.isOpen())
+				inventoryManager.mouseReleased(e);
 		} else {
 			gameOverOverlay.MouseRelease(e);
 		}
@@ -321,6 +330,8 @@ public class Playing extends State implements Statemethods {
 				levelCompleteOverlay.MouseMoved(e);
 			else if (Confirm.isShow())
 				confirmUI.MouseMoved(e);
+			else if(inventoryManager.isOpen())
+				inventoryManager.mouseMoved(e);
 		} else {
 			gameOverOverlay.MouseMoved(e);
 		}
