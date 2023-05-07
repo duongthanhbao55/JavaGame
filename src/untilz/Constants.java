@@ -260,4 +260,47 @@ public class Constants {
 		public static final int HIT_EFFECT_HEIGHT = (int)(HIT_EFFECT_HEIGHT_DEFAULT * Game.SCALE);
 		public static final int HIT_EFFECT_WIDTH = (int)(HIT_EFFECT_WIDTH_DEFAULT * Game.SCALE);
 	}
+	public static class EquipmentConstants{
+		public static final int HELMET = 0;
+		public static final int ARMOR = 1;
+		public static final int BELT = 2;
+		public static final int BOOTS = 3;
+		public static final int SHIELD = 4;
+		public static final int NACKLACE = 5;
+		public static final int SWORD = 6;
+		public static final int RING1 = 7;
+		public static final int RING2 = 8;
+		public static final int RING3 = 9;
+		 
+		public static final float HELMET_POSX = 51 * Game.SCALE;
+		public static final float HELMET_POSY = 13 * Game.SCALE;
+		
+		public static final float ARMOR_POSX = 51 * Game.SCALE;
+		public static final float ARMOR_POSY = 61 * Game.SCALE;
+		
+		public static final float BELT_POSX = 51 * Game.SCALE;
+		public static final float BELT_POSY = 106 * Game.SCALE;
+		
+		public static final float BOOTS_POSX = 51 * Game.SCALE;
+		public static final float BOOTS_POSY = 151* Game.SCALE;
+		
+		public static final float SHIELD_POSX = 95 * Game.SCALE;
+		public static final float SHIELD_POSY = 82 * Game.SCALE;
+		
+		public static final float NACKLACE_POSX = 95 * Game.SCALE;
+		public static final float NACKLACE_POSY = 37 * Game.SCALE;
+		
+		public static final float SWORD_POSX = 7 * Game.SCALE;
+		public static final float SWORD_POSY = 82 * Game.SCALE;
+		
+		public static final float RING1_POSX = 15 * Game.SCALE;
+		public static final float RING1_POSY = 213 * Game.SCALE;
+		
+		public static final float RING2_POSX = 51 * Game.SCALE;
+		public static final float RING2_POSY = 213 * Game.SCALE;
+		
+		public static final float RING3_POSX =  87 * Game.SCALE;
+		public static final float RING3_POSY = 214 * Game.SCALE;
+		
+	}
 }

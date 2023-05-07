@@ -99,7 +99,9 @@ public class Item extends GameObject {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
+    public int getSlot() {
+    	return slot;
+    }
     private BufferedImage loadImg(String fileName) {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream("/assets/" + fileName);
