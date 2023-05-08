@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import database.MySQL;
 import main.Game;
 import ui.LoginButton;
 import ui.TextBox;
@@ -32,6 +33,16 @@ public class SetPlayerName extends State implements Statemethods{
 		super(game);
 		loadBackGround();
 	}
+	
+	public static String limitLengthNickname(String nickname) {
+		if(nickname.length() > 12) {
+			String newNickname = nickname.substring(0, 12);
+			return newNickname;
+		}
+		String oldNickname = nickname;
+		return oldNickname;
+	}
+	
 	private void loadBackGround() {
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.EMPTY_BACKGROUND);
 		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE));
@@ -98,8 +109,10 @@ public class SetPlayerName extends State implements Statemethods{
 			if (isIn(e, lg)) {
 				if (lg.isMousePressed()) {
 					lg.applyGamestate();// apply only when Pressed before and Release after if pressed in button but
-					if (lg.getState() == Gamestate.SETNAME) {				
-						game.getMenu().setPlayerName(playerName.getText());
+					if (lg.getState() == Gamestate.SETNAME) {
+						String nickname = limitLengthNickname(playerName.getText());
+						game.getMenu().setPlayerName(nickname);
+						MySQL.setNickname(game.getLogin().getUser().getUsername(), nickname);
 						Gamestate.state = Gamestate.MENU;
 						resetTextField();
 					} else if (lg.getState() == Gamestate.REGISTER) {

@@ -10,41 +10,90 @@ import java.sql.SQLException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.ParseException;
 
 public class User {
-	private int userID;
 	protected Player player;
+	private String username;
+	private String password;
+	private String nickname;
+	
+	// GETTER & SETTER
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
 
 	public User() {
 		this.player = null;
 	}
 
+//	public static User Login(final String uName, final String pass) {
+//		User user = new User();
+//
+//		try {
+//			final MySQL mySQL = new MySQL(0);
+//			try {
+//
+//				ResultSet red = mySQL.stat.executeQuery("SELECT * FROM `accounts` WHERE (`username` LIKE '" + strSQL(uName)
+//						+ "' AND `password` LIKE '" + strSQL(pass) + "') LIMIT 1;");
+//				if (red.first()) {
+//					final String username = red.getString("username");
+//					final JSONArray jrs = (JSONArray) JSONValue.parseWithException(red.getString("playerID"));
+//
+//					user.username = username;
+//					user.player = Player.getPlayer(user, Integer.parseInt(jrs.get(0).toString()));
+//					return user;
+//				}
+//			} finally {
+//				mySQL.close();
+//			}
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		return null;
+//	}
 	public static User Login(final String uName, final String pass) {
-		User user = null;
-
-		try {
-			final MySQL mySQL = new MySQL(0);
+		User user = new User();
+		if(MySQL.loginSuccessfully(uName, pass)) {
+			user.username = uName;
+			JSONArray jrs;
 			try {
-
-				ResultSet red = mySQL.stat.executeQuery("SELECT * FROM `user` WHERE (`user` LIKE '" + strSQL(uName)
-						+ "' AND `password` LIKE '" + strSQL(pass) + "') LIMIT 1;");
-				if (red.first()) {
-					final int username = red.getInt("userid");
-					final JSONArray jrs = (JSONArray) JSONValue.parseWithException(red.getString("player"));
-					user = new User();
-					user.userID = username;
-					user.player = Player.getPlayer(user, Integer.parseInt(jrs.get(0).toString()));
-					return user;
-				}
-			} finally {
-				mySQL.close();
+				jrs = (JSONArray) JSONValue.parseWithException(MySQL.getPlayerID(uName));
+				user.player = Player.getPlayer(user, Integer.parseInt(jrs.get(0).toString()));
+				return user;
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-
-		return user;
+		return null;
 	}
 
 	public static boolean Register(String uName, String password) {
