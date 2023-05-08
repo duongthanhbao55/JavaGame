@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import database.MySQL;
 import database.User;
 import entities.Player;
 import main.Game;
@@ -42,6 +43,10 @@ public class Login extends State implements Statemethods {
 		super(game);
 		loadBackGround();
 	}
+	
+	// GETTER & SETTER
+	
+	
 
 	private void loadBackGround() {
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.LOGIN_BACKGROUND);
@@ -55,6 +60,10 @@ public class Login extends State implements Statemethods {
 		menuY = (int) (45 * Game.SCALE);
 		loadButton();
 		loadContainer();
+	}
+
+	public User getUser() {
+		return user;
 	}
 
 	public void loadButton() {
@@ -127,15 +136,28 @@ public class Login extends State implements Statemethods {
 					lg.applyGamestate();// apply only when Pressed before and Release after if pressed in button but
 					if (lg.getState() == Gamestate.LOGIN) {
 						user = User.Login(userID.getText(), pw.getText());
+						if(user == null) {
+							continue; // Username or password INCORRECT
+						}
 						player = user.getPlayer();				
 						game.getPlaying().initPlayer(this.player);
-						if (player.getPlayerName() == "") {
+//						if (player.getPlayerName() == "") {
+//							game.getSetNamePlayer().addComponent();
+//							Gamestate.state = Gamestate.SETNAME;
+//							resetTextField();
+//						} else {
+//							Gamestate.state = Gamestate.MENU;
+//							game.getMenu().setPlayerName(player.getPlayerName());
+//							resetTextField();
+//						}
+						if(MySQL.haveNickname(user.getUsername()) == null) {
+							resetTextField();
 							game.getSetNamePlayer().addComponent();
 							Gamestate.state = Gamestate.SETNAME;
-							resetTextField();
-						} else {
+						}
+						else {
+							game.getMenu().setPlayerName(MySQL.haveNickname(user.getUsername()));
 							Gamestate.state = Gamestate.MENU;
-							game.getMenu().setPlayerName(player.getPlayerName());
 							resetTextField();
 						}
 					} else if (lg.getState() == Gamestate.REGISTER) {
@@ -243,4 +265,7 @@ public class Login extends State implements Statemethods {
 		game.getGamePanel().add(userID);
 		game.getGamePanel().add(pw);
 	}
+	
+	
+	
 }
