@@ -51,6 +51,7 @@ public class LoadSave {
 	public static final String CONFIRM_BUTTON = "ConfirmButton.png";
 	public static final String INVENTORY_BACKGROUND = "inventory.png";
 	public static final String EQUIPMENT_BACKGROUND = "EquipmentUI.png";
+	public static final String SELECTOR = "Spritesheet_UI_Flat_Select_01.png";
 	
 	
 	public static BufferedImage GetSpriteAtlas(String fileName) {

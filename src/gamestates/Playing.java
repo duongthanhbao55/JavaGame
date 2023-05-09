@@ -30,6 +30,7 @@ import ui.Confirm;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
 import ui.PauseOverlay;
+import ui.Selector;
 import untilz.LoadSave;
 import untilz.Talk;
 import untilz.Text;
@@ -125,6 +126,9 @@ public class Playing extends State implements Statemethods {
 		itemManager = new ItemManager(this);
 		inventoryManager = new InventoryManager(this);
 		equipment = new Equipment(this);
+		Selector.getInstance().setBounds(inventoryManager.getSlots()[0].getBounds());
+		Selector.getInstance().setSlotEquipment(equipment.getSlots());
+		Selector.getInstance().setSlotInventory(inventoryManager.getSlots());
 	}
 
 	@Override
@@ -145,11 +149,13 @@ public class Playing extends State implements Statemethods {
 			player.update(currTime);
 			enemyManager.update(currTime, collisionLayer, player);
 			itemManager.update();
+			
 			if (Confirm.isShow())
 				confirmUI.update();
 			if(inventoryManager.isOpen()) {
 				inventoryManager.update();
 				equipment.update();
+				Selector.getInstance().update(currTime);
 			}
 			CheckCloseToBorder();
 		}
@@ -214,6 +220,7 @@ public class Playing extends State implements Statemethods {
 		if(inventoryManager.isOpen()) {
 			inventoryManager.render(g);
 			equipment.render(g);
+			Selector.getInstance().render(g);
 		}
 		if (Confirm.isShow())
 			confirmUI.render(g,xLvlOffset);
@@ -342,7 +349,9 @@ public class Playing extends State implements Statemethods {
 		if (gameOver)
 			gameOverOverlay.keyPressed(e);
 		else
-
+			if(inventoryManager.isOpen()) {
+				Selector.getInstance().keyPressed(e);
+			}
 			switch (e.getKeyCode()) {
 
 			case KeyEvent.VK_A:
