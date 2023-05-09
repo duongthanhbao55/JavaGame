@@ -363,7 +363,7 @@ public class Player extends Entity {
 	public void render(Graphics g, int xLvlOffset) {
 		animList.get(this.state).draw((int) (hitbox.x - xDrawOffset) - xLvlOffset + flipX,
 				(int) (hitbox.y - yDrawOffset), width * flipW, height, g);
-		drawHitbox(g, xLvlOffset);
+		//drawHitbox(g, xLvlOffset);
 		g.setColor(new Color(255, 255, nextInt(255)));
 		g.setFont(new Font("Arial", Font.PLAIN, 20));
 		if(isDoTask) {

@@ -18,6 +18,7 @@ public class Selector {
 	private boolean isInEquipment = false;
 	private Slot[] slotInventory;
 	private Slot[] slotEquipment;
+	private ItemOption itemOption;
 
 	public Selector() {
 		loadAnim();
@@ -51,57 +52,56 @@ public class Selector {
 	public void render(Graphics g) {
 		selector.drawNormal((int) bounds.getX(), (int) bounds.getY(), (int) bounds.getWidth(), (int) bounds.getHeight(),
 				g);
+		if (isInInventory && !slotInventory[index].isEmpty())
+				slotInventory[index].renderItemOption(g);
+		if (isInEquipment && !slotEquipment[index].isEmpty()) {
+				slotEquipment[index].renderItemOption(g);
+		}
 	}
 
 	public void keyPressed(KeyEvent e) {
+		if (isInInventory) {
+			slotInventory[index].keyPressed(e);
 
+		} else if (isInEquipment) {
+			slotEquipment[index].keyPressed(e);
+		}
 		switch (e.getKeyCode()) {
+
 		case KeyEvent.VK_UP:
-			if (isInInventory) {
-				if(slotInventory[index].isSelected()) {
-					slotInventory[index].setSelect(false);
-				}
+			if (isInInventory && !slotInventory[index].isSelected()) {
 				index -= 4;
 				if (index < 0) {
 					index = index + 24;
 				}
 				bounds = slotInventory[index].getBounds();
-			} else if (isInEquipment) {
-				if(slotEquipment[index].isSelected()) {
-					slotEquipment[index].setSelect(false);
-				}
-				if(index == 0) {
+			} else if (isInEquipment && !slotInventory[index].isSelected()) {
+				if (index == 0) {
 					index = 1;
-				}else if(index == 2) {
+				} else if (index == 2) {
 					index = 6;
-				}else if(index == 7) {
+				} else if (index == 7) {
 					index = 9;
-				}else {
+				} else {
 					index--;
 				}
 				bounds = slotEquipment[index].getBounds();
 			}
 			break;
 		case KeyEvent.VK_DOWN:
-			if (isInInventory) {
-				if(slotInventory[index].isSelected()) {
-					slotInventory[index].setSelect(false);
-				}
+			if (isInInventory && !slotInventory[index].isSelected()) {
 				index += 4;
 				if (index / 4 >= 6) {
 					index = index % 6;
 				}
 				bounds = slotInventory[index].getBounds();
-			} else if (isInEquipment) {
-				if(slotEquipment[index].isSelected()) {
-					slotEquipment[index].setSelect(false);
-				}
-				index++;	
-				if(index == 2) {
+			} else if (isInEquipment && !slotInventory[index].isSelected()) {
+				index++;
+				if (index == 2) {
 					index = 0;
-				}else if(index == 7) {
+				} else if (index == 7) {
 					index = 2;
-				}else if(index == 10) {
+				} else if (index == 10) {
 					index = 7;
 				}
 				bounds = slotEquipment[index].getBounds();
@@ -109,10 +109,7 @@ public class Selector {
 
 			break;
 		case KeyEvent.VK_LEFT:
-			if (isInInventory) {
-				if(slotInventory[index].isSelected()) {
-					slotInventory[index].setSelect(false);
-				}
+			if (isInInventory && !slotInventory[index].isSelected()) {
 				index--;
 				if (index == -1) {
 					index = 3;
@@ -120,32 +117,28 @@ public class Selector {
 					index = index + 4;
 				}
 				bounds = slotInventory[index].getBounds();
-			} else if (isInEquipment) {
-				if(slotEquipment[index].isSelected()) {
-					slotEquipment[index].setSelect(false);
-				}
-				if(index == 0) {
+			} else if (isInEquipment && !slotInventory[index].isSelected()) {
+				if (index == 0) {
 					index = 8;
-				}else if(index == 1) {
+				} else if (index == 1) {
 					index = 9;
-				}else if(index == 6) {
+				} else if (index == 6) {
 					index = 1;
-				}else if(index == 9) {
+				} else if (index == 9) {
 					index = 6;
-				}else if(index == 8) {
+				} else if (index == 8) {
 					index = 3;
-				}else if(index == 7	) {
+				} else if (index == 7) {
 					index = 2;
-				}
-				else if(index > 1 && index < 6) {
+				} else if (index > 1 && index < 6) {
 					index = 0;
 				}
 				bounds = slotEquipment[index].getBounds();
 			}
 			break;
 		case KeyEvent.VK_RIGHT:
-			if (isInInventory) {
-				if(slotInventory[index].isSelected()) {
+			if (isInInventory && !slotInventory[index].isSelected()) {
+				if (slotInventory[index].isSelected()) {
 					slotInventory[index].setSelect(false);
 				}
 				index++;
@@ -153,44 +146,44 @@ public class Selector {
 					index = index - 4;
 				}
 				bounds = slotInventory[index].getBounds();
-			} else if (isInEquipment) {
-				if(slotEquipment[index].isSelected()) {
+			} else if (isInEquipment && !slotInventory[index].isSelected()) {
+				if (slotEquipment[index].isSelected()) {
 					slotEquipment[index].setSelect(false);
 				}
-				if(index == 0 || index == 6) {
+				if (index == 0 || index == 6) {
 					index += 3;
-				}else if(index == 1) {
+				} else if (index == 1) {
 					index += 5;
-				}else if(index == 9){
+				} else if (index == 9) {
 					index = 1;
-				}else if(index == 3) {
+				} else if (index == 3) {
 					index = 8;
-				}else if(index == 7 || index == 8) {
+				} else if (index == 7 || index == 8) {
 					index = 0;
-				}else if(index == 2) {
+				} else if (index == 2) {
 					index = 7;
-				}else if(index == 5 || index == 4) {
+				} else if (index == 5 || index == 4) {
 					index = 8;
 				}
 				bounds = slotEquipment[index].getBounds();
 			}
 			break;
 		case KeyEvent.VK_ENTER:
-			if(isInInventory) {
+			if (isInInventory) {
 				slotInventory[index].setSelect(!slotInventory[index].isSelected());
-			}else if(isInEquipment) {
+			} else if (isInEquipment) {
 				slotEquipment[index].setSelect(!slotEquipment[index].isSelected());
 			}
 			break;
 		case KeyEvent.VK_BACK_QUOTE:
 			if (isInInventory) {
-				if(slotInventory[index].isSelected()) {
+				if (slotInventory[index].isSelected()) {
 					slotInventory[index].setSelect(false);
 				}
 				index = 0;
 				bounds = slotEquipment[index].getBounds();
 			} else if (isInEquipment) {
-				if(slotEquipment[index].isSelected()) {
+				if (slotEquipment[index].isSelected()) {
 					slotEquipment[index].setSelect(false);
 				}
 				index = 0;
@@ -235,5 +228,9 @@ public class Selector {
 
 	public void setSlotEquipment(Slot[] slotEquipment) {
 		this.slotEquipment = slotEquipment;
+	}
+
+	public void setItemOption(ItemOption itemOption) {
+		this.itemOption = itemOption;
 	}
 }

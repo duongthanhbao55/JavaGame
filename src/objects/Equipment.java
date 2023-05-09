@@ -76,6 +76,7 @@ public class Equipment {
 		for(Slot s : Slots) {
 			s.render(g);
 		}
+		
 	}
 	public void mousePressed(MouseEvent e) {
 		for (Slot s : Slots)

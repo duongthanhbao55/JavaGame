@@ -34,7 +34,8 @@ public class LoadSave {
 	public static final String BG_TREES = "trees.png";
 	public static final String STATUS_BAR = "health_power_bar.png";
 	public static final String COMPLETED_IMG = "completed_sprite.png";
-	public static final String BACKGROUND_SCENE = "PIXEL SCENERY_BACKGROUNDS MASTERPOST.gif";
+	public static final String BACKGROUND_SCENE1 = "JgaLUs.gif";
+	public static final String BACKGROUND_SCENE2 = "uCTkqD.gif";
 	public static final String DEATH_SCREEN = "death_screen.png";
 	public static final String OPTION_BACKGROUND = "options_background.png";
 	public static final String TEXT_BOX = "panel_Example2.png";
@@ -52,7 +53,8 @@ public class LoadSave {
 	public static final String INVENTORY_BACKGROUND = "inventory.png";
 	public static final String EQUIPMENT_BACKGROUND = "EquipmentUI.png";
 	public static final String SELECTOR = "Spritesheet_UI_Flat_Select_01.png";
-	
+	public static final String POINTER = "Pointer.png";
+	public static final String OPTION_ITEM_BG = "OptionBackground.png";
 	
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;

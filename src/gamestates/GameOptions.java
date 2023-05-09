@@ -36,7 +36,7 @@ public class GameOptions extends State implements Statemethods {
 	}
 
 	private void loadBackGround() {
-		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE));
+		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE2));
         gifX = 0;
         gifY = 0;
         scaledGif = gifIcon.getImage().getScaledInstance(Game.GAME_WIDTH, Game.GAME_HEIGHT, Image.SCALE_DEFAULT);
