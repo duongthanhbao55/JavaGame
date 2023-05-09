@@ -6,6 +6,7 @@ import static untilz.Constants.UI.Inventory.GRID_WIDTH;
 import static untilz.Constants.UI.Inventory.INVENTORY_WIDTH;
 
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -71,8 +72,46 @@ public class Equipment {
 	}
 	public void render(Graphics g) {
 		g.drawImage(equipmentUI, Game.TILES_SIZE * 26, 0, EQUIPMENT_UI_WIDTH, EQUIPMENT_UI_HEIGHT, null);
+		g.drawRect((int) Bag.getX(), (int) Bag.getY(), (int) Bag.getWidth(), (int) Bag.getHeight());
 		for(Slot s : Slots) {
 			s.render(g);
 		}
+	}
+	public void mousePressed(MouseEvent e) {
+		for (Slot s : Slots)
+			if (isIn(e, s))
+				s.setMousePressed(true);
+
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		for (Slot s : Slots) {
+			if (isIn(e, s))
+				if (s.isMousePressed()) {
+					s.ShowOption(true);
+				}
+		}
+
+		for (Slot s : Slots)
+			s.resetBools();
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		for (Slot s : Slots)
+			s.setMouseOver(false);
+
+		for (Slot s : Slots)
+			if (isIn(e, s)) {
+				s.setMouseOver(true);
+				s.setDescriptionPos(e.getX(), e.getY());
+			}
+
+	}
+
+	private boolean isIn(MouseEvent e, Slot b) {
+		return b.getBounds().contains(e.getX(), e.getY());
+	}
+	public Slot[] getSlots() {
+		return Slots;
 	}
 }

@@ -6,31 +6,45 @@ import java.awt.geom.Rectangle2D;
 
 import main.Game;
 import ui.Confirm;
+import ui.NormalButton;
 
 public class Slot {
 	private Rectangle2D.Float bounds;
 	private boolean isEmpty;
 	private boolean showOption;
 	private boolean isEquipment;
-	private int x,y;
+	private boolean isSelected;
+	private int x, y;
 	private Item item;
 	private int xOffset, yOffset;
+	private int xPosButton, yPosButton;
 	private boolean mouseOver, mousePressed;
+	private NormalButton[] optionButton;
 
-	public Slot(float x, float y, float width, float height, boolean isEmpty,boolean isEquipment, Item item) {
+	public Slot(float x, float y, float width, float height, boolean isEmpty, boolean isEquipment, Item item) {
 		bounds = new Rectangle2D.Float(x, y, width, height);
 		xOffset = (int) (3 * Game.SCALE);
 		yOffset = (int) (3 * Game.SCALE);
 		this.isEmpty = isEmpty;
 		this.item = item;
+		initButton();
+	}
+
+	private void initButton() {
+		optionButton = new NormalButton[3];
+		optionButton[0] = new NormalButton(xPosButton, xPosButton, 0, 1f, (byte) 0, "use");
+		optionButton[1] = new NormalButton(xPosButton, xPosButton, 0, 1f, (byte) 1, "drop");
+		optionButton[2] = new NormalButton(xPosButton, xPosButton, 0, 1f, (byte) 2, "sell");
 	}
 
 	public void update() {
-
+		if (mousePressed)
+			for (NormalButton nb : optionButton) {
+				nb.update();
+			}
 	}
 
 	public void render(Graphics g) {
-				g.drawRect((int)bounds.getX(), (int)bounds.getY(), (int)bounds.getWidth(), (int)bounds.getHeight());
 		if (!isEmpty) {
 			item.renderIcon(g, (int) bounds.getX() + xOffset, (int) bounds.getY() + yOffset, 2);
 			if (item.getQuantity() > 1) {
@@ -39,10 +53,9 @@ public class Slot {
 						(int) (bounds.getY() + Game.TILES_SIZE * 2));
 			}
 			if (mouseOver) {
-				System.out.println(item.getSlot());
-				g.setColor(new Color(0,0,0,140));
+				g.setColor(new Color(0, 0, 0, 140));
 				g.fillRect(x, y, 200, 300);
-				g.setColor(new Color(255,255,255,160));
+				g.setColor(new Color(255, 255, 255, 160));
 				int x1 = x + xOffset;
 				int y1 = y + yOffset + Game.TILES_SIZE;
 				String text = item.getDescription();
@@ -51,6 +64,15 @@ public class Slot {
 					y1 += 20;
 				}
 			}
+			if (mousePressed) {
+				for (NormalButton nb : optionButton) {
+					nb.render(g);
+				}
+			}
+		}
+		if (isSelected) {
+			g.setColor(new Color(0, 0, 0, 100));
+			g.fillRect((int) bounds.getX(), (int) bounds.getY(), (int) bounds.getWidth(), (int) bounds.getHeight());
 		}
 
 	}
@@ -92,15 +114,31 @@ public class Slot {
 		return mousePressed;
 	}
 
+	public void setPosButton(int xPosButton, int yPosButton) {
+		this.xPosButton = xPosButton;
+		this.yPosButton = yPosButton;
+	}
+
 	public void ShowOption(boolean showOption) {
 		this.showOption = showOption;
 	}
+
 	public void setDescriptionPos(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
+
 	public void resetBools() {
 		mouseOver = false;
 		mousePressed = false;
 	}
+
+	public boolean isSelected() {
+		return this.isSelected;
+	}
+
+	public void setSelect(boolean isSelected) {
+		this.isSelected = isSelected;
+	}
+
 }

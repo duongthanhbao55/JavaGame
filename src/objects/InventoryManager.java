@@ -32,8 +32,8 @@ public class InventoryManager {
 	}// 175
 
 	public void initBag() {
-		Bag = new Rectangle2D.Float(Game.TILES_SIZE * 35 + (INVENTORY_WIDTH - GRID_WIDTH) / 2,
-				1 * Game.TILES_SIZE - 5 * Game.SCALE, GRID_WIDTH, GRID_HEIGHT);
+		Bag = new Rectangle2D.Float(Game.TILES_SIZE * 35 + (INVENTORY_WIDTH - GRID_WIDTH) / 2 + 1*Game.SCALE,
+				1 * Game.TILES_SIZE - 4 * Game.SCALE, GRID_WIDTH, GRID_HEIGHT);
 		Slots = new Slot[24];
 		float width = GRID_WIDTH / 4;
 		float height = GRID_HEIGHT / 6;
@@ -46,7 +46,6 @@ public class InventoryManager {
 			Slots[i] = new Slot((float) (Bag.getX() + (i % 4 * width)), (float) (Bag.getY() + row * height), width,
 					height, true,false, null);
 		}
-		System.out.println(width + "" + height);
 	}
 
 	public void LoadImg() {
@@ -124,6 +123,9 @@ public class InventoryManager {
 
 	public boolean isOpen() {
 		return isOpen;
+	}
+	public Slot[] getSlots() {
+		return Slots;
 	}
 
 }
