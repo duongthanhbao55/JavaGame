@@ -2,10 +2,11 @@ package objects;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 
 import main.Game;
-import ui.Confirm;
+import ui.ItemOption;
 import ui.NormalButton;
 
 public class Slot {
@@ -16,8 +17,8 @@ public class Slot {
 	private boolean isSelected;
 	private int x, y;
 	private Item item;
+	private ItemOption itemOption;
 	private int xOffset, yOffset;
-	private int xPosButton, yPosButton;
 	private boolean mouseOver, mousePressed;
 	private NormalButton[] optionButton;
 
@@ -27,14 +28,12 @@ public class Slot {
 		yOffset = (int) (3 * Game.SCALE);
 		this.isEmpty = isEmpty;
 		this.item = item;
+		itemOption = new ItemOption((int) (x + width), (int) y, 60, 47);
 		initButton();
 	}
 
 	private void initButton() {
-		optionButton = new NormalButton[3];
-		optionButton[0] = new NormalButton(xPosButton, xPosButton, 0, 1f, (byte) 0, "use");
-		optionButton[1] = new NormalButton(xPosButton, xPosButton, 0, 1f, (byte) 1, "drop");
-		optionButton[2] = new NormalButton(xPosButton, xPosButton, 0, 1f, (byte) 2, "sell");
+
 	}
 
 	public void update() {
@@ -69,6 +68,7 @@ public class Slot {
 					nb.render(g);
 				}
 			}
+
 		}
 		if (isSelected) {
 			g.setColor(new Color(0, 0, 0, 100));
@@ -76,9 +76,19 @@ public class Slot {
 		}
 
 	}
+	public void renderItemOption(Graphics g) {
+		if (isSelected) {
+			itemOption.render(g);
+		}
+	}
+
+	public void keyPressed(KeyEvent e) {
+		itemOption.keyPressed(e);
+	}
 
 	public void setItem(Item item) {
 		this.item = item;
+		itemOption.setText(new String[] {"equip","drop","sell"});
 		isEmpty = false;
 	}
 
@@ -114,11 +124,6 @@ public class Slot {
 		return mousePressed;
 	}
 
-	public void setPosButton(int xPosButton, int yPosButton) {
-		this.xPosButton = xPosButton;
-		this.yPosButton = yPosButton;
-	}
-
 	public void ShowOption(boolean showOption) {
 		this.showOption = showOption;
 	}
@@ -139,6 +144,10 @@ public class Slot {
 
 	public void setSelect(boolean isSelected) {
 		this.isSelected = isSelected;
+	}
+
+	public ItemOption getItemOption() {
+		return this.itemOption;
 	}
 
 }
