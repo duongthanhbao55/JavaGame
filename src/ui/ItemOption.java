@@ -16,10 +16,18 @@ public class ItemOption {
 	private int xPos, yPos, width, height;
 	private int pXPos, pYPos, pWidth, pHeight;
 	private int index = 0;
+	private int countOption = 0;
 	private int indexPos;
 	private String[] text;
 	private int xTextOffset;
 	private int yTextOffset;
+	
+	private boolean isShow = false;
+	private boolean isEquip = false;
+	private boolean isDrop = false;
+	private boolean isSell = false;
+	private boolean isUse = false;
+	private boolean isUnequip = false;
 
 	public ItemOption(int xPos, int yPos, int width, int height) {
 		this.xPos = xPos;
@@ -46,7 +54,7 @@ public class ItemOption {
 	}
 
 	public void render(Graphics g) {
-		g.drawImage(optionBackground, xPos, yPos, (int) (width * Game.SCALE), (int) (height * Game.SCALE), null);
+		g.drawImage(optionBackground, xPos, yPos, (int) (width * Game.SCALE + 20 * Game.SCALE), (int) (height * Game.SCALE), null);
 		g.drawImage(Pointer, pXPos, indexPos, pWidth, pHeight, null);
 	
 		for (int i = 0; i < text.length; i++) {
@@ -60,27 +68,94 @@ public class ItemOption {
 	}
 
 	public void keyPressed(KeyEvent e) {
+		resetBoolean();
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
 			index--;
 			if (index == -1) {
-				index = 2;
+				index = countOption - 1;
 			}
 			indexPos = pYPos + index * width / 3;
 			break;
 		case KeyEvent.VK_DOWN:
 			index++;
-			if (index == 3) {
+			if (index == countOption) {
 				index = 0;
 			}
 			indexPos = pYPos + index * width / 3;
 			break;
 		case KeyEvent.VK_ENTER:
-			
+			if(index == 0 && text[index].equals("equip")) {
+				this.isEquip = true;
+			}
+			if(index == 0 && text[index].equals("unequip")){
+				this.isUnequip = true;
+			}
 			break;
 		}
 	}
 	public void setText(String[] text) {
+		this.countOption = text.length;
 		this.text = text;
+	}
+	public int getIndex() {
+		return this.index;
+	}
+	public String getText() {
+		return this.text[index];
+	}
+
+	public boolean isShow() {
+		return isShow;
+	}
+
+	public void setShow(boolean isShow) {
+		this.isShow = isShow;
+	}
+
+	public boolean isEquip() {
+		return isEquip;
+	}
+
+	public void setEquip(boolean isEquip) {
+		this.isEquip = isEquip;
+	}
+
+	public boolean isDrop() {
+		return isDrop;
+	}
+
+	public void setDrop(boolean isDrop) {
+		this.isDrop = isDrop;
+	}
+
+	public boolean isSell() {
+		return isSell;
+	}
+
+	public void setSell(boolean isSell) {
+		this.isSell = isSell;
+	}
+
+	public boolean isUse() {
+		return isUse;
+	}
+
+	public void setUse(boolean isUse) {
+		this.isUse = isUse;
+	}
+	public boolean isUnequip() {
+		return this.isUnequip;
+	}
+	public void setCountOption(int countOption) {
+		this.countOption = countOption;
+	}
+	public void resetBoolean() {
+		isDrop = false;
+		isEquip = false;
+		isSell = false;
+		isShow = false;
+		isUnequip = false;
+		isUse = false;
 	}
 }

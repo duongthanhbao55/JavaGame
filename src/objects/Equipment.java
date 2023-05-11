@@ -82,7 +82,6 @@ public class Equipment {
 		for (Slot s : Slots)
 			if (isIn(e, s))
 				s.setMousePressed(true);
-
 	}
 
 	public void mouseReleased(MouseEvent e) {

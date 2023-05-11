@@ -6,6 +6,7 @@ import java.awt.geom.Rectangle2D;
 
 import Effect.Animation;
 import Load.CacheDataLoader;
+import objects.Item;
 import objects.Slot;
 
 public class Selector {
@@ -16,6 +17,7 @@ public class Selector {
 	private int index = 0;
 	private boolean isInInventory = true;
 	private boolean isInEquipment = false;
+	private int first = 0;
 	private Slot[] slotInventory;
 	private Slot[] slotEquipment;
 	private ItemOption itemOption;
@@ -47,24 +49,37 @@ public class Selector {
 
 	public void update(long currTime) {
 		selector.Update(currTime);
+
 	}
 
 	public void render(Graphics g) {
 		selector.drawNormal((int) bounds.getX(), (int) bounds.getY(), (int) bounds.getWidth(), (int) bounds.getHeight(),
 				g);
 		if (isInInventory && !slotInventory[index].isEmpty())
-				slotInventory[index].renderItemOption(g);
+			slotInventory[index].renderItemOption(g);
 		if (isInEquipment && !slotEquipment[index].isEmpty()) {
-				slotEquipment[index].renderItemOption(g);
+			slotEquipment[index].renderItemOption(g);
 		}
 	}
 
 	public void keyPressed(KeyEvent e) {
 		if (isInInventory) {
-			slotInventory[index].keyPressed(e);
+			if (!slotInventory[index].isEmpty())
+				if (slotInventory[index].isSelected()) {
+					slotInventory[index].keyPressed(e);
+					if (slotInventory[index].getItemOption().isEquip()) {
+						Equip();
+					}
+				}
 
 		} else if (isInEquipment) {
-			slotEquipment[index].keyPressed(e);
+			if (!slotEquipment[index].isEmpty())
+				if (slotEquipment[index].isSelected()) {
+					slotEquipment[index].keyPressed(e);
+					if (slotEquipment[index].getItemOption().isUnequip()) {
+						Unequip();
+					}
+				}
 		}
 		switch (e.getKeyCode()) {
 
@@ -75,7 +90,7 @@ public class Selector {
 					index = index + 24;
 				}
 				bounds = slotInventory[index].getBounds();
-			} else if (isInEquipment && !slotInventory[index].isSelected()) {
+			} else if (isInEquipment && !slotEquipment[index].isSelected()) {
 				if (index == 0) {
 					index = 1;
 				} else if (index == 2) {
@@ -95,7 +110,7 @@ public class Selector {
 					index = index % 6;
 				}
 				bounds = slotInventory[index].getBounds();
-			} else if (isInEquipment && !slotInventory[index].isSelected()) {
+			} else if (isInEquipment && !slotEquipment[index].isSelected()) {
 				index++;
 				if (index == 2) {
 					index = 0;
@@ -117,7 +132,7 @@ public class Selector {
 					index = index + 4;
 				}
 				bounds = slotInventory[index].getBounds();
-			} else if (isInEquipment && !slotInventory[index].isSelected()) {
+			} else if (isInEquipment && !slotEquipment[index].isSelected()) {
 				if (index == 0) {
 					index = 8;
 				} else if (index == 1) {
@@ -146,7 +161,7 @@ public class Selector {
 					index = index - 4;
 				}
 				bounds = slotInventory[index].getBounds();
-			} else if (isInEquipment && !slotInventory[index].isSelected()) {
+			} else if (isInEquipment && !slotEquipment[index].isSelected()) {
 				if (slotEquipment[index].isSelected()) {
 					slotEquipment[index].setSelect(false);
 				}
@@ -208,6 +223,92 @@ public class Selector {
 			break;
 		case KeyEvent.VK_ENTER:
 			break;
+		}
+	}
+
+	private void Equip() {
+		int index1 = slotInventory[index].getItems().get(0).getSlot();
+		if (index1 >= 0 && index1 <= 9) {
+			if (!slotEquipment[index1].isEmpty()) {
+				Item t = slotEquipment[index1].getItems().get(0);
+				if (!t.getName().equals(slotInventory[index].getItems().get(0).getName())) {
+//					if (slotInventory[index].getItems().size() > 1) {
+						slotEquipment[index1].getItems().remove(0);
+						slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
+						slotInventory[index].getItems().remove(0);
+						if (slotInventory[index].getItems().size() <= 0) {
+							slotInventory[index].setEmpty(true);
+						}
+						for (Slot s : slotInventory) {
+							if (!s.isEmpty()) {
+								if (t.getName().equals(s.getItems().get(0).getName())) {
+									s.addItem(t);
+									slotEquipment[index1].getItemOption().setText(new String[] { "unequip", "drop", "sell" });
+									return;
+								}
+							}
+						}
+						for (Slot s : slotInventory) {
+							if (s.isEmpty()) {
+								s.addItem(t);
+								break;
+							}
+						}
+//					} else {
+//						slotEquipment[index1].getItems().remove(0);
+//						slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
+//						slotInventory[index].getItems().remove(0);
+//						if (slotInventory[index].getItems().size() <= 0) {
+//							slotInventory[index].setEmpty(true);
+//						}
+//						for (Slot s : slotInventory) {
+//							if (!s.isEmpty()) {
+//								if (t.getName().equals(s.getItems().get(0).getName())) {
+//									s.addItem(t);
+//									return;
+//								}
+//							}
+//						}
+//						for (Slot s : slotInventory) {
+//							if (s.isEmpty()) {
+//								s.addItem(t);
+//								break;
+//							}
+//						}
+//					}
+				}
+				
+			} else {
+				slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
+				slotInventory[index].getItems().remove(slotEquipment[index1].getItems().get(0));
+				if (slotInventory[index].getItems().size() <= 0) {
+					slotInventory[index].setEmpty(true);
+				}
+				slotEquipment[index1].getItemOption().setText(new String[] { "unequip", "drop", "sell" });
+			}
+
+		}
+	}
+
+	private void Unequip() {
+
+		for (Slot s : slotInventory) {
+			if (!s.isEmpty()) {
+				if (s.getItems().get(0).getName().equals(slotEquipment[index].getItems().get(0).getName())) {
+					s.addItem(slotEquipment[index].getItems().get(0));
+					slotEquipment[index].getItems().remove(0);
+					slotEquipment[index].setEmpty(true);
+					return;
+				}
+			}
+		}
+		for (Slot s : slotInventory) {
+			if (s.isEmpty()) {
+				s.addItem(slotEquipment[index].getItems().get(0));
+				slotEquipment[index].getItems().remove(0);
+				slotEquipment[index].setEmpty(true);
+				return;
+			}
 		}
 	}
 
