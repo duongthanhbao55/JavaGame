@@ -1,8 +1,5 @@
 package gamestates;
 
-import static Load.CacheDataLoader.*;
-
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -20,7 +17,6 @@ import Task.Task;
 import Template.NpcTemplate;
 import database.ItemManager;
 import entities.NPC;
-import entities.NPC_Wizard1;
 import entities.Player;
 import main.Game;
 import objects.Equipment;
@@ -32,11 +28,9 @@ import ui.LevelCompleteOverlay;
 import ui.PauseOverlay;
 import ui.Selector;
 import untilz.LoadSave;
-import untilz.Talk;
-import untilz.Text;
 
 import static untilz.Constants.Enviroment.*;
-import static untilz.Constants.NPC_Wizard1.WIZARD1_SIZE;
+
 
 public class Playing extends State implements Statemethods {
 	// VARIABLE
@@ -53,9 +47,6 @@ public class Playing extends State implements Statemethods {
 	private Equipment equipment;
 	private Confirm confirmUI;
 
-	// TASK
-
-	//
 	private boolean paused = false;
 
 	// CAMERA
@@ -112,8 +103,6 @@ public class Playing extends State implements Statemethods {
 
 	private void initClasses() {
 
-		// player = new Player(200, 200, (int) (Game.TILES_SIZE * 4), (int)
-		// (Game.TILES_SIZE * 2), this);
 		CacheDataLoader.getInstance().readAllMap(this);
 		objectManager = new ObjectManager(this);
 		npcManager = new NPCManager(this);
@@ -121,8 +110,6 @@ public class Playing extends State implements Statemethods {
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
 		confirmUI = new Confirm(this);
-		// Confirm.OpenComfirmUI(player,(short) 0, Talk.getTask(0,0),new String[]
-		// {Text.get(0, 0),Text.get(0, 1)});
 		itemManager = new ItemManager(this);
 		inventoryManager = new InventoryManager(this);
 		equipment = new Equipment(this);

@@ -1,15 +1,12 @@
 package objects;
 
-import Template.ItemTemplate;
 
 import gamestates.Playing;
 import main.Game;
-import ui.PauseButton;
 import untilz.LoadSave;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -56,10 +53,10 @@ public class InventoryManager {
 		items.add(i);
 		for (int k = 0; k < Slots.length; k++) {
 			if (Slots[k].isEmpty()) {
-				Slots[k].setItem(i);
+				Slots[k].addItem(i);
 				break;
-			} else if (Slots[k].getItem().getName().equals(i.getName())) {
-				Slots[k].increaseItem();
+			} else if (Slots[k].getItems().get(0).getName().equals(i.getName())) {
+				Slots[k].addItem(i);
 				break;
 			}
 

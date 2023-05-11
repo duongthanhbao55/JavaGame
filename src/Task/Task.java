@@ -47,14 +47,14 @@ public class Task {
 		switch (player.getCtaskId()) {
 		case 0:
 			Confirm.OpenComfirmUI(player, npcsTemplateId, Talk.getTask(1, 0), new String[] { Text.get(0, 2) });
-			Confirm.setPrize(new int[] { 7, 8 },
+			Confirm.setPrize(new int[] { 8, 9 },
 					new int[] { (int) player.getHitbox().getX(), (int) player.getHitbox().getX() + 40 },
 					new int[] { (int) player.getHitbox().getY() - (int) (5 * Game.SCALE),
 							(int) player.getHitbox().getY() - (int) (5 * Game.SCALE) });
 			break;
 		case 1:
 			Confirm.OpenComfirmUI(player, npcsTemplateId, Talk.getTask(1, 0), new String[] { Text.get(0, 2) });
-			Confirm.setPrize(new int[] { 2, 3 },
+			Confirm.setPrize(new int[] { 9, 3 },
 					new int[] { (int) player.getHitbox().getX(), (int) player.getHitbox().getX() + 40 },
 					new int[] { (int) player.getHitbox().getY() - (int) (5 * Game.SCALE),
 							(int) player.getHitbox().getY() - (int) (5 * Game.SCALE) });

@@ -54,7 +54,7 @@ public abstract class Enemy extends Entity {
 					NightBorne.setDeadCount(NightBorne.getDeadCount() + 1);
 				}
 				playing.getItemManager().add(new Item((int) hitbox.getX(), (int) (hitbox.getY() - 5 * Game.SCALE), 0,
-						ItemManager.arrItemTemplate[HelpMethods.nextInt(70)]));
+						ItemManager.arrItemTemplate[nextInt(10)]));
 				active = false;
 				break;
 			}
