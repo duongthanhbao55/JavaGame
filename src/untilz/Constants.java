@@ -4,6 +4,7 @@ import main.Game;
 
 public class Constants {
 	public static final float GRAVITY = 0.04f * Game.SCALE;
+	public static final float DR = 0.8f;
 	
 	public static class Objecttiles{
 		public static final int CANNON_BALL_DEFAULT_WIDTH = 15 ;
@@ -80,7 +81,7 @@ public class Constants {
 		public static int GetMaxHealth(int enemy_type) {
 			switch(enemy_type) {
 			case NIGHTBORNE:
-				return 15;
+				return 100;
 			default:
 				return 1;
 			}
@@ -89,7 +90,7 @@ public class Constants {
 		public static int GetEnemyDmg(int enemy_type) {
 			switch(enemy_type) {
 			case NIGHTBORNE:
-				return 15;
+				return 40;
 			default:
 				return 0;
 			}
@@ -254,7 +255,10 @@ public class Constants {
 		public static final int GROUND = 6;		
 		public static final int ATTACK_JUMP = 7;
 		
-		public static final int DEFAULT_DAMAGE = 5;
+		public static final int DEFAULT_MAXHEALTH = 100;
+		public static final int DEFAULT_DAMAGE = 20;
+		public static final int DEFAULT_DEF = 10;
+		public static final int DEFAULT_MANA = 100;
 	}
 	public static class VFX{
 		public static final int HIT_EFFECT_HEIGHT_DEFAULT = 48;
@@ -305,5 +309,6 @@ public class Constants {
 		public static final float RING3_POSX =  89 * Game.SCALE;
 		public static final float RING3_POSY = 215 * Game.SCALE;
 		
+
 	}
 }

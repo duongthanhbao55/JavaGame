@@ -26,6 +26,8 @@ import org.json.simple.JSONValue;
 import static untilz.HelpMethods.*;
 import static untilz.Constants.PlayerConstants.*;
 import static untilz.Constants.GRAVITY;
+import static untilz.Constants.DR;
+
 
 public class Player extends Entity {
 
@@ -77,7 +79,11 @@ public class Player extends Entity {
 
 	private int healthWidth = healthBarWidth;
 	private int ATK = DEFAULT_DAMAGE;
+	private int DEF = DEFAULT_DEF;
+	private int MANA = DEFAULT_MANA;
+	private int defend = DEF;
 	private int damage = ATK;
+	private int mana = MANA;
 
 	// Attack Box
 
@@ -100,7 +106,7 @@ public class Player extends Entity {
 		this.user = user;
 		tileY = (int) (x / Game.TILES_SIZE);
 		this.state = IDLE;
-		this.maxHealth = 100;
+		this.maxHealth = DEFAULT_MAXHEALTH;
 		this.currHealth = maxHealth;
 		this.walkSpeed = Game.SCALE * 1.0f;
 		loadAnim();
@@ -212,7 +218,6 @@ public class Player extends Entity {
 			}
 
 		}
-
 	}
 
 	private void updateAttackBox() {
@@ -318,6 +323,8 @@ public class Player extends Entity {
 	}
 
 	public void changeHealth(int value) {
+		
+		value = (int) ((value * (100/(float)(100 + defend))));
 		currHealth += value;
 		if (currHealth <= 0) {
 			currHealth = 0;
@@ -447,6 +454,13 @@ public class Player extends Entity {
 	public void setDamage(int damage) {
 		this.damage = damage;
 	}
+	public void setMana(int mana) {
+		this.mana = mana;
+	}
+	public int getMana() {
+		return this.mana;
+	}
+
 	public void updateExp(long exp) {
 		this.EXP += exp;
 	}
@@ -513,7 +527,18 @@ public class Player extends Entity {
 	public void setDescriptionTask(String descriptionTask) {
 		this.descriptionTask = descriptionTask;
 	}
-
+	public void applyDef(int defend) {
+		this.defend += defend;
+	}
+	public void applyAtk(int attack) {
+		this.damage += attack;
+	}
+	public int getDef() {
+		return this.defend;
+	}
+	public int getAtk() {
+		return this.damage;
+	}
 	public void resetAll() {
 		resetDirBooleans();
 		inAir = false;

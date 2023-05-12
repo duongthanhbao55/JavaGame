@@ -162,7 +162,7 @@ public class Login extends State implements Statemethods {
 						}
 					} else if (lg.getState() == Gamestate.REGISTER) {
 						Gamestate.state = Gamestate.REGISTER;
-						game.getRegister().SetUpComponent();
+						game.getRegister().loadContainer();
 						game.getRegister().addComponent();
 						resetTextField();
 					}

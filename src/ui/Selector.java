@@ -6,6 +6,7 @@ import java.awt.geom.Rectangle2D;
 
 import Effect.Animation;
 import Load.CacheDataLoader;
+import objects.EquipmentEffect;
 import objects.Item;
 import objects.Slot;
 
@@ -20,6 +21,8 @@ public class Selector {
 	private int first = 0;
 	private Slot[] slotInventory;
 	private Slot[] slotEquipment;
+	private EquipmentEffect equipmentEffect;
+
 	private ItemOption itemOption;
 
 	public Selector() {
@@ -232,61 +235,46 @@ public class Selector {
 			if (!slotEquipment[index1].isEmpty()) {
 				Item t = slotEquipment[index1].getItems().get(0);
 				if (!t.getName().equals(slotInventory[index].getItems().get(0).getName())) {
-//					if (slotInventory[index].getItems().size() > 1) {
-						slotEquipment[index1].getItems().remove(0);
-						slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
-						slotInventory[index].getItems().remove(0);
-						if (slotInventory[index].getItems().size() <= 0) {
-							slotInventory[index].setEmpty(true);
-						}
-						for (Slot s : slotInventory) {
-							if (!s.isEmpty()) {
-								if (t.getName().equals(s.getItems().get(0).getName())) {
-									s.addItem(t);
-									slotEquipment[index1].getItemOption().setText(new String[] { "unequip", "drop", "sell" });
-									return;
-								}
-							}
-						}
-						for (Slot s : slotInventory) {
-							if (s.isEmpty()) {
+		
+					slotEquipment[index1].getItems().remove(0);
+					equipmentEffect.removeEffect(t);
+					
+					slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
+					equipmentEffect.getEffect(slotInventory[index].getItems().get(0));
+
+					slotInventory[index].getItems().remove(0);
+
+					if (slotInventory[index].getItems().size() <= 0) {
+						slotInventory[index].setEmpty(true);
+					}
+					for (Slot s : slotInventory) {
+						if (!s.isEmpty()) {
+							if (t.getName().equals(s.getItems().get(0).getName())) {
 								s.addItem(t);
-								break;
+								slotEquipment[index1].getItemOption()
+										.setText(new String[] { "unequip", "drop", "sell" });
+								return;
 							}
 						}
-//					} else {
-//						slotEquipment[index1].getItems().remove(0);
-//						slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
-//						slotInventory[index].getItems().remove(0);
-//						if (slotInventory[index].getItems().size() <= 0) {
-//							slotInventory[index].setEmpty(true);
-//						}
-//						for (Slot s : slotInventory) {
-//							if (!s.isEmpty()) {
-//								if (t.getName().equals(s.getItems().get(0).getName())) {
-//									s.addItem(t);
-//									return;
-//								}
-//							}
-//						}
-//						for (Slot s : slotInventory) {
-//							if (s.isEmpty()) {
-//								s.addItem(t);
-//								break;
-//							}
-//						}
-//					}
+					}
+					for (Slot s : slotInventory) {
+						if (s.isEmpty()) {
+							s.addItem(t);
+							slotEquipment[index1].getItemOption().setText(new String[] { "unequip", "drop", "sell" });
+							break;
+						}
+					}
 				}
-				
+
 			} else {
 				slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
+				equipmentEffect.getEffect(slotEquipment[index1].getItems().get(0));
 				slotInventory[index].getItems().remove(slotEquipment[index1].getItems().get(0));
 				if (slotInventory[index].getItems().size() <= 0) {
 					slotInventory[index].setEmpty(true);
 				}
 				slotEquipment[index1].getItemOption().setText(new String[] { "unequip", "drop", "sell" });
 			}
-
 		}
 	}
 
@@ -296,6 +284,7 @@ public class Selector {
 			if (!s.isEmpty()) {
 				if (s.getItems().get(0).getName().equals(slotEquipment[index].getItems().get(0).getName())) {
 					s.addItem(slotEquipment[index].getItems().get(0));
+					equipmentEffect.removeEffect(slotEquipment[index].getItems().get(0));
 					slotEquipment[index].getItems().remove(0);
 					slotEquipment[index].setEmpty(true);
 					return;
@@ -305,6 +294,7 @@ public class Selector {
 		for (Slot s : slotInventory) {
 			if (s.isEmpty()) {
 				s.addItem(slotEquipment[index].getItems().get(0));
+				equipmentEffect.removeEffect(slotEquipment[index].getItems().get(0));
 				slotEquipment[index].getItems().remove(0);
 				slotEquipment[index].setEmpty(true);
 				return;
@@ -333,5 +323,9 @@ public class Selector {
 
 	public void setItemOption(ItemOption itemOption) {
 		this.itemOption = itemOption;
+	}
+
+	public void setEquipmentEffect(EquipmentEffect equipmentEffect) {
+		this.equipmentEffect = equipmentEffect;
 	}
 }
