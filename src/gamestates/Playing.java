@@ -20,8 +20,10 @@ import entities.NPC;
 import entities.Player;
 import main.Game;
 import objects.Equipment;
+import objects.EquipmentEffect;
 import objects.InventoryManager;
 import objects.ObjectManager;
+import objects.PlayerStatus;
 import ui.Confirm;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
@@ -45,7 +47,9 @@ public class Playing extends State implements Statemethods {
 	private ItemManager itemManager;
 	private InventoryManager inventoryManager;
 	private Equipment equipment;
+	private EquipmentEffect equipmentEffect;
 	private Confirm confirmUI;
+	private PlayerStatus playerStatus;
 
 	private boolean paused = false;
 
@@ -113,9 +117,12 @@ public class Playing extends State implements Statemethods {
 		itemManager = new ItemManager(this);
 		inventoryManager = new InventoryManager(this);
 		equipment = new Equipment(this);
+		playerStatus = new PlayerStatus(this);
 		Selector.getInstance().setBounds(inventoryManager.getSlots()[0].getBounds());
 		Selector.getInstance().setSlotEquipment(equipment.getSlots());
 		Selector.getInstance().setSlotInventory(inventoryManager.getSlots());
+		equipmentEffect = new EquipmentEffect(this);
+		Selector.getInstance().setEquipmentEffect(equipmentEffect);
 	}
 
 	@Override
@@ -135,13 +142,13 @@ public class Playing extends State implements Statemethods {
 			npcManager.update(currTime, collisionLayer, player);
 			player.update(currTime);
 			enemyManager.update(currTime, collisionLayer, player);
-			itemManager.update();
-			
+			itemManager.update();			
 			if (Confirm.isShow())
 				confirmUI.update();
 			if(inventoryManager.isOpen()) {
 				inventoryManager.update();
 				equipment.update();
+				playerStatus.update();
 				Selector.getInstance().update(currTime);
 			}
 			CheckCloseToBorder();
@@ -204,9 +211,11 @@ public class Playing extends State implements Statemethods {
 		player.render(g, xLvlOffset);
 		enemyManager.render(g, xLvlOffset);
 		npcManager.drawDialogue(g);
+		
 		if(inventoryManager.isOpen()) {
 			inventoryManager.render(g);
 			equipment.render(g);
+			playerStatus.render(g);
 			Selector.getInstance().render(g);
 		}
 		if (Confirm.isShow())

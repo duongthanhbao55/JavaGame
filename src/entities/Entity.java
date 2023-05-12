@@ -18,6 +18,7 @@ public abstract class Entity {
 	protected float airSpeed;
 	protected int maxHealth;
 	protected int currHealth = maxHealth;
+
 	protected Rectangle2D.Float attackBox;
 	protected float walkSpeed = 1.0f * Game.SCALE;
 	protected int tileY;
@@ -53,5 +54,15 @@ public abstract class Entity {
 	
 	public int getState() {
 		return this.state;
+	}
+	public void applyMaxHealth(int hp) {
+		this.maxHealth += hp;
+		this.currHealth += hp;
+	}
+	public int getMaxHealth() {
+		return this.maxHealth;
+	}
+	public int getCurrHealth() {
+		return this.currHealth;
 	}
 }

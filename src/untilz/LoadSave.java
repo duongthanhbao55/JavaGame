@@ -55,6 +55,13 @@ public class LoadSave {
 	public static final String SELECTOR = "Spritesheet_UI_Flat_Select_01.png";
 	public static final String POINTER = "Pointer.png";
 	public static final String OPTION_ITEM_BG = "OptionBackground.png";
+	public static final String STATUS_BG = "EmptyGUI.png";
+	public static final String DAMAGE_ICON = "DamageIcon.png";
+	public static final String HEALTH_ICON = "HealthIcon.png";
+	public static final String MANA_ICON = "ManaIcon.png";
+	public static final String GOLD_ICON = "GoldIcon.png";
+	public static final String DEFEND_ICON = "DefendIcon.png";
+	public static final String LUCK_ICON = "LuckIcon.png";
 	
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;

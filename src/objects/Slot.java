@@ -21,7 +21,6 @@ public class Slot {
 	private ItemOption itemOption;
 	private int xOffset, yOffset;
 	private boolean mouseOver, mousePressed;
-	private NormalButton[] optionButton;
 
 	public Slot(float x, float y, float width, float height, boolean isEmpty, boolean isEquipment, Item item) {
 		bounds = new Rectangle2D.Float(x, y, width, height);
@@ -38,11 +37,7 @@ public class Slot {
 	}
 
 	public void update() {
-		if (!isEmpty)
-			if (mousePressed)
-				for (NormalButton nb : optionButton) {
-					nb.update();
-				}
+
 	}
 
 	public void render(Graphics g) {
@@ -63,11 +58,6 @@ public class Slot {
 				for (String line : text.split("\n")) {
 					g.drawString(line, x1, y1);
 					y1 += 20;
-				}
-			}
-			if (mousePressed) {
-				for (NormalButton nb : optionButton) {
-					nb.render(g);
 				}
 			}			
 		}

@@ -29,7 +29,6 @@ public class Equipment {
 	
 	private void LoadImg() {
 		equipmentUI = LoadSave.GetSpriteAtlas(LoadSave.EQUIPMENT_BACKGROUND);
-		
 	}
 	public void initBag() {
 		Bag = new Rectangle2D.Float( Game.TILES_SIZE * 26, 0, EQUIPMENT_UI_WIDTH, EQUIPMENT_UI_HEIGHT);

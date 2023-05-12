@@ -117,6 +117,7 @@ public class SetPlayerName extends State implements Statemethods{
 						resetTextField();
 					} else if (lg.getState() == Gamestate.REGISTER) {
 						Gamestate.state = Gamestate.REGISTER;
+						game.getRegister().loadContainer();
 						game.getRegister().SetUpComponent();
 						game.getRegister().addComponent();
 						resetTextField();
