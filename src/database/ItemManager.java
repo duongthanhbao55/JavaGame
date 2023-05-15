@@ -1,6 +1,7 @@
 package database;
 
 import Level.EnemyManager;
+import Map.PhysicalMap;
 import Template.EnemyTemplate;
 import Template.ItemTemplate;
 import objects.Item;
@@ -12,8 +13,6 @@ import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ItemManager {
     // VARIABLES
@@ -120,7 +119,12 @@ public class ItemManager {
     }
 
     public static void addItem(Item i) {
-        System.out.println(true);
         ItemManager.items.add(i);
+    }
+    public void loadItem(PhysicalMap physicalMap) {
+    	ItemManager.items = physicalMap.getItems();
+    }
+    public static ArrayList<Item> getItems() {
+    	return ItemManager.items;
     }
 }

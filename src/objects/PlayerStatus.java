@@ -49,7 +49,7 @@ public class PlayerStatus {
 	}
 
 	public void update() {
-
+		loadStatus();
 	}
 
 	public void render(Graphics g) {
