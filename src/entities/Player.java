@@ -9,6 +9,7 @@ import database.MySQL;
 import database.User;
 import gamestates.Playing;
 import main.Game;
+import objects.Equipment;
 import objects.InventoryManager;
 import untilz.LoadSave;
 
@@ -641,6 +642,7 @@ public class Player extends Entity {
 		}
 		PhysicalMap.loadMapData();
 		InventoryManager.loadInventoryData();
+		Equipment.loadEquipment();
 		return player;
 	}
 
