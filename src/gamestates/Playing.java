@@ -103,6 +103,7 @@ public class Playing extends State implements Statemethods {
 		player.LoadLvlData(mapLayer.get(0).getTileMap());
 		enemyManager = new EnemyManager(this);
 		inventoryManager.initDataInventory();
+		equipment.initEquipment();
 		loadAll();
 		initTask();
 	}

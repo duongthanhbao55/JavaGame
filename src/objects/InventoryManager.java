@@ -59,8 +59,6 @@ public class InventoryManager {
 		}	
 	}
 	public void initDataInventory() {
-		float width = GRID_WIDTH / 4;
-		float height = GRID_HEIGHT / 6;
 		for(int i = 0; i < InventoryManager.inventoryTemplate[inventoryId].itemId.length; i++) {
 			int index = InventoryManager.inventoryTemplate[inventoryId].itemIndex[i];
 			Slots[index].addItem(new Item((int)0, (int)0, 0,
