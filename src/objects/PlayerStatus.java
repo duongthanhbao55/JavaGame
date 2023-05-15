@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import entities.Player;
 import gamestates.Playing;
 import main.Game;
 import untilz.LoadSave;
@@ -29,10 +30,11 @@ public class PlayerStatus {
 
 	private void loadStatus() {
 		statusInf = new int[6];
-		statusInf[0] = playing.getPlayer().getCurrHealth();
-		statusInf[1] = playing.getPlayer().getMana();
-		statusInf[2] = playing.getPlayer().getDamage();
-		statusInf[3] = playing.getPlayer().getDef();
+		Player player = playing.getPlayer();
+		statusInf[0] = player.getCurrHealth();
+		statusInf[1] = player.getMana();
+		statusInf[2] = player.getDamage();
+		statusInf[3] = player.getDef();
 		statusInf[4] = 0;
 		statusInf[5] = 0;
 	}
@@ -49,7 +51,7 @@ public class PlayerStatus {
 	}
 
 	public void update() {
-
+		loadStatus();
 	}
 
 	public void render(Graphics g) {

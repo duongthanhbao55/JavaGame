@@ -2,10 +2,8 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
-import gamestates.Playing;
 import main.Game;
 
 public abstract class Entity {
@@ -55,9 +53,12 @@ public abstract class Entity {
 	public int getState() {
 		return this.state;
 	}
-	public void applyMaxHealth(int hp) {
-		this.maxHealth += hp;
-		this.currHealth += hp;
+	public void setMaxHealth(int hp) {
+		int heal = hp - this.maxHealth;
+		this.maxHealth = hp;
+		if (currHealth + heal > maxHealth) currHealth = maxHealth;
+		else
+			this.currHealth += heal;
 	}
 	public int getMaxHealth() {
 		return this.maxHealth;

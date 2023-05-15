@@ -16,7 +16,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -26,7 +25,6 @@ import org.json.simple.JSONValue;
 import static untilz.HelpMethods.*;
 import static untilz.Constants.PlayerConstants.*;
 import static untilz.Constants.GRAVITY;
-import static untilz.Constants.DR;
 
 
 public class Player extends Entity {
@@ -78,12 +76,12 @@ public class Player extends Entity {
 	private float lostHealthWidth = healthBarWidth;
 
 	private int healthWidth = healthBarWidth;
-	private int ATK = DEFAULT_DAMAGE;
-	private int DEF = DEFAULT_DEF;
-	private int MANA = DEFAULT_MANA;
-	private int defend = DEF;
-	private int damage = ATK;
-	private int mana = MANA;
+	private int attack = DEFAULT_ATTACK;
+	private int defend = DEFAULT_DEF;
+	private int damage = attack;
+	final private int maxMana = DEFAULT_MANA;
+	private int mana = maxMana;
+	private float dmg_down;
 
 	// Attack Box
 
@@ -323,7 +321,7 @@ public class Player extends Entity {
 	}
 
 	public void changeHealth(int value) {
-		
+
 		value = (int) ((value * (100/(float)(100 + defend))));
 		currHealth += value;
 		if (currHealth <= 0) {
@@ -331,6 +329,13 @@ public class Player extends Entity {
 		} else if (currHealth >= maxHealth) {
 			currHealth = maxHealth;
 		}
+	}
+
+	public void hurt(int damage) {
+		int value = (int) (damage * (1 - dmg_down) - defend);
+		currHealth -= value;
+		if (currHealth < 0) currHealth = 0;
+
 	}
 
 	public void changeMana(int value) {
@@ -438,14 +443,11 @@ public class Player extends Entity {
 		this.attackBox.height = height;
 	}
 
-	public int getATK() {
-		return ATK;
+	public int getAttack() {
+		return attack;
 	}
 
-	public void setATK(int ATK) {
-		this.ATK = ATK;
-		this.damage = this.ATK;
-	}
+	public void setAttack(int attack) { this.attack = attack; }
 
 	public int getDamage() {
 		return damage;
@@ -455,8 +457,22 @@ public class Player extends Entity {
 		this.damage = damage;
 	}
 	public void setMana(int mana) {
-		this.mana = mana;
+		if (this.mana + mana >= maxMana){
+			this.mana = maxMana;
+		}
+		else {
+            this.mana += mana;
+        }
 	}
+
+	public float getDmg_down() {
+		return dmg_down;
+	}
+
+	public void setDmg_down(float dmg_down) {
+		this.dmg_down = dmg_down;
+	}
+
 	public int getMana() {
 		return this.mana;
 	}
@@ -528,17 +544,19 @@ public class Player extends Entity {
 		this.descriptionTask = descriptionTask;
 	}
 	public void applyDef(int defend) {
-		this.defend += defend;
+		this.defend = defend;
 	}
-	public void applyAtk(int attack) {
-		this.damage += attack;
-	}
+//	public void applyAtk(int attack) {
+//		this.ATK = attack;
+//	}
+    public void applyHeal(int hp) {
+        if (currHealth + hp > maxHealth) currHealth = maxHealth;
+        else currHealth += hp;
+    }
 	public int getDef() {
 		return this.defend;
 	}
-	public int getAtk() {
-		return this.damage;
-	}
+
 	public void resetAll() {
 		resetDirBooleans();
 		inAir = false;

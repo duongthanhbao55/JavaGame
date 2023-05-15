@@ -240,7 +240,7 @@ public class Selector {
 					equipmentEffect.removeEffect(t);
 					
 					slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
-					equipmentEffect.getEffect(slotInventory[index].getItems().get(0));
+					equipmentEffect.applyEffect(slotInventory[index].getItems().get(0));
 
 					slotInventory[index].getItems().remove(0);
 
@@ -268,7 +268,7 @@ public class Selector {
 
 			} else {
 				slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
-				equipmentEffect.getEffect(slotEquipment[index1].getItems().get(0));
+				equipmentEffect.applyEffect(slotEquipment[index1].getItems().get(0));
 				slotInventory[index].getItems().remove(slotEquipment[index1].getItems().get(0));
 				if (slotInventory[index].getItems().size() <= 0) {
 					slotInventory[index].setEmpty(true);
