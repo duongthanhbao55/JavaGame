@@ -36,6 +36,7 @@ public class Item extends GameObject {
     protected int maxHoverOffset, hoverDir = 1;
     protected float hoverOffset;
     protected BufferedImage img;
+    protected boolean isEquipped = false;
 
     public Item(int x, int y, int objType, ItemTemplate itemTemplate) {
         super(x, y, objType);
@@ -63,24 +64,14 @@ public class Item extends GameObject {
         return atk;
     }
 
-    public void setAtk(int atk) {
-        this.atk = atk;
-    }
 
     public int getDef() {
         return def;
     }
 
-    public void setDef(int def) {
-        this.def = def;
-    }
 
     public int getHp() {
         return hp;
-    }
-
-    public void setHp(int hp) {
-        this.hp = hp;
     }
 
 
@@ -88,16 +79,41 @@ public class Item extends GameObject {
         return ability;
     }
 
-    public void setAbility(String ability) {
-        this.ability = ability;
-    }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public float getAtk_up() {
+        return atk_up;
+    }
+
+    public float getHp_up() {
+        return hp_up;
+    }
+
+    public float getDef_up() {
+        return def_up;
+    }
+
+    public float getSpeed_up() {
+        return speed_up;
+    }
+
+    public float getDmg_up() {
+        return dmg_up;
+    }
+
+    public float getDmg_down() {
+        return dmg_down;
+    }
+
+    public int getHeal() {
+        return heal;
+    }
+
+    public int getMana() {
+        return mana;
     }
 
     public int getQuantity() {

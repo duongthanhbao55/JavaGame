@@ -256,7 +256,7 @@ public class Constants {
 		public static final int ATTACK_JUMP = 7;
 		
 		public static final int DEFAULT_MAXHEALTH = 100;
-		public static final int DEFAULT_DAMAGE = 20;
+		public static final int DEFAULT_ATTACK = 20;
 		public static final int DEFAULT_DEF = 10;
 		public static final int DEFAULT_MANA = 100;
 	}
