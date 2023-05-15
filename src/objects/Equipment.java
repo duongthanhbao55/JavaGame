@@ -9,7 +9,16 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
+
+import Template.EquipmentTemplate;
+import Template.InventoryTemplate;
+import database.ItemManager;
+import database.MySQL;
 import gamestates.Playing;
 import main.Game;
 import untilz.LoadSave;
@@ -18,6 +27,8 @@ import static untilz.Constants.EquipmentConstants.*;
 
 public class Equipment {
 	private Playing playing;
+	private int equipmentId = 0;
+	public static EquipmentTemplate[] equipmentTemplate;
 	private BufferedImage equipmentUI;
 	private Slot[] Slots = new Slot[10];
 	private Rectangle2D.Float Bag;
@@ -30,6 +41,7 @@ public class Equipment {
 	private void LoadImg() {
 		equipmentUI = LoadSave.GetSpriteAtlas(LoadSave.EQUIPMENT_BACKGROUND);
 	}
+	
 	public void initBag() {
 		Bag = new Rectangle2D.Float( Game.TILES_SIZE * 26, 0, EQUIPMENT_UI_WIDTH, EQUIPMENT_UI_HEIGHT);
 		float width = GRID_WIDTH / 4;
@@ -65,6 +77,13 @@ public class Equipment {
 				height, true,true, null);
 		
 		
+	}
+	public void initEquipment() {
+		for(int i = 0; i < equipmentTemplate[equipmentId].itemId.length; i++) {
+			int index = ItemManager.arrItemTemplate[equipmentTemplate[equipmentId].itemId[i]].slot;
+			Slots[index].addItem(new Item((int)0, (int)0, 0,
+							ItemManager.arrItemTemplate[equipmentTemplate[equipmentId].itemId[i]]));
+		}
 	}
 	public void update() {
 		
@@ -112,5 +131,37 @@ public class Equipment {
 	}
 	public Slot[] getSlots() {
 		return Slots;
+	}
+	public static void loadEquipment() {
+		try {
+			EquipmentTemplate[] _equipmentTemplates = new EquipmentTemplate[0];
+			final MySQL mySQL = new MySQL(0);
+
+			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `equipment`;");
+			if (res.last()) {
+				_equipmentTemplates = new EquipmentTemplate[res.getRow()];
+				res.beforeFirst();
+			}
+			int i = 0;
+			while (res.next()) {
+				final EquipmentTemplate equipmentTemplates = new EquipmentTemplate();
+				equipmentTemplates.EquipmentId = res.getShort("id");
+				final JSONArray itemId = (JSONArray) JSONValue.parse(res.getString("itemId"));
+				equipmentTemplates.itemId = new short[itemId.size()];
+			
+				for (int j5 = 0; j5 < equipmentTemplates.itemId.length; ++j5) {
+					equipmentTemplates.itemId[j5] = Short.parseShort(itemId.get(j5).toString());
+				}
+				
+
+				_equipmentTemplates[i] = equipmentTemplates;
+				++i;
+			}
+			res.close();
+			equipmentTemplate = _equipmentTemplates;
+
+		} catch (SQLException | NumberFormatException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

@@ -55,6 +55,7 @@ public class Playing extends State implements Statemethods {
 
 	// CAMERA
 	private int xLvlOffset = 0;
+	
 	private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
 	private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
 	private int maxLvlOffsetX;
@@ -80,11 +81,11 @@ public class Playing extends State implements Statemethods {
 
 	public void loadNextLevel() {
 		resetAll();
-		levelManager.loadNextLevel();
+		//.loadNextLevel();
 		player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
 	}
 
-	private void initTask() {
+	public void initTask() {
 		for (NpcTemplate npc : NPCManager.arrNpcTemplate) {
 			if (Task.isTaskNPC(player, (short) npc.npcTemplateId)) {
 				npcManager.getNpcWizard1s().get(npc.npcTemplateId).setHaveTask(true, player);
@@ -101,6 +102,8 @@ public class Playing extends State implements Statemethods {
 		ArrayList<TileLayer> mapLayer = levelManager.getCurrLevel().getMapLayer();
 		player.LoadLvlData(mapLayer.get(0).getTileMap());
 		enemyManager = new EnemyManager(this);
+		inventoryManager.initDataInventory();
+		equipment.initEquipment();
 		loadAll();
 		initTask();
 	}
@@ -138,9 +141,11 @@ public class Playing extends State implements Statemethods {
 			player.update(currTime);
 		} else {
 			levelManager.getCurrLevel().Update();
+			levelManager.update();
 			objectManager.update(currTime, collisionLayer, player);
 			npcManager.update(currTime, collisionLayer, player);
 			player.update(currTime);
+			
 			enemyManager.update(currTime, collisionLayer, player);
 			itemManager.update();			
 			if (Confirm.isShow())

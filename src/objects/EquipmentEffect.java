@@ -1,6 +1,5 @@
 package objects;
 
-import entities.Player;
 import gamestates.Playing;
 
 import static untilz.Constants.PlayerConstants.*;
