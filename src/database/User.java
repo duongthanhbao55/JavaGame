@@ -104,6 +104,7 @@ public class User {
 				Connection conn = MySQL.getConnection(0);
 				String sql = "INSERT INTO user (userid, user, status, password, player, admin, created_at, email, tester) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				PreparedStatement pstmt = conn.prepareStatement(sql);
+				
 				pstmt.setInt(1, 1); // set the value for user
 				pstmt.setString(2, uName); // set the value for user
 				pstmt.setInt(3, 1); // set the value for status
@@ -115,6 +116,7 @@ public class User {
 				pstmt.setInt(9, 0); // set the value for tester
 
 				int rowsUpdate = pstmt.executeUpdate();
+				
 				if (rowsUpdate > 0) {
 					System.out.println("New user has been inserted successfully!");
 					return true;

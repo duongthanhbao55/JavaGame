@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
+import Map.PhysicalMap;
 import Task.Task;
 import Template.EnemyTemplate;
 import Template.NpcTemplate;
@@ -22,7 +23,7 @@ public class NPCManager {
 
 	public NPCManager(Playing playing) {
 		this.playing = playing;
-		npcWizard1s.add(new NPC_Wizard1(400, 580, 0));// add by id//id: 1
+		npcWizard1s.add(new NPC_Wizard1(400, 580, 0));
 	}
 
 	public void update(long currTime, int[][] lvlData, Player player) {
@@ -106,6 +107,9 @@ public class NPCManager {
 
 	public void setNpcWizard1s(ArrayList<NPC_Wizard1> npcWizard1s) {
 		this.npcWizard1s = npcWizard1s;
+	}
+	public void loadNpcs(PhysicalMap physicalMap) {
+		this.npcWizard1s = physicalMap.getNpcs();
 	}
 
 }

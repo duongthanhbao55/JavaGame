@@ -10,13 +10,27 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
+
+import Template.InventoryTemplate;
+import Template.ItemTemplate;
+import Template.MapTemplate;
+import database.ItemManager;
+import database.MySQL;
+
 import static untilz.Constants.UI.Inventory.*;
+import static untilz.HelpMethods.nextInt;
 
 public class InventoryManager {
 	private Playing playing;
+	private int inventoryId = 0;
 	private static ArrayList<Item> items = new ArrayList<Item>();
+	public static InventoryTemplate[] inventoryTemplate;
 	private BufferedImage InventoryImg;
 	private Rectangle2D.Float Bag;
 	private Slot[] Slots;
@@ -42,9 +56,17 @@ public class InventoryManager {
 				}
 			Slots[i] = new Slot((float) (Bag.getX() + (i % 4 * width)), (float) (Bag.getY() + row * height), width,
 					height, true,false, null);
+		}	
+	}
+	public void initDataInventory() {
+		float width = GRID_WIDTH / 4;
+		float height = GRID_HEIGHT / 6;
+		for(int i = 0; i < InventoryManager.inventoryTemplate[inventoryId].itemId.length; i++) {
+			int index = InventoryManager.inventoryTemplate[inventoryId].itemIndex[i];
+			Slots[index].addItem(new Item((int)0, (int)0, 0,
+							ItemManager.arrItemTemplate[inventoryTemplate[inventoryId].itemIndex[index]]));
 		}
 	}
-
 	public void LoadImg() {
 		InventoryImg = LoadSave.GetSpriteAtlas(LoadSave.INVENTORY_BACKGROUND);
 	}
@@ -123,6 +145,42 @@ public class InventoryManager {
 	}
 	public Slot[] getSlots() {
 		return Slots;
+	}
+	public static void loadInventoryData() {
+		try {
+			InventoryTemplate[] _inventoryTemplates = new InventoryTemplate[0];
+			final MySQL mySQL = new MySQL(0);
+
+			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `inventory`;");
+			if (res.last()) {
+				_inventoryTemplates = new InventoryTemplate[res.getRow()];
+				res.beforeFirst();
+			}
+			int i = 0;
+			while (res.next()) {
+				final InventoryTemplate inventoryTemplate = new InventoryTemplate();
+				inventoryTemplate.InventoryId = res.getShort("id");
+				final JSONArray itemId = (JSONArray) JSONValue.parse(res.getString("itemId"));
+				final JSONArray itemIndex = (JSONArray) JSONValue.parse(res.getString("itemIndex"));
+				inventoryTemplate.itemId = new short[itemId.size()];
+				inventoryTemplate.itemIndex = new short[inventoryTemplate.itemId.length];
+
+			
+				for (int j5 = 0; j5 < inventoryTemplate.itemId.length; ++j5) {
+					inventoryTemplate.itemId[j5] = Short.parseShort(itemId.get(j5).toString());
+					inventoryTemplate.itemIndex[j5] = Short.parseShort(itemIndex.get(j5).toString());
+				}
+				
+
+				_inventoryTemplates[i] = inventoryTemplate;
+				++i;
+			}
+			res.close();
+			InventoryManager.inventoryTemplate = _inventoryTemplates;
+
+		} catch (SQLException | NumberFormatException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
