@@ -32,6 +32,7 @@ import org.json.simple.JSONValue;
 import static untilz.HelpMethods.*;
 import static untilz.Constants.PlayerConstants.*;
 import static untilz.Constants.GRAVITY;
+import static untilz.Constants.Exp;
 
 public class Player extends Entity {
 
@@ -39,7 +40,8 @@ public class Player extends Entity {
 	private static int playerId;
 	private String Name;
 	private int Level;
-	private long EXP;
+    private long currEXPCap = Exp.BASE_EXP_CAP;
+    private long currEXP;
 	private long ExpDown;
 	private int vip;
 	private int mapId;
@@ -116,7 +118,7 @@ public class Player extends Entity {
 		this.walkSpeed = Game.SCALE * 1.0f;
 		loadAnim();
 
-		this.EXP = 0;
+        this.currEXP = 0;
 		this.ExpDown = 0;
 		this.Level = 1;
 		this.mapId = 0;
@@ -490,7 +492,8 @@ public class Player extends Entity {
 	}
 
 	public void updateExp(long exp) {
-		this.EXP += exp;
+        this.currEXP += exp;
+        updateLevel();
 	}
 
 	public boolean isInteract() {
@@ -591,6 +594,15 @@ public class Player extends Entity {
 		Level = level;
 	}
 
+    public void updateLevel() {
+        if (currEXP < currEXPCap) return;
+        currEXP = currEXP - currEXPCap;
+        switch (Level / 10) {
+            case 0 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV10);
+            case 1 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV20);
+        }
+        Level += 1;
+    }
 	public int getMapId() {
 		return mapId;
 	}
@@ -639,7 +651,7 @@ public class Player extends Entity {
 				player.ctaskCount = red.getShort("ctaskCount");
 				// player.cspeed = red.getByte("cspeed");
 				player.Name = red.getString("cName");
-				player.EXP = red.getLong("cEXP");
+                player.currEXP = red.getLong("cEXP");
 				player.ExpDown = red.getLong("cExpDown");
 				player.gold = red.getInt("xu");
 				System.out.println("gold" + player.gold);
