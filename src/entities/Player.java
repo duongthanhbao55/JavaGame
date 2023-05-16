@@ -567,7 +567,7 @@ public class Player extends Entity {
 		this.defend = defend;
 	}
 //
-	public void applyAtk(int attack) {
+//	public void applyAtk(int attack) {
 //		this.ATK = attack;
 //	}
     public void applyHeal(int hp) {
