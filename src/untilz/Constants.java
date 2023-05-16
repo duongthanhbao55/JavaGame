@@ -311,4 +311,9 @@ public class Constants {
 		
 
 	}
+	public static class Exp {
+		public static final int BASE_EXP_CAP = 20;
+		public static final float EXP_INCREASE_LV10 = 1.1F;
+		public static final float EXP_INCREASE_LV20 = 1.15F;
+	}
 }
