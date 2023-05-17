@@ -63,13 +63,22 @@ public class RegisterSuccess {
 	public void MouseRelease(MouseEvent e) {
 		if(isIn(login, e)) {
 			if( login.isMousePressed()) {
+				
+				game.getRegister().setRegisterState(false);
+				game.getLogin().setLoginState(true);
+				game.getRegister().setSuccess(false);
+				
 				login.applyGamestate();
+				game.getRegister().setRegisterState(false);
+				game.getLogin().setLoginState(true);
 				game.getLogin().SetUpComponent();
 				game.getLogin().addComponent();		
-			}
-				
+			}	
 		}		
+		game.getLogin().mouseReleased(e);
 		login.resetBools();
+//		start
+//		end
 	}
 	public void MousePressed(MouseEvent e) {
 		if(isIn(login, e))

@@ -84,7 +84,7 @@ public class MySQL
 			preparedstatement.setString(2, username);
 			preparedstatement.setString(3, password);
 			int rs = preparedstatement.executeUpdate();
-			System.out.println("Insert " + rs + "account");
+			System.out.println("Insert " + rs + " account");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -249,7 +249,7 @@ public class MySQL
 	
 	// check email valid
 	
-	public static boolean emailIsValid(String email) {
+	public static boolean emailIsValid(String email) { // return true if email valid
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
         					"[a-zA-Z0-9_+&*-]+)*@" +
         					"(?:[a-zA-Z0-9-]+\\.)+[a-z" +

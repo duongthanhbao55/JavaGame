@@ -17,7 +17,7 @@ public class User {
 	private String username;
 	private String password;
 	private String nickname;
-	
+	private String email;
 	// GETTER & SETTER
 
 	public String getUsername() {
@@ -46,6 +46,14 @@ public class User {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public User() {
@@ -80,6 +88,7 @@ public class User {
 //		return null;
 //	}
 	public static User Login(final String uName, final String pass) {
+		System.out.println(uName + " " + pass);
 		User user = new User();
 		if(MySQL.loginSuccessfully(uName, pass)) {
 			user.username = uName;
@@ -95,42 +104,75 @@ public class User {
 		}
 		return null;
 	}
-
-	public static boolean Register(String uName, String password) {
-		boolean result = false;
-		try {
-			final MySQL mySQL = new MySQL(0);
-			try {
-				Connection conn = MySQL.getConnection(0);
-				String sql = "INSERT INTO user (userid, user, status, password, player, admin, created_at, email, tester) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-				PreparedStatement pstmt = conn.prepareStatement(sql);
-				
-				pstmt.setInt(1, 1); // set the value for user
-				pstmt.setString(2, uName); // set the value for user
-				pstmt.setInt(3, 1); // set the value for status
-				pstmt.setString(4, password); // set the value for password
-				pstmt.setString(5, "[]");
-				pstmt.setInt(6, 0); // set the value for admin
-				pstmt.setString(7, null);
-				pstmt.setString(8, "test@gmail.com");
-				pstmt.setInt(9, 0); // set the value for tester
-
-				int rowsUpdate = pstmt.executeUpdate();
-				
-				if (rowsUpdate > 0) {
-					System.out.println("New user has been inserted successfully!");
-					return true;
-				} else {
-					System.out.println("User not found with id = " + uName);
-				}
-			} finally {
-				mySQL.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+	
+	public static boolean Register(String email, String uName, String password, String confirmPw) {
+		
+		boolean chk_email = email.length() == 0;
+		boolean chk_uname = uName.length() == 0;
+		boolean chk_password = password.length() == 0;
+//		System.out.println(email);
+		
+		if(chk_email || chk_uname || chk_password) {
+			System.out.println("Please complete all information !");
+			return false;
 		}
-		return result;
+
+		if(!MySQL.emailIsValid(email)) {
+			System.out.println("This email is not valid !");
+			return false;
+		}
+		else {
+			if(MySQL.emailWasUsed(email)) {
+				System.out.println("This email was used !");
+				return false;
+			}
+		}
+		if(MySQL.usernameWasUsed(uName)) {
+			System.out.println("Username was used !");
+			return false;
+		}
+		if(!password.equals(confirmPw)) {
+			System.out.println("Password INCORRECT");
+			return false;
+		}
+		MySQL.insertAccounts(email, uName, password);
+		System.out.println("Register Successfully !");
+		return true;
 	}
+
+//	public static boolean Register(String uName, String password, String email) {
+//		boolean result = false;
+//		try {
+//			final MySQL mySQL = new MySQL(0);
+//			try {
+//				Connection conn = MySQL.getConnection(0);
+//				String sql = "INSERT INTO user (userid, user, status, password, player, admin, created_at, email, tester) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//				PreparedStatement pstmt = conn.prepareStatement(sql);
+//				pstmt.setInt(1, 1); // set the value for user
+//				pstmt.setString(2, uName); // set the value for user
+//				pstmt.setInt(3, 1); // set the value for status
+//				pstmt.setString(4, password); // set the value for password
+//				pstmt.setString(5, "[]");
+//				pstmt.setInt(6, 0); // set the value for admin
+//				pstmt.setString(7, null);
+//				pstmt.setString(8, "test@gmail.com");
+//				pstmt.setInt(9, 0); // set the value for tester
+//
+//				int rowsUpdate = pstmt.executeUpdate();
+//				if (rowsUpdate > 0) {
+//					System.out.println("New user has been inserted successfully!");
+//					return true;
+//				} else {
+//					System.out.println("User not found with id = " + uName);
+//				}
+//			} finally {
+//				mySQL.close();
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return result;
+//	}
 	public Player getPlayer() {
 		return this.player;
 	}
