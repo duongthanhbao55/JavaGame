@@ -26,7 +26,7 @@ public class EquipmentEffect {
     public void applyEffect(Slot[] slots) {
         for (Slot s : slots) {
             if (s != null)
-                if (s.getItems().size() > 0)
+                if (!s.getItems().isEmpty())
                     applyEffect(s.getItems().get(0));
         }
     }
@@ -59,6 +59,13 @@ public class EquipmentEffect {
 
     public void applyEffect(Item item) {
         final Player player = playing.getPlayer();
+        
+        if(item.slot < 0) {
+        	 player.applyHeal(item.heal);
+             // MANA
+             player.setMana(item.mana);
+             return;
+        }
         // ATK
         ATK_flat += item.atk;
         ATK_percent += item.atk_up;
@@ -79,9 +86,7 @@ public class EquipmentEffect {
         HP += item.hp;
         player.setMaxHealth(DEFAULT_MAXHEALTH + HP);
         // HEAL
-        player.applyHeal(item.heal);
-        // MANA
-        player.setMana(item.mana);
+       
 
         if (item.heal ==0 && item.mana==0) item.isEquipped = true;
     }

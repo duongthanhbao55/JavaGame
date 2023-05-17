@@ -18,6 +18,10 @@ public class Text {
 				"Accept", // 0
 				"Refuse", // 1
 				"Receive",// 2
+				"unequip",//3
+				"drop",//4
+				"use",//5
+				"sell"//6
 		};
 	}
 }

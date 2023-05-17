@@ -45,8 +45,7 @@ public class Cannon extends GameObject{
 			doAnimation = false;
 		}
 		
-		
-		//System.out.println(doAnimation);
+	
 	}
 	public void render(Graphics g, int xLvlOffset) {		
 			

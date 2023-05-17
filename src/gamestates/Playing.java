@@ -120,6 +120,7 @@ public class Playing extends State implements Statemethods {
 		equipment = new Equipment(this);
 		playerStatus = new PlayerStatus(this);
 		Selector.getInstance().setBounds(inventoryManager.getSlots()[0].getBounds());
+		Selector.getInstance().setPlaying(this);
 		Selector.getInstance().setSlotEquipment(equipment.getSlots());
 		Selector.getInstance().setSlotInventory(inventoryManager.getSlots());
 		equipmentEffect = new EquipmentEffect(this);

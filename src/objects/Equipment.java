@@ -23,6 +23,7 @@ import gamestates.Playing;
 import main.Game;
 import ui.Selector;
 import untilz.LoadSave;
+import untilz.Text;
 
 import static untilz.Constants.EquipmentConstants.*;
 
@@ -85,7 +86,7 @@ public class Equipment {
 			Slots[index].addItem(new Item((int)0, (int)0, 0,
 							ItemManager.arrItemTemplate[equipmentTemplate[equipmentId].itemId[i]]));
 		
-			Slots[index].getItemOption().setText(new String[] { "unequip", "drop", "sell" });
+			Slots[index].getItemOption().setText(new String[] { Text.get(0, 3), Text.get(0, 4), Text.get(0, 6) });
 		}
 		Selector.getInstance().getEquipmentEffect().applyEffect(Slots);
 	}

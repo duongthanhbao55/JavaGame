@@ -81,7 +81,6 @@ public class PhysicalMap {
 		this.maxLvlOffsetX = physmap.getLvlOffset();
 		this.lvlTilesWide = physmap.getLvlTilesWide();
 		this.playerSpawn = physmap.getPlayerSpawn();
-
 	}
 
 	public void loadAll(Playing playing, int idMap) {
@@ -150,7 +149,6 @@ public class PhysicalMap {
 		for (TileLayer layer : mapLayer) {
 			layer.Update();
 		}
-
 	}
 
 	// RENDER
