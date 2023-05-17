@@ -356,7 +356,8 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 			}
 		}
 		xml.normalize();
-		gamemap.addPlayerSpawn(spawnPoint);
+		Point spawn[] = {spawnPoint,null};
+		gamemap.setPlayerSpawn(spawn);
 
 		instance.mapsDict.put(ID, gamemap);
 

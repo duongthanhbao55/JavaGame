@@ -21,6 +21,7 @@ import database.ItemManager;
 import database.MySQL;
 import gamestates.Playing;
 import main.Game;
+import ui.Selector;
 import untilz.LoadSave;
 
 import static untilz.Constants.EquipmentConstants.*;
@@ -83,7 +84,10 @@ public class Equipment {
 			int index = ItemManager.arrItemTemplate[equipmentTemplate[equipmentId].itemId[i]].slot;
 			Slots[index].addItem(new Item((int)0, (int)0, 0,
 							ItemManager.arrItemTemplate[equipmentTemplate[equipmentId].itemId[i]]));
+		
+			Slots[index].getItemOption().setText(new String[] { "unequip", "drop", "sell" });
 		}
+		Selector.getInstance().getEquipmentEffect().applyEffect(Slots);
 	}
 	public void update() {
 		

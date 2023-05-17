@@ -18,6 +18,7 @@ public abstract class Entity {
 	protected int currHealth = maxHealth;
 
 	protected Rectangle2D.Float attackBox;
+	protected Rectangle2D.Float realHitbox;
 	protected float walkSpeed = 1.0f * Game.SCALE;
 	protected int tileY;
 	
@@ -38,16 +39,22 @@ public abstract class Entity {
 		g.drawRect((int)(attackBox.x - hitbox.width/2 - xLvlOffset),(int) (attackBox.y - hitbox.height/2), (int)attackBox.width,(int) attackBox.height);
 	}
 	protected void initHitbox(int width, int height) {
+		
 		hitbox = new Rectangle2D.Float((int)x,(int)y,width * Game.SCALE,height * Game.SCALE);
+		realHitbox = new Rectangle2D.Float((int)(hitbox.x - hitbox.width/2),(int) (hitbox.y  - hitbox.height/2),(int) hitbox.width,(int) hitbox.height);
 	}
 	protected void drawHitbox(Graphics g, int xLvlOffset) {
 		//DEBUGGING
 		g.setColor(Color.pink);
 		g.drawRect((int)(hitbox.x - hitbox.width/2) - xLvlOffset,(int) (hitbox.y  - hitbox.height/2),(int) hitbox.width,(int) hitbox.height);
+
 	}
-	
+
 	public Rectangle2D.Float getHitbox() {
 		return hitbox;
+	}
+	public Rectangle2D.Float getRealHitbox(){
+		return realHitbox;
 	}
 	
 	public int getState() {

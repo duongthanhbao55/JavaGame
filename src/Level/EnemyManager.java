@@ -49,19 +49,16 @@ public class EnemyManager {
 	}
 
 	public void update(long currTime, int[][] lvlData, Player player) {
-		boolean isAnyActive = false;
+		for(NightBorne n : NightBornes) {
+			n.reSpawn(currTime);
+		}
 		for (NightBorne n : NightBornes)
 			if (n.isActive()) {
 				n.update(currTime, lvlData, player);
 				if (activeEffect)
 					hitEffect.update(currTime);
-				isAnyActive = true;
 			}
 		checkEffect();
-		if (!isAnyActive) {
-			playing.setLevelCompleted(true);
-		}
-
 	}
 
 	public void render(Graphics g, int xLvlOffset) {

@@ -1,18 +1,117 @@
--- USE gamedb;
-
-/*!40101 SET NAMES utf8mb4 */;
-
- drop table item;
--- SET SESSION AUTO_INCREMENT_OFFSET  = 3000;
-CREATE TABLE IF NOT EXISTS Item  (
-    itemID TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    slot TINYINT NOT NULL DEFAULT 0,
-    filename VARCHAR(34) NOT NULL,
-    ability TEXT(500) DEFAULT NULL,
-    itemDesc TEXT(500) DEFAULT NULL,
-    effect VARCHAR(60) DEFAULT NULL-- SET SESSION AUTO_INCREMENT_OFFSET  = 3000;
+-- STEP 1: Create database
+CREATE DATABASE IF NOT EXISTS gamedb;
+use gamedb;
+-- STEP 2: Create table
+DROP TABLE accounts;
+-- DROP TABLE accounts_inf;
+CREATE TABLE accounts(
+	user_id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    `password` VARCHAR(100) NOT NULL UNIQUE,
+    nickname VARCHAR(12) UNIQUE,
+    playerID VARCHAR(100) DEFAULT '[]',
+    create_at DATETIME
 );
+-- CREATE TABLE accounts_inf(
+-- 	user_id INT PRIMARY KEY AUTO_INCREMENT,
+--     email VARCHAR(100),
+--     first_name VARCHAR(20),
+--     last_name VARCHAR(20)
+-- );
+
+-- CREATE TABLE accounts(
+-- 	user_id INT,
+--     user_name VARCHAR(50),
+--     pass_word VARCHAR(100),
+--     nick_name VARCHAR(12)
+-- );
+
+CREATE TABLE task (
+  id tinyint(4) NOT NULL,
+  tasks varchar(500) NOT NULL DEFAULT '[]',
+  mapTasks varchar(500)NOT NULL DEFAULT '[]'
+);
+
+CREATE TABLE `tasktemplate` (
+  `taskId` smallint(6) NOT NULL PRIMARY KEY,
+  `name` varchar(100)NOT NULL,
+  `detail` varchar(500)NOT NULL,
+  `subNames` varchar(5000) NOT NULL DEFAULT '[]',
+  `counts` varchar(5000) NOT NULL DEFAULT '[]'
+);
+
+DROP TABLE `player`;
+
+CREATE TABLE `player` (
+  `userId` int,
+  `playerId` int(11) NOT NULL PRIMARY KEY,
+  `inventoryId` int(11) NOT NULL,
+  `ctaskId` tinyint(4) NOT NULL DEFAULT '0',
+  `ctaskIndex` tinyint(4) NOT NULL DEFAULT '-1',
+  `ctaskCount` smallint(6) NOT NULL DEFAULT '0',
+  `cspeed` tinyint(1) NOT NULL DEFAULT '4',
+  `cName` varchar(20) NOT NULL,
+  `cEXP` bigint(20) NOT NULL DEFAULT '0',
+  `cExpDown` bigint(20) NOT NULL DEFAULT '0',
+  `cLevel` int(10) NOT NULL DEFAULT '1',
+  `xu` int(11) NOT NULL DEFAULT '0',
+  `idMap` smallint NOT NULL DEFAULT '0',
+  `InfoMap` varchar(50) NOT NULL DEFAULT '[400,500]',
+  `vip` tinyint(4) DEFAULT '0',
+   FOREIGN KEY (`userId`) REFERENCES accounts(user_id),
+   FOREIGN KEY (`ctaskId`) REFERENCES `tasktemplate`(`taskId`),
+   FOREIGN KEY (`idMap`) REFERENCES `maptemplate`(`id`),
+   FOREIGN KEY(`inventoryId`) REFERENCES `inventory`(`id`)
+);
+
+CREATE TABLE `mobtemplate` (
+  `mobTemplateId` smallint(6) NOT NULL,
+  `type` tinyint(4) NOT NULL,
+  `name` varchar(100)NOT NULL,
+  `hp` int(11) NOT NULL,
+  `isBoss` tinyint(1) NOT NULL,
+  `rangeMove` tinyint(4) NOT NULL,
+  `speed` tinyint(4) NOT NULL,
+  `isAttack` tinyint(1) NOT NULL DEFAULT '1'
+);
+
+CREATE TABLE `npctemplate` (
+  `id` tinyint(4) NOT NULL,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `menu` varchar(2000) NOT NULL
+);
+--
+-- Cấu trúc bảng cho bảng `maptemplate`
+--
+DROP TABLE `maptemplate`;
+
+CREATE TABLE `maptemplate` (
+  `id` smallint(6) NOT NULL PRIMARY KEY,
+  `mapName` varchar(100) COLLATE utf8_bin NOT NULL,
+  `mapDescription` varchar(200) COLLATE utf8_bin NOT NULL DEFAULT '',
+  `WgoX` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `WgoY` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `WmapID` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `npcX` varchar(500) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `npcY` varchar(500) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `npcID` varchar(200) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `mobID` varchar(500) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `mobLevel` varchar(500) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `mobX` varchar(1000) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `mobY` varchar(1000) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `mobStatus` varchar(500) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `moblevelBoss` varchar(500) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `mobRefreshTime` varchar(1000) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+  `bgID` tinyint(4) NOT NULL
+);
+
+CREATE TABLE `inventory`(
+	`id` smallint(6) NOT NULL PRIMARY KEY,
+	`itemId` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '[]',
+    `itemIndex` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '[]'
+);
+
 CREATE TABLE IF NOT EXISTS Item  (
     itemID TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
@@ -41,8 +140,143 @@ FOR EACH ROW
 		-- NEW.effect = if (NEW.effect IS NULL , '[]',NEW.effect);
 	END//
 DELIMITER ;
+-- ADD FOREING KEY
+-- ALTER TABLE accounts
+-- ADD CONSTRAINT fk_userId
+-- FOREIGN KEY (user_id) REFERENCES accounts_inf(user_id);
+
+-- STEP 3: ADD DATA SET
+
+-- STEP 4: Create indexs
+CREATE INDEX username_idx
+ON accounts(username);
+
+CREATE INDEX nickname_idx
+ON accounts(nickname);
+
+CREATE INDEX email_idx
+ON accounts(email);
+
+CREATE INDEX password_idx
+ON accounts(`password`);
+-- STEP 5: Create functions
+-- DROP FUNCTION findEmail;
+-- DROP FUNCTION findNickname;
+-- DROP FUNCTION findPassword;
+-- DROP FUNCTION findUsername;
+-- DROP FUNCTION haveNickname;
+SET GLOBAL log_bin_trust_function_creators = 1;
+DELIMITER $$
+CREATE FUNCTION findUsername(f_username VARCHAR(100))
+RETURNS VARCHAR(100)
+NOT DETERMINISTIC
+BEGIN
+	DECLARE result VARCHAR(100);
+    SET result = (SELECT username FROM accounts WHERE username = f_username);
+    RETURN result;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION findNickname(f_nickname VARCHAR(12))
+RETURNS VARCHAR(12)
+NOT DETERMINISTIC
+BEGIN
+	DECLARE result VARCHAR(12);
+    SET result = (SELECT nickname FROM accounts WHERE nickname = f_nickname);
+    RETURN result;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION findEmail(f_email VARCHAR(100))
+RETURNS VARCHAR(100)
+NOT DETERMINISTIC
+BEGIN
+	DECLARE result VARCHAR(100);
+    SET result = (SELECT email FROM accounts WHERE email = f_email);
+    RETURN result;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION findPassword(f_username VARCHAR(100))
+RETURNS VARCHAR(100)
+NOT DETERMINISTIC
+BEGIN
+	DECLARE result VARCHAR(100);
+    SET result = (SELECT `password` FROM accounts WHERE username = f_username);
+    RETURN result;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION haveNickname(f_username VARCHAR(100))
+RETURNS VARCHAR(12)
+NOT DETERMINISTIC
+BEGIN
+	DECLARE result VARCHAR(12);
+    SET result = (SELECT nickname FROM accounts WHERE username = f_username);
+    RETURN result;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION findPlayerID(f_username VARCHAR(100))
+RETURNS VARCHAR(100)
+NOT DETERMINISTIC
+BEGIN
+	DECLARE result VARCHAR(100);
+    SET result = (SELECT playerID FROM accounts WHERE username = f_username);
+    RETURN result;
+END $$
+DELIMITER ;
+
+-- STEP 6: Create stored procedure
+
+-- DROP PROCEDURE find_nickname;
+-- DROP PROCEDURE find_username;
+-- DROP PROCEDURE getAccounts;
+-- DROP PROCEDURE getAccountsInf;
+-- DROP PROCEDURE getClientInf;
+-- DROP PROCEDURE setNickname;
+
+DELIMITER $$
+CREATE PROCEDURE setNickname(IN f_username VARCHAR(100),IN n_nickname VARCHAR(12))
+BEGIN
+	UPDATE accounts
+    SET nickname = n_nickname
+    WHERE username = f_username;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE setPlayerID(IN n_playerID VARCHAR(100), IN f_username VARCHAR(100))
+BEGIN
+	UPDATE accounts
+    SET playerID = n_playerID
+    WHERE username = f_username;
+END $$
+DELIMITER ;
 
 
+DELIMITER $$
+CREATE PROCEDURE getAccounts()
+BEGIN
+	SELECT * FROM accounts;
+END $$
+DELIMITER ;
+
+-- STEP 7: Create trigger
+-- CREATE TRIGGER before_insert_account
+-- BEFORE INSERT ON accounts
+-- FOR EACH ROW
+-- SET NEW.user_id = (SELECT accounts_inf.user_id FROM accounts_inf ORDER BY accounts_inf.user_id DESC LIMIT 1);
+
+CREATE TRIGGER before_insert_accounts
+BEFORE INSERT ON accounts
+FOR EACH ROW
+SET NEW.create_at = NOW();
 
 -- INSERT DATA
 INSERT INTO item(Name,Effect,Slot,Ability,Filename,itemdesc) VALUES ('Anvil','0,0,0,0,0,0,0,0,0,0,0',-2,'None','anvil.png','a metalworking tool to forge your armors and weapons');
@@ -115,3 +349,31 @@ INSERT INTO item(Name,Effect,Slot,Ability,Filename,itemdesc) VALUES ('Watering C
 INSERT INTO item(Name,Effect,Slot,Ability,Filename,itemdesc) VALUES ('Watermelon','0,0,0,0,0,0,0,0,0,100,0',-1,'Restores 100 HP points','watermelon.png','fresh and juicy, not sure if it could fill your stomach');
 INSERT INTO item(Name,Effect,Slot,Ability,Filename,itemdesc) VALUES ('Wooden Box','0,0,0,0,0,0,0,0,0,0,0',-1,'Obtain one (1) random item','wooden_box.png','what is inside?');
 INSERT INTO item(Name,Effect,Slot,Ability,Filename,itemdesc) VALUES ('Wooden Shield','20,100,100,0,0,0,0,0,0.2,0,0',8,'Decreases incoming damages taken by 20%','wooden_shield.png','a dream of every young lad');
+
+
+INSERT INTO `maptemplate` (`id`, `mapName`, `mapDescription`, `WgoX`, `WgoY`, `WmapID`, `npcX`, `npcY`, `npcID`, `mobID`, `mobLevel`, `mobX`, `mobY`, `mobStatus`, `moblevelBoss`, `mobRefreshTime`,`bgID`) VALUES
+('0', 'Castle', '', '[0,3839]', '[400,550]', '[3,2]','[828]', '[312]', '[0]', '[0,0,0,0]', '[1,1,1,1]', '[1620,1572,1524,1500]', '[360,408,408,408]', '[0,0,0,0]','[0,0,0,0]', '[45000,45000,45000,45000]', '0'),
+('1', 'Castle1', '', '[0,4319]', '[400,550]', '[0,2]','[828]', '[312]', '[0]', '[0,0,0,0]', '[1,1,1,1]', '[1620,1572,1524,1500]', '[360,408,408,408]', '[0,0,0,0]','[0,0,0,0]', '[45000,45000,45000,45000]', '0'),
+('2', 'Castle2', '', '[0,4319]', '[400,700]', '[1,0]','[400]', '[312]', '[0]', '[0,0,0,0]', '[1,1,1,1]', '[1620,1572,1524,1500]', '[360,408,408,408]', '[0,0,0,0]','[0,0,0,0]', '[45000,45000,45000,45000]', '0');
+INSERT INTO accounts(email, username, password, nickname, playerID) VALUES
+("test1@gmail.com","admin","admin","BuonNguQua","[321]");
+CALL getAccounts();
+
+INSERT INTO `task` (`id`, `tasks`, `mapTasks`) VALUES
+(0, '[0,-2,0]', '[0,-2,0]'),
+(1, '[0,-2,0]', '[0,-2,0]'),
+(2, '[0,-2,0]', '[0,-2,0]');
+INSERT INTO `inventory` (`id`, `itemId`, `itemIndex`) VALUES
+(0,'[0,1,2]','[0,1,2]');
+
+INSERT INTO `tasktemplate` (`taskId`, `name`, `detail`, `subNames`, `counts`) VALUES
+(0, 'Mission kill NightBorne', 'ốc sên (Map1)', '[\"talk to the blue wizard\",\"kill NightBorne 0\",\"talk to the blue wizard\"]', '[-1,2,-1]'),
+(1, 'Mission kill NightBorne', 'ốc sên (Map1)', '[\"talk to the blue wizard\",\"kill NightBorne\",\"talk to the blue wizard\"]', '[-1,2,-1]'),
+(2, 'Mission kill NightBorne', 'NightBorne', '[\"talk to the blue wizard\",\"kill NightBorne 2\",\"talk to the blue wizard\"]', '[-1,2,-1]');
+INSERT INTO `player` (`playerId`, `ctaskId`, `ctaskIndex`, `ctaskCount`, `cspeed`, `cName`, `cEXP`, `cExpDown`, `cLevel`, `xu`,`idMap`, `InfoMap`, `vip`) VALUES
+('321', '0', '-1', '1', '2', 'admin', '0', '0', '1', '0', '0', '[700,500]', '0');
+INSERT INTO `mobtemplate` (`mobTemplateId`, `type`, `name`, `hp`, `isBoss`, `rangeMove`, `speed`, `isAttack`) VALUES
+(0, 0, 'NightBorne', 15, 0, 0, 1, 0);
+INSERT INTO `npctemplate` (`id`, `name`, `menu`) VALUES
+(0, 'NPC_Wizard1', '[[\"Nói chuyện\"]]');
+

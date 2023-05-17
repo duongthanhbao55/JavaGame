@@ -35,7 +35,7 @@ public class LevelManager {
 	}
 
 	public void loadNextLevel() {
-		levels.get(lvlIndex).setItem(ItemManager.getItems());
+
 		//lvlIndex++;
 		if (lvlIndex >= levels.size()) {
 			lvlIndex = 0;
@@ -60,12 +60,15 @@ public class LevelManager {
 	}
 
 	public void update() {
-		Rectangle2D.Float playerHitbox = game.getPlaying().getPlayer().getHitbox();
+		Rectangle2D.Float playerHitbox = game.getPlaying().getPlayer().getRealHitbox();
 		for (int i = 0; i < levels.get(lvlIndex).getAreaSwitch().length; i++) {
 			if (levels.get(lvlIndex).getAreaSwitch()[i].intersects(playerHitbox)) {
-					lvlIndex = PhysicalMap.mapTemplate[lvlIndex].WmapID[i];	
+					levels.get(lvlIndex).setItem(ItemManager.getItems());
+					game.getPlaying().getPlayer().setSpawn(levels.get(lvlIndex).getPlayerSpawn()[i]);
+					lvlIndex = PhysicalMap.mapTemplate[lvlIndex].WmapID[i];					
 					loadNextLevel();
 					game.getPlaying().loadNextLevel();
+					
 			}
 		}
 	}
@@ -80,5 +83,8 @@ public class LevelManager {
 
 	public int getLvlIndex() {
 		return lvlIndex;
+	}
+	public void setLvlIndex(int lvlIndex) {
+		this.lvlIndex = lvlIndex;
 	}
 }

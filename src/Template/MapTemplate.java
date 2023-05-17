@@ -6,6 +6,8 @@ public class MapTemplate {
     public String mapDescription;
     public short[] WgoX;
     public short[] WgoY;
+    public short[] cSpawnX;
+    public short[] cSpawnY;
     public short[] WmapID;
     public byte[] npcType;
     public short[] npcX;

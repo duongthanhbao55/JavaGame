@@ -300,6 +300,7 @@ public class Player extends Entity {
 				updateXPos(xSpeed);
 			moving = true;
 		}
+		
 	}
 
 	private void jump() {
@@ -329,7 +330,7 @@ public class Player extends Entity {
 
 	public void changeHealth(int value) {
 
-		value = (int) ((value * (100 / (float) (100 + defend))));
+		value = (int) (((value * (100 / (float) (100 + defend))))*(1 - dmg_down));
 		currHealth += value;
 		if (currHealth <= 0) {
 			currHealth = 0;
@@ -339,7 +340,7 @@ public class Player extends Entity {
 	}
 
 	public void hurt(int damage) {
-		int value = (int) (damage * (1 - dmg_down) - defend);
+		int value = (int) ((damage * (100/(float)(100 + defend))));;
 		currHealth -= value;
 		if (currHealth < 0) currHealth = 0;
 
@@ -395,6 +396,11 @@ public class Player extends Entity {
 			g.setColor(new Color(255, nextInt(255), 255));
 			g.drawString(descriptionTask, (int) (10 * Game.SCALE), (int) (140 * Game.SCALE));
 		}
+		realHitbox.x = (hitbox.x - hitbox.width/2);
+		realHitbox.y = (hitbox.y  - hitbox.height/2);
+		
+		
+
 		// drawAttackBox(g, xLvlOffset);
 		renderUI(g);
 	}

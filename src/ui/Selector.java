@@ -11,7 +11,7 @@ import objects.Item;
 import objects.Slot;
 
 public class Selector {
-
+ 
 	private Animation selector;
 	private Rectangle2D.Float bounds;
 	private static Selector instance;
@@ -325,6 +325,9 @@ public class Selector {
 		this.itemOption = itemOption;
 	}
 
+	public  EquipmentEffect getEquipmentEffect() {
+		return this.equipmentEffect;
+	}
 	public void setEquipmentEffect(EquipmentEffect equipmentEffect) {
 		this.equipmentEffect = equipmentEffect;
 	}
