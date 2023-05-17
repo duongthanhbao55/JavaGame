@@ -26,6 +26,9 @@ public abstract class Enemy extends Entity {
 	protected float attackDistance = Game.TILES_SIZE;
 	protected boolean active = true;
 	protected boolean attackChecked = false;
+	protected long refreshTime;
+	protected long previousTime = 0;
+	protected boolean firstCheck;
 	protected int enemyId;
 	protected Playing playing;
 
@@ -54,7 +57,7 @@ public abstract class Enemy extends Entity {
 					NightBorne.setDeadCount(NightBorne.getDeadCount() + 1);
 				}
 				playing.getItemManager().add(new Item((int) hitbox.getX(), (int) (hitbox.getY() - 5 * Game.SCALE), 0,
-						ItemManager.arrItemTemplate[HelpMethods.nextInt(70)]));
+						ItemManager.arrItemTemplate[nextInt(70)]));
 				active = false;
 				break;
 			}
@@ -103,7 +106,7 @@ public abstract class Enemy extends Entity {
 
 	protected void checkPlayerHit(Rectangle2D.Float attackBox, Player player) {
 		if (attackBox.intersects(player.getHitbox()))
-			player.changeHealth(-GetEnemyDmg(enemyType));
+			player.hurt(GetEnemyDmg(enemyType));
 		attackChecked = true;
 	}
 

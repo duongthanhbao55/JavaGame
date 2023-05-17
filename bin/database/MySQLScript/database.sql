@@ -8,13 +8,11 @@ CREATE TABLE accounts(
 	user_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(100) NOT NULL UNIQUE,
     username VARCHAR(100) NOT NULL UNIQUE,
-    `password` VARCHAR(100) NOT NULL,
+    `password` VARCHAR(100) NOT NULL UNIQUE,
     nickname VARCHAR(12) UNIQUE,
     playerID VARCHAR(100) DEFAULT '[]',
     create_at DATETIME
 );
-ALTER TABLE accounts
-ALTER playerID SET DEFAULT '[321]';
 -- CREATE TABLE accounts_inf(
 -- 	user_id INT PRIMARY KEY AUTO_INCREMENT,
 --     email VARCHAR(100),
@@ -30,13 +28,13 @@ ALTER playerID SET DEFAULT '[321]';
 -- );
 
 CREATE TABLE task (
-  id tinyint(4) NOT NULL, -- mã nhiệm vụ
-  tasks varchar(500) NOT NULL DEFAULT '[]', -- tên nhiệm vụ
-  mapTasks varchar(500)NOT NULL DEFAULT '[]' -- map thực hiện nhiệm vụ
+  id tinyint(4) NOT NULL,
+  tasks varchar(500) NOT NULL DEFAULT '[]',
+  mapTasks varchar(500)NOT NULL DEFAULT '[]'
 );
 
 CREATE TABLE `tasktemplate` (
-  `taskId` smallint(6) NOT NULL, -- mã nhiệm vụ
+  `taskId` smallint(6) NOT NULL,
   `name` varchar(100)NOT NULL,
   `detail` varchar(500)NOT NULL,
   `subNames` varchar(5000) NOT NULL DEFAULT '[]',

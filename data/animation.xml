@@ -209,6 +209,11 @@
 	<frame name="Wizard1_Idle13" value="60000000"/>
 	<frame name="Wizard1_Idle14" value="60000000"/>
   </animation>
-  
+    <animation name="Selector">
+    <frame name="Selector1" value="60000000"/>
+    <frame name="Selector2" value="60000000"/>
+    <frame name="Selector3" value="60000000"/>
+    <frame name="Selector4" value="60000000"/>
+  </animation>
   
 </animations>

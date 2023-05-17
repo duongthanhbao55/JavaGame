@@ -251,7 +251,7 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 					nightBorneList.add(new NightBorne((int) (x * Game.SCALE), (int) (y * Game.SCALE), playing));
 			}
 		}
-		physicalMap.loadEnenmies(nightBorneList);
+		physicalMap.addEnenmies(nightBorneList);
 		physicalMap.setContainers(containers);
 	}
 
@@ -356,7 +356,8 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 			}
 		}
 		xml.normalize();
-		gamemap.addPlayerSpawn(spawnPoint);
+		Point spawn[] = {spawnPoint,null};
+		gamemap.setPlayerSpawn(spawn);
 
 		instance.mapsDict.put(ID, gamemap);
 

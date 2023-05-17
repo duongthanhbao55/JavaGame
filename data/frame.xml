@@ -1304,5 +1304,38 @@
     <w>64</w>
     <h>64</h>
   </frame>
+  <frame>
+    <id>Selector1</id>
+    <image>data/Spritesheet_UI_Flat_Select_01.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>32</w>
+    <h>32</h>
+  </frame>
+  <frame>
+    <id>Selector2</id>
+    <image>data/Spritesheet_UI_Flat_Select_01.png</image>
+    <x>32</x>
+    <y>0</y>
+    <w>32</w>
+    <h>32</h>
+  </frame>
+  <frame>
+    <id>Selector3</id>
+    <image>data/Spritesheet_UI_Flat_Select_01.png</image>
+    <x>64</x>
+    <y>0</y>
+    <w>32</w>
+    <h>32</h>
+  </frame>
+  <frame>
+    <id>Selector4</id>
+    <image>data/Spritesheet_UI_Flat_Select_01.png</image>
+    <x>96</x>
+    <y>0</y>
+    <w>32</w>
+    <h>32</h>
+  </frame>
+  
   
 </frames>

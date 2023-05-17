@@ -1,8 +1,5 @@
 package gamestates;
 
-import static Load.CacheDataLoader.*;
-
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -20,22 +17,22 @@ import Task.Task;
 import Template.NpcTemplate;
 import database.ItemManager;
 import entities.NPC;
-import entities.NPC_Wizard1;
 import entities.Player;
 import main.Game;
 import objects.Equipment;
+import objects.EquipmentEffect;
 import objects.InventoryManager;
 import objects.ObjectManager;
+import objects.PlayerStatus;
 import ui.Confirm;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
 import ui.PauseOverlay;
+import ui.Selector;
 import untilz.LoadSave;
-import untilz.Talk;
-import untilz.Text;
 
 import static untilz.Constants.Enviroment.*;
-import static untilz.Constants.NPC_Wizard1.WIZARD1_SIZE;
+
 
 public class Playing extends State implements Statemethods {
 	// VARIABLE
@@ -50,15 +47,15 @@ public class Playing extends State implements Statemethods {
 	private ItemManager itemManager;
 	private InventoryManager inventoryManager;
 	private Equipment equipment;
+	private EquipmentEffect equipmentEffect;
 	private Confirm confirmUI;
+	private PlayerStatus playerStatus;
 
-	// TASK
-
-	//
 	private boolean paused = false;
 
 	// CAMERA
 	private int xLvlOffset = 0;
+	
 	private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
 	private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
 	private int maxLvlOffsetX;
@@ -84,11 +81,9 @@ public class Playing extends State implements Statemethods {
 
 	public void loadNextLevel() {
 		resetAll();
-		levelManager.loadNextLevel();
-		player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
 	}
 
-	private void initTask() {
+	public void initTask() {
 		for (NpcTemplate npc : NPCManager.arrNpcTemplate) {
 			if (Task.isTaskNPC(player, (short) npc.npcTemplateId)) {
 				npcManager.getNpcWizard1s().get(npc.npcTemplateId).setHaveTask(true, player);
@@ -105,14 +100,14 @@ public class Playing extends State implements Statemethods {
 		ArrayList<TileLayer> mapLayer = levelManager.getCurrLevel().getMapLayer();
 		player.LoadLvlData(mapLayer.get(0).getTileMap());
 		enemyManager = new EnemyManager(this);
+		inventoryManager.initDataInventory();
+		equipment.initEquipment();
 		loadAll();
 		initTask();
 	}
 
 	private void initClasses() {
 
-		// player = new Player(200, 200, (int) (Game.TILES_SIZE * 4), (int)
-		// (Game.TILES_SIZE * 2), this);
 		CacheDataLoader.getInstance().readAllMap(this);
 		objectManager = new ObjectManager(this);
 		npcManager = new NPCManager(this);
@@ -120,11 +115,15 @@ public class Playing extends State implements Statemethods {
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
 		confirmUI = new Confirm(this);
-		// Confirm.OpenComfirmUI(player,(short) 0, Talk.getTask(0,0),new String[]
-		// {Text.get(0, 0),Text.get(0, 1)});
 		itemManager = new ItemManager(this);
 		inventoryManager = new InventoryManager(this);
 		equipment = new Equipment(this);
+		playerStatus = new PlayerStatus(this);
+		Selector.getInstance().setBounds(inventoryManager.getSlots()[0].getBounds());
+		Selector.getInstance().setSlotEquipment(equipment.getSlots());
+		Selector.getInstance().setSlotInventory(inventoryManager.getSlots());
+		equipmentEffect = new EquipmentEffect(this);
+		Selector.getInstance().setEquipmentEffect(equipmentEffect);
 	}
 
 	@Override
@@ -140,16 +139,20 @@ public class Playing extends State implements Statemethods {
 			player.update(currTime);
 		} else {
 			levelManager.getCurrLevel().Update();
+			levelManager.update();
 			objectManager.update(currTime, collisionLayer, player);
 			npcManager.update(currTime, collisionLayer, player);
 			player.update(currTime);
+			
 			enemyManager.update(currTime, collisionLayer, player);
-			itemManager.update();
+			itemManager.update();			
 			if (Confirm.isShow())
 				confirmUI.update();
 			if(inventoryManager.isOpen()) {
 				inventoryManager.update();
 				equipment.update();
+				playerStatus.update();
+				Selector.getInstance().update(currTime);
 			}
 			CheckCloseToBorder();
 		}
@@ -179,7 +182,6 @@ public class Playing extends State implements Statemethods {
 		farMountain = LoadSave.GetSpriteAtlas(LoadSave.BG_FAR_MOUNTAINS);
 		Mountain = LoadSave.GetSpriteAtlas(LoadSave.BG_MOUNTAINS);
 		tree = LoadSave.GetSpriteAtlas(LoadSave.BG_TREES);
-
 	}
 
 	private void CheckCloseToBorder() {
@@ -211,9 +213,12 @@ public class Playing extends State implements Statemethods {
 		player.render(g, xLvlOffset);
 		enemyManager.render(g, xLvlOffset);
 		npcManager.drawDialogue(g);
+		
 		if(inventoryManager.isOpen()) {
 			inventoryManager.render(g);
 			equipment.render(g);
+			playerStatus.render(g);
+			Selector.getInstance().render(g);
 		}
 		if (Confirm.isShow())
 			confirmUI.render(g,xLvlOffset);
@@ -342,7 +347,9 @@ public class Playing extends State implements Statemethods {
 		if (gameOver)
 			gameOverOverlay.keyPressed(e);
 		else
-
+			if(inventoryManager.isOpen()) {
+				Selector.getInstance().keyPressed(e);
+			}
 			switch (e.getKeyCode()) {
 
 			case KeyEvent.VK_A:
