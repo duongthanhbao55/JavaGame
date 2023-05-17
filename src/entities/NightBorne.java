@@ -30,6 +30,8 @@ public class NightBorne extends Enemy {
 	public NightBorne(float x, float y, Playing playing) {
 		super(x, y, NIGHTBORNE_SIZE, NIGHTBORNE_SIZE, NIGHTBORNE, playing);
 		enemyId = 0;
+		this.refreshTime = 20000000000L;
+		this.firstCheck = true;
 		initHitbox(20, 30);
 		initAttackBox();
 		LoadEnemyAnim();
@@ -38,6 +40,19 @@ public class NightBorne extends Enemy {
 	private void initAttackBox() {
 		attackBox = new Rectangle2D.Float(x, y, (int) (20 * Game.SCALE), (int) (35 * Game.SCALE));
 		attackBoxOffsetX = (int) (Game.SCALE * 4);
+	}
+
+	public void reSpawn(long currTime) {
+		if (!active) {
+			if (currTime - previousTime > refreshTime) {
+				if (!firstCheck) {
+					this.resetEnemy();
+					active = true;				
+				}
+				firstCheck = false;	
+				previousTime = currTime;
+			}
+		}
 	}
 
 	private void updateBehavior(int[][] lvlData, Player player) {

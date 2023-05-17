@@ -17,7 +17,7 @@ public class Consumable extends Item{
     public void use(Player player){
         player.changeHealth(heal);
         player.changeMana(mana);
-        player.setATK((int) (player.getATK()*(1+atk_up)));
+        player.setAttack((int) (player.getAttack()*(1+atk_up)));
         quantity--;
     }
 }

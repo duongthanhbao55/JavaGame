@@ -2,12 +2,15 @@ package entities;
 
 import Effect.Animation;
 import Load.CacheDataLoader;
+import Map.PhysicalMap;
 import Task.Task;
 import audio.AudioPlayer;
 import database.MySQL;
 import database.User;
 import gamestates.Playing;
 import main.Game;
+import objects.Equipment;
+import objects.InventoryManager;
 import untilz.LoadSave;
 
 import java.awt.Color;
@@ -17,7 +20,10 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
@@ -26,17 +32,20 @@ import org.json.simple.JSONValue;
 import static untilz.HelpMethods.*;
 import static untilz.Constants.PlayerConstants.*;
 import static untilz.Constants.GRAVITY;
+import static untilz.Constants.Exp;
 
 public class Player extends Entity {
 
 	// INFO
-	private int playerId;
+	private static int playerId;
 	private String Name;
 	private int Level;
-	private long EXP;
+    private long currEXPCap = Exp.BASE_EXP_CAP;
+    private long currEXP;
 	private long ExpDown;
 	private int vip;
 	private int mapId;
+	private int gold;
 	private User user;
 
 	private boolean moving = false, isAttacking = false;
@@ -76,8 +85,12 @@ public class Player extends Entity {
 	private float lostHealthWidth = healthBarWidth;
 
 	private int healthWidth = healthBarWidth;
-	private int ATK = DEFAULT_DAMAGE;
-	private int damage = ATK;
+	private int attack = DEFAULT_ATTACK;
+	private int defend = DEFAULT_DEF;
+	private int damage = attack;
+	final private int maxMana = DEFAULT_MANA;
+	private int mana = maxMana;
+	private float dmg_down;
 
 	// Attack Box
 
@@ -100,12 +113,12 @@ public class Player extends Entity {
 		this.user = user;
 		tileY = (int) (x / Game.TILES_SIZE);
 		this.state = IDLE;
-		this.maxHealth = 100;
+		this.maxHealth = DEFAULT_MAXHEALTH;
 		this.currHealth = maxHealth;
 		this.walkSpeed = Game.SCALE * 1.0f;
 		loadAnim();
 
-		this.EXP = 0;
+        this.currEXP = 0;
 		this.ExpDown = 0;
 		this.Level = 1;
 		this.mapId = 0;
@@ -167,7 +180,7 @@ public class Player extends Entity {
 		if (isAttacking)
 			Attack();
 		if (isDoTask)
-			Task.doTask(this,playing);
+			Task.doTask(this, playing);
 
 		updateAniamtion();
 		setAnimation();
@@ -212,7 +225,6 @@ public class Player extends Entity {
 			}
 
 		}
-
 	}
 
 	private void updateAttackBox() {
@@ -290,6 +302,7 @@ public class Player extends Entity {
 				updateXPos(xSpeed);
 			moving = true;
 		}
+		
 	}
 
 	private void jump() {
@@ -318,12 +331,21 @@ public class Player extends Entity {
 	}
 
 	public void changeHealth(int value) {
+
+		value = (int) (((value * (100 / (float) (100 + defend))))*(1 - dmg_down));
 		currHealth += value;
 		if (currHealth <= 0) {
 			currHealth = 0;
 		} else if (currHealth >= maxHealth) {
 			currHealth = maxHealth;
 		}
+	}
+
+	public void hurt(int damage) {
+		int value = (int) ((damage * (100/(float)(100 + defend))));;
+		currHealth -= value;
+		if (currHealth < 0) currHealth = 0;
+
 	}
 
 	public void changeMana(int value) {
@@ -363,16 +385,24 @@ public class Player extends Entity {
 	public void render(Graphics g, int xLvlOffset) {
 		animList.get(this.state).draw((int) (hitbox.x - xDrawOffset) - xLvlOffset + flipX,
 				(int) (hitbox.y - yDrawOffset), width * flipW, height, g);
-		drawHitbox(g, xLvlOffset);
+		// drawHitbox(g, xLvlOffset);
 		g.setColor(new Color(255, 255, nextInt(255)));
 		g.setFont(new Font("Arial", Font.PLAIN, 20));
-		if(isDoTask) {
-			g.drawString(descriptionTask + "  " + NightBorne.getDeadCount() + "/" + Game.taskTemplates[ctaskId].counts[ctaskIndex + 1], (int)(10*Game.SCALE), (int)(140* Game.SCALE));
+		if (isDoTask) {
+			g.drawString(
+					descriptionTask + "  " + NightBorne.getDeadCount() + "/"
+							+ Game.taskTemplates[ctaskId].counts[ctaskIndex + 1],
+					(int) (10 * Game.SCALE), (int) (140 * Game.SCALE));
 		}
-		if(isDoneTask) {
+		if (isDoneTask) {
 			g.setColor(new Color(255, nextInt(255), 255));
-			g.drawString(descriptionTask, (int)(10*Game.SCALE), (int)(140* Game.SCALE));
+			g.drawString(descriptionTask, (int) (10 * Game.SCALE), (int) (140 * Game.SCALE));
 		}
+		realHitbox.x = (hitbox.x - hitbox.width/2);
+		realHitbox.y = (hitbox.y  - hitbox.height/2);
+		
+		
+
 		// drawAttackBox(g, xLvlOffset);
 		renderUI(g);
 	}
@@ -422,6 +452,7 @@ public class Player extends Entity {
 	public void setJump(boolean jump) {
 		this.jump = jump;
 	}
+
 	public void setAttack1(boolean isAttacking) {
 		this.isAttacking = isAttacking;
 	}
@@ -431,14 +462,11 @@ public class Player extends Entity {
 		this.attackBox.height = height;
 	}
 
-	public int getATK() {
-		return ATK;
+	public int getAttack() {
+		return attack;
 	}
 
-	public void setATK(int ATK) {
-		this.ATK = ATK;
-		this.damage = this.ATK;
-	}
+	public void setAttack(int attack) { this.attack = attack; }
 
 	public int getDamage() {
 		return damage;
@@ -447,9 +475,33 @@ public class Player extends Entity {
 	public void setDamage(int damage) {
 		this.damage = damage;
 	}
-	public void updateExp(long exp) {
-		this.EXP += exp;
+
+	public void setMana(int mana) {
+		if (this.mana + mana >= maxMana){
+			this.mana = maxMana;
+		}
+		else {
+            this.mana += mana;
+        }
 	}
+
+	public float getDmg_down() {
+		return dmg_down;
+	}
+
+	public void setDmg_down(float dmg_down) {
+		this.dmg_down = dmg_down;
+	}
+
+	public int getMana() {
+		return this.mana;
+	}
+
+	public void updateExp(long exp) {
+        this.currEXP += exp;
+        updateLevel();
+	}
+
 	public boolean isInteract() {
 		return interact;
 	}
@@ -483,12 +535,15 @@ public class Player extends Entity {
 	public short getCtaskCount() {
 		return ctaskCount;
 	}
+
 	public void setDoneTask(boolean isDoneTask) {
 		this.isDoneTask = isDoneTask;
 	}
+
 	public boolean isDoneTask() {
 		return isDoneTask;
 	}
+
 	public String getPlayerName() {
 		return this.Name;
 	}
@@ -504,14 +559,70 @@ public class Player extends Entity {
 	public void setPlaying(Playing playing) {
 		this.playing = playing;
 	}
+
 	public void setDoTask(boolean isDoTask) {
 		this.isDoTask = isDoTask;
 	}
+
 	public boolean isDoTask() {
 		return this.isDoTask;
 	}
+
 	public void setDescriptionTask(String descriptionTask) {
 		this.descriptionTask = descriptionTask;
+	}
+
+	public void applyDef(int defend) {
+		this.defend = defend;
+	}
+//
+//	public void applyAtk(int attack) {
+//		this.ATK = attack;
+//	}
+    public void applyHeal(int hp) {
+        if (currHealth + hp > maxHealth) currHealth = maxHealth;
+        else currHealth += hp;
+    }
+
+	public int getDef() {
+		return this.defend;
+	}
+
+	public int getAtk() {
+		return this.damage;
+	}
+
+	public int getLevel() {
+		return Level;
+	}
+
+	public void setLevel(int level) {
+		Level = level;
+	}
+
+    public void updateLevel() {
+        if (currEXP < currEXPCap) return;
+        currEXP = currEXP - currEXPCap;
+        switch (Level / 10) {
+            case 0 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV10);
+            case 1 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV20);
+        }
+        Level += 1;
+    }
+	public int getMapId() {
+		return mapId;
+	}
+
+	public void setMapId(int mapId) {
+		this.mapId = mapId;
+	}
+
+	public int getGold() {
+		return gold;
+	}
+
+	public void setGold(int gold) {
+		this.gold = gold;
 	}
 
 	public void resetAll() {
@@ -546,16 +657,17 @@ public class Player extends Entity {
 				player.ctaskCount = red.getShort("ctaskCount");
 				// player.cspeed = red.getByte("cspeed");
 				player.Name = red.getString("cName");
-				player.EXP = red.getLong("cEXP");
+                player.currEXP = red.getLong("cEXP");
 				player.ExpDown = red.getLong("cExpDown");
+				player.gold = red.getInt("xu");
+				System.out.println("gold" + player.gold);
 				player.Level = red.getInt("cLevel");
 				player.vip = red.getInt("vip");
-				// bộ sưu tập KMT
-
+				player.mapId = red.getInt("idMap");
+				
 				JSONArray jarr2 = (JSONArray) JSONValue.parseWithException(red.getString("InfoMap"));
-				player.mapId = Integer.parseInt(jarr2.get(0).toString());
-				player.x = Short.parseShort(jarr2.get(1).toString());
-				player.y = Short.parseShort(jarr2.get(2).toString());
+				player.x = Short.parseShort(jarr2.get(0).toString());
+				player.y = Short.parseShort(jarr2.get(1).toString());
 				player.hitbox.x = player.x;
 				player.hitbox.y = player.y;
 
@@ -566,8 +678,48 @@ public class Player extends Entity {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// System.out.println(player.x);
+		PhysicalMap.loadMapData();
+		InventoryManager.loadInventoryData();
+		Equipment.loadEquipment();
 		return player;
+	}
+
+	public static boolean savePlayerData(PreparedStatement statement,Playing playing) {
+	
+		try {
+			final MySQL mySQL = new MySQL(0);
+			try {
+				Connection conn = MySQL.getConnection(0);
+				String updateQuery = "UPDATE player SET ctaskId = ?, ctaskIndex = ?, ctaskCount = ?, cspeed = ?, cName = ?, cEXP = ?, cExpDown = ?, cLevel = ?, xu = ?, idMap = ?, InfoMap = ?, vip = ? WHERE playerId = ?";
+				PreparedStatement pstmt = conn.prepareStatement(updateQuery);
+				
+				statement.setInt(1, playing.getPlayer().getCtaskId());
+				statement.setInt(2, playing.getPlayer().getCtaskIndex());
+				statement.setInt(3, playing.getPlayer().getCtaskCount());
+				statement.setInt(4, 2);
+				statement.setLong(6, 0);
+				statement.setLong(7, 0);
+				statement.setInt(8, playing.getPlayer().getLevel());
+				statement.setInt(9, playing.getPlayer().getGold());
+				statement.setInt(10, playing.getPlayer().getMapId());
+				String xPos = Double.toString(playing.getPlayer().getHitbox().getX());
+				String yPos = Double.toString(playing.getPlayer().getHitbox().getY());
+				statement.setString(11, "[" + xPos + "," + yPos + "]");
+				
+				int rowsAffected = pstmt.executeUpdate();
+				if (rowsAffected > 0) {
+					System.out.println("New user has been inserted successfully!");
+					return true;
+				} else {
+					System.out.println("User not found with id = " + playerId);
+				}
+			} finally {
+				mySQL.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

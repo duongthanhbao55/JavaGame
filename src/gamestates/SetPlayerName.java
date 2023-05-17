@@ -45,7 +45,7 @@ public class SetPlayerName extends State implements Statemethods{
 	
 	private void loadBackGround() {
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.EMPTY_BACKGROUND);
-		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE));
+		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE1));
 		gifX = 0;
 		gifY = 0;
 		scaledGif = gifIcon.getImage().getScaledInstance(Game.GAME_WIDTH, Game.GAME_HEIGHT, Image.SCALE_DEFAULT);
@@ -117,6 +117,7 @@ public class SetPlayerName extends State implements Statemethods{
 						resetTextField();
 					} else if (lg.getState() == Gamestate.REGISTER) {
 						Gamestate.state = Gamestate.REGISTER;
+						game.getRegister().loadContainer();
 						game.getRegister().SetUpComponent();
 						game.getRegister().addComponent();
 						resetTextField();
