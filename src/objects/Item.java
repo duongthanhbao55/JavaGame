@@ -17,6 +17,7 @@ import java.sql.SQLException;
 public class Item extends GameObject {
 
     protected String name;
+    protected byte id;
     protected int atk;
     protected int def;
     protected int hp;
@@ -37,10 +38,12 @@ public class Item extends GameObject {
     protected float hoverOffset;
     protected BufferedImage img;
     protected boolean isEquipped = false;
-
+    protected String[] options; 
+    
     public Item(int x, int y, int objType, ItemTemplate itemTemplate) {
         super(x, y, objType);
         initHitbox((int) ( 16*Game.SCALE), (int) ( 16*Game.SCALE));
+        id = itemTemplate.id;
         img = loadImg(itemTemplate.filename);
         name = itemTemplate.name;
         atk = itemTemplate.atk;
@@ -126,7 +129,16 @@ public class Item extends GameObject {
     public int getSlot() {
     	return slot;
     }
-    private BufferedImage loadImg(String fileName) {
+    
+    public byte getId() {
+		return id;
+	}
+
+	public void setId(byte id) {
+		this.id = id;
+	}
+
+	private BufferedImage loadImg(String fileName) {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream("/assets/" + fileName);
         try {

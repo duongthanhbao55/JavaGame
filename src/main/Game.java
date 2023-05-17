@@ -118,6 +118,8 @@ public class Game implements Runnable{
 			gameOptions.update(currTime);
 			break;
 		case QUIT:
+			//TODO something
+			
 		default:
 			System.exit(0);
 			break;

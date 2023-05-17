@@ -91,6 +91,15 @@ public class ItemOption {
 			if(index == 0 && text[index].equals("unequip")){
 				this.isUnequip = true;
 			}
+			if(index == 0 && text[index].equals("use")) {
+				this.isUse = true;
+			}
+			if(index == 2 && text[index].equals("sell")) {
+				this.isSell = true;
+			}
+			if(index == 1 && text[index].equals("drop")) {
+				this.isDrop = true;
+			}
 			break;
 		}
 	}

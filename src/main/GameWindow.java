@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Component;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
@@ -18,8 +19,17 @@ public class GameWindow {
 		jframe.pack();
 		jframe.setLocationRelativeTo(null);//center of deskop
 		jframe.setVisible(true);//it should be at the bottom
+		jframe.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.out.println("Closed");
+				e.getWindow().dispose();
+				//TODO something to save
+				
+			}
+		});
 		jframe.addWindowFocusListener(new WindowFocusListener() {//do when change application
-			
+	
 			@Override
 			public void windowLostFocus(WindowEvent e) {
 				gamePanel.getGame().WindowFocusLost();
@@ -29,6 +39,10 @@ public class GameWindow {
 			@Override
 			public void windowGainedFocus(WindowEvent e) {
 				// TODO Auto-generated method stub
+				
+			}
+			
+			public void windowClosing(WindowEvent e) {
 				
 			}
 		});

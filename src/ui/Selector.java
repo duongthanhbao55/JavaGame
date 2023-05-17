@@ -1,24 +1,29 @@
 package ui;
 
+import static untilz.HelpMethods.nextInt;
+
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 
 import Effect.Animation;
 import Load.CacheDataLoader;
+import database.ItemManager;
+import gamestates.Playing;
+import main.Game;
 import objects.EquipmentEffect;
 import objects.Item;
 import objects.Slot;
+import untilz.Text;
 
 public class Selector {
- 
+	private Playing playing;
 	private Animation selector;
 	private Rectangle2D.Float bounds;
 	private static Selector instance;
 	private int index = 0;
 	private boolean isInInventory = true;
 	private boolean isInEquipment = false;
-	private int first = 0;
 	private Slot[] slotInventory;
 	private Slot[] slotEquipment;
 	private EquipmentEffect equipmentEffect;
@@ -73,6 +78,15 @@ public class Selector {
 					if (slotInventory[index].getItemOption().isEquip()) {
 						Equip();
 					}
+					if (slotInventory[index].getItemOption().isSell()) {
+
+					}
+					if (slotInventory[index].getItemOption().isDrop()) {
+						Drop();
+					}
+					if (slotInventory[index].getItemOption().isUse()) {
+						Use();
+					}
 				}
 
 		} else if (isInEquipment) {
@@ -81,6 +95,9 @@ public class Selector {
 					slotEquipment[index].keyPressed(e);
 					if (slotEquipment[index].getItemOption().isUnequip()) {
 						Unequip();
+					}
+					if (slotInventory[index].getItemOption().isDrop()) {
+						Drop();
 					}
 				}
 		}
@@ -214,18 +231,21 @@ public class Selector {
 
 	}
 
-	public void keyReleased(KeyEvent e) {
-		switch (e.getKeyCode()) {
-		case KeyEvent.VK_UP:
-			break;
-		case KeyEvent.VK_DOWN:
-			break;
-		case KeyEvent.VK_LEFT:
-			break;
-		case KeyEvent.VK_RIGHT:
-			break;
-		case KeyEvent.VK_ENTER:
-			break;
+	private void Drop() {
+		byte id = slotInventory[index].getItems().get(0).getId();
+		playing.getItemManager().add(new Item((int) playing.getPlayer().getHitbox().getX(),
+				(int) (playing.getPlayer().getHitbox().getY() - 5 * Game.SCALE), 0, ItemManager.arrItemTemplate[id - 1]));
+		slotInventory[index].getItems().remove(0);
+		if (slotInventory[index].getItems().isEmpty()) {
+			slotInventory[index].setEmpty(true);
+		}
+	}
+
+	private void Use() {
+		equipmentEffect.applyEffect(slotInventory[index].getItems().get(0));
+		slotInventory[index].getItems().remove(0);
+		if (slotInventory[index].getItems().isEmpty()) {
+			slotInventory[index].setEmpty(true);
 		}
 	}
 
@@ -235,16 +255,16 @@ public class Selector {
 			if (!slotEquipment[index1].isEmpty()) {
 				Item t = slotEquipment[index1].getItems().get(0);
 				if (!t.getName().equals(slotInventory[index].getItems().get(0).getName())) {
-		
+
 					slotEquipment[index1].getItems().remove(0);
 					equipmentEffect.removeEffect(t);
-					
+
 					slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
 					equipmentEffect.applyEffect(slotInventory[index].getItems().get(0));
 
 					slotInventory[index].getItems().remove(0);
 
-					if (slotInventory[index].getItems().size() <= 0) {
+					if (slotInventory[index].getItems().isEmpty()) {
 						slotInventory[index].setEmpty(true);
 					}
 					for (Slot s : slotInventory) {
@@ -252,7 +272,7 @@ public class Selector {
 							if (t.getName().equals(s.getItems().get(0).getName())) {
 								s.addItem(t);
 								slotEquipment[index1].getItemOption()
-										.setText(new String[] { "unequip", "drop", "sell" });
+										.setText(new String[] { Text.get(0, 3), Text.get(0, 4), Text.get(0, 6) });
 								return;
 							}
 						}
@@ -260,7 +280,8 @@ public class Selector {
 					for (Slot s : slotInventory) {
 						if (s.isEmpty()) {
 							s.addItem(t);
-							slotEquipment[index1].getItemOption().setText(new String[] { "unequip", "drop", "sell" });
+							slotEquipment[index1].getItemOption()
+									.setText(new String[] { Text.get(0, 3), Text.get(0, 4), Text.get(0, 6) });
 							break;
 						}
 					}
@@ -270,10 +291,11 @@ public class Selector {
 				slotEquipment[index1].addItem(slotInventory[index].getItems().get(0));
 				equipmentEffect.applyEffect(slotEquipment[index1].getItems().get(0));
 				slotInventory[index].getItems().remove(slotEquipment[index1].getItems().get(0));
-				if (slotInventory[index].getItems().size() <= 0) {
+				if (slotInventory[index].getItems().isEmpty()) {
 					slotInventory[index].setEmpty(true);
 				}
-				slotEquipment[index1].getItemOption().setText(new String[] { "unequip", "drop", "sell" });
+				slotEquipment[index1].getItemOption()
+						.setText(new String[] { Text.get(0, 3), Text.get(0, 4), Text.get(0, 6) });
 			}
 		}
 	}
@@ -325,10 +347,15 @@ public class Selector {
 		this.itemOption = itemOption;
 	}
 
-	public  EquipmentEffect getEquipmentEffect() {
+	public EquipmentEffect getEquipmentEffect() {
 		return this.equipmentEffect;
 	}
+
 	public void setEquipmentEffect(EquipmentEffect equipmentEffect) {
 		this.equipmentEffect = equipmentEffect;
+	}
+
+	public void setPlaying(Playing playing) {
+		this.playing = playing;
 	}
 }

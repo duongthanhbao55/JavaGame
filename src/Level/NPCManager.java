@@ -29,10 +29,6 @@ public class NPCManager {
 	public void update(long currTime, int[][] lvlData, Player player) {
 		for (NPC_Wizard1 w : npcWizard1s) {
 			w.update(currTime, lvlData, player);
-//			if (!Confirm.isShow()) {
-//				playing.getPlayer().setInteract(false);
-//				w.setContact(false);
-//			}
 		}
 	}
 

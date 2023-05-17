@@ -44,6 +44,7 @@ public class ItemManager {
                 final ItemTemplate itemTemplate = new ItemTemplate();
                 // Parse effect
                 final String[] effect = read.getString("effect").trim().split(",");
+                
                 itemTemplate.atk = Integer.parseInt(effect[0].trim());
                 itemTemplate.hp = Integer.parseInt(effect[1].trim());
                 itemTemplate.def = Integer.parseInt(effect[2].trim());
