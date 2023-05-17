@@ -41,7 +41,7 @@ public class PhysicalMap {
 	private int maxTilesOffset;
 	private int maxLvlOffsetX;
 	private Rectangle2D.Float[] areaSwitchMap;
-	private Point playerSpawn;
+	private Point[] playerSpawn;
 
 	private ArrayList<Integer> collisionIndex = new ArrayList<>();
 	private int idMap;
@@ -61,7 +61,6 @@ public class PhysicalMap {
 	public PhysicalMap(PhysicalMap physmap) {
 		for (TileLayer layer : physmap.mapLayer) {
 			this.mapLayer.add(new TileLayer(layer));
-
 		}
 		for (NightBorne nightBorne : physmap.getNightBornes()) {
 			this.nightBornes.add(nightBorne);
@@ -84,18 +83,21 @@ public class PhysicalMap {
 		this.playerSpawn = physmap.getPlayerSpawn();
 
 	}
+
 	public void loadAll(Playing playing, int idMap) {
 		loadEnenmies(playing, idMap);
+		loadPlayerSpawn();
 		loadAreaSwitch();
 		loadNpcs();
 	}
-	public void loadEnenmies(Playing playing,int idMap) {
+
+	public void loadEnenmies(Playing playing, int idMap) {
 		this.idMap = idMap;
 		for (int i = 0; i < PhysicalMap.mapTemplate[idMap].mobID.length; i++) {
 			nightBornes.add(new NightBorne(PhysicalMap.mapTemplate[idMap].mobX[i],
 					PhysicalMap.mapTemplate[idMap].mobY[i], playing));
 		}
-		
+
 	}
 
 	public void loadAreaSwitch() {
@@ -103,17 +105,28 @@ public class PhysicalMap {
 		for (int i = 0; i < areaSwitchMap.length; i++) {
 			float xPos = PhysicalMap.mapTemplate[this.idMap].WgoX[i];
 			float yPos = PhysicalMap.mapTemplate[this.idMap].WgoY[i];
-			areaSwitchMap[i] = new Rectangle2D.Float(xPos, yPos, 1, 100);
+			areaSwitchMap[i] = new Rectangle2D.Float(xPos, yPos, 4, 100);
 		}
 	}
+
 	public void loadNpcs() {
-		for(int i = 0; i < PhysicalMap.mapTemplate[idMap].npcID.length;i++) {
+		for (int i = 0; i < PhysicalMap.mapTemplate[idMap].npcID.length; i++) {
 			float xPos = PhysicalMap.mapTemplate[this.idMap].npcX[i];
 			float yPos = PhysicalMap.mapTemplate[this.idMap].npcY[i];
 			int id = PhysicalMap.mapTemplate[this.idMap].npcID[i];
-			npcs.add(new NPC_Wizard1(xPos, yPos,id));
+			npcs.add(new NPC_Wizard1(xPos, yPos, id));
 		}
 	}
+
+	public void loadPlayerSpawn() {
+		playerSpawn = new Point[PhysicalMap.mapTemplate[idMap].cSpawnX.length];
+		for (int i = 0; i < PhysicalMap.mapTemplate[idMap].cSpawnX.length; i++) {
+			float xPos = PhysicalMap.mapTemplate[this.idMap].cSpawnX[i];
+			float yPos = PhysicalMap.mapTemplate[this.idMap].cSpawnY[i];
+			playerSpawn[i] = new Point((int)xPos,(int)yPos);
+		}
+	}
+
 	public void calcLvlOffsets() {
 		lvlTilesWide = mapLayer.get(0).getTileMap()[0].length;
 		maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
@@ -148,10 +161,10 @@ public class PhysicalMap {
 		}
 		g.setColor(new Color(255, 0, 0));
 
-		g.drawRect((int)areaSwitchMap[0].getBounds().getX() - xLvlOffset,(int) areaSwitchMap[0].getBounds().getY(),
-				(int)areaSwitchMap[0].getBounds().getWidth(),(int) areaSwitchMap[0].getBounds().getHeight());
-		g.drawRect((int)areaSwitchMap[1].getBounds().getX() - xLvlOffset,(int) areaSwitchMap[1].getBounds().getY(),
-				(int)areaSwitchMap[1].getBounds().getWidth(),(int) areaSwitchMap[1].getBounds().getHeight());
+		g.drawRect((int) areaSwitchMap[0].getBounds().getX() - xLvlOffset, (int) areaSwitchMap[0].getBounds().getY(),
+				(int) areaSwitchMap[0].getBounds().getWidth(), (int) areaSwitchMap[0].getBounds().getHeight());
+		g.drawRect((int) areaSwitchMap[1].getBounds().getX() - xLvlOffset, (int) areaSwitchMap[1].getBounds().getY(),
+				(int) areaSwitchMap[1].getBounds().getWidth(), (int) areaSwitchMap[1].getBounds().getHeight());
 	}
 
 	// GETTER VS SETTER
@@ -199,37 +212,39 @@ public class PhysicalMap {
 		return collisionIndex;
 	}
 
-	public Point getPlayerSpawn() {
+	public Point[] getPlayerSpawn() {
 		return playerSpawn;
 	}
 
-	public void setPlayerSpawn(Point playerSpawn) {
+	public void setPlayerSpawn(Point[] playerSpawn) {
 		this.playerSpawn = playerSpawn;
 	}
 
-	public void addPlayerSpawn(Point playerSpawn) {
-		this.playerSpawn = playerSpawn;
-	}
 
 	public ArrayList<Cannon> getCannons() {
 		return cannons;
 	}
-	
+
 	public void setItem(ArrayList<Item> items) {
 		this.items = items;
 	}
-	public ArrayList<Item> getItems(){
+
+	public ArrayList<Item> getItems() {
 		return items;
 	}
-	public ArrayList<NPC_Wizard1> getNpcs(){
+
+	public ArrayList<NPC_Wizard1> getNpcs() {
 		return npcs;
 	}
+
 	public void setCannons(ArrayList<Cannon> cannons) {
 		this.cannons = cannons;
 	}
-	public Rectangle2D.Float[] getAreaSwitch(){
+
+	public Rectangle2D.Float[] getAreaSwitch() {
 		return this.areaSwitchMap;
 	}
+
 	public static void loadMapData() {
 		try {
 			MapTemplate[] _mapTemplates = new MapTemplate[0];
@@ -248,18 +263,22 @@ public class PhysicalMap {
 				mapTemplate.mapDescription = res.getString("mapDescription");
 				final JSONArray WgoX = (JSONArray) JSONValue.parse(res.getString("WgoX"));
 				final JSONArray WgoY = (JSONArray) JSONValue.parse(res.getString("WgoY"));
+				final JSONArray cSpawnX = (JSONArray) JSONValue.parse(res.getString("cSpawnX"));
+				final JSONArray cSpawnY = (JSONArray) JSONValue.parse(res.getString("cSpawnY"));
 				final JSONArray WmapID = (JSONArray) JSONValue.parse(res.getString("WmapID"));
 				mapTemplate.WgoX = new short[WgoX.size()];
 				mapTemplate.WgoY = new short[mapTemplate.WgoX.length];
+				mapTemplate.cSpawnX = new short[mapTemplate.WgoX.length];
+				mapTemplate.cSpawnY = new short[mapTemplate.WgoX.length];
 				mapTemplate.WmapID = new short[mapTemplate.WgoX.length];
-				
 
 				for (int j5 = 0; j5 < mapTemplate.WgoX.length; ++j5) {
 					mapTemplate.WgoX[j5] = Short.parseShort(WgoX.get(j5).toString());
 					mapTemplate.WgoY[j5] = Short.parseShort(WgoY.get(j5).toString());
+					mapTemplate.cSpawnX[j5] = Short.parseShort(cSpawnX.get(j5).toString());
+					mapTemplate.cSpawnY[j5] = Short.parseShort(cSpawnY.get(j5).toString());
 					mapTemplate.WmapID[j5] = Short.parseShort(WmapID.get(j5).toString());
 				}
-				System.out.println(mapTemplate.WgoY[0]);
 				final JSONArray jarrX = (JSONArray) JSONValue.parse(res.getString("npcX"));
 				final JSONArray jarrY = (JSONArray) JSONValue.parse(res.getString("npcY"));
 				final JSONArray jarrID = (JSONArray) JSONValue.parse(res.getString("npcID"));
@@ -305,5 +324,4 @@ public class PhysicalMap {
 		}
 	}
 
-	
 }

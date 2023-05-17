@@ -81,8 +81,6 @@ public class Playing extends State implements Statemethods {
 
 	public void loadNextLevel() {
 		resetAll();
-		//.loadNextLevel();
-		player.setSpawn(levelManager.getCurrLevel().getPlayerSpawn());
 	}
 
 	public void initTask() {
@@ -184,7 +182,6 @@ public class Playing extends State implements Statemethods {
 		farMountain = LoadSave.GetSpriteAtlas(LoadSave.BG_FAR_MOUNTAINS);
 		Mountain = LoadSave.GetSpriteAtlas(LoadSave.BG_MOUNTAINS);
 		tree = LoadSave.GetSpriteAtlas(LoadSave.BG_TREES);
-
 	}
 
 	private void CheckCloseToBorder() {

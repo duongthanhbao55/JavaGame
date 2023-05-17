@@ -26,6 +26,9 @@ public abstract class Enemy extends Entity {
 	protected float attackDistance = Game.TILES_SIZE;
 	protected boolean active = true;
 	protected boolean attackChecked = false;
+	protected long refreshTime;
+	protected long previousTime = 0;
+	protected boolean firstCheck;
 	protected int enemyId;
 	protected Playing playing;
 
