@@ -1,5 +1,6 @@
 package gamestates;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -10,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -29,6 +31,22 @@ public class SetPlayerName extends State implements Statemethods{
 	private Image scaledGif;
 	private int gifX, gifY;
 	private int menuX, menuY, menuWidth, menuHeight;
+	
+	boolean SetPlayerNameState;
+	
+	
+	
+	private JLabel nn_label;
+	
+	
+	public boolean isSetPlayerNameState() {
+		return SetPlayerNameState;
+	}
+
+	public void setSetPlayerNameState(boolean isSetPlayerNameState) {
+		this.SetPlayerNameState = isSetPlayerNameState;
+	}
+
 	public SetPlayerName(Game game) {
 		super(game);
 		loadBackGround();
@@ -45,7 +63,7 @@ public class SetPlayerName extends State implements Statemethods{
 	
 	private void loadBackGround() {
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.EMPTY_BACKGROUND);
-		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE1));
+		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE));
 		gifX = 0;
 		gifY = 0;
 		scaledGif = gifIcon.getImage().getScaledInstance(Game.GAME_WIDTH, Game.GAME_HEIGHT, Image.SCALE_DEFAULT);
@@ -69,6 +87,7 @@ public class SetPlayerName extends State implements Statemethods{
 				(int) (playerNameBox.getBounds().getY() + 8 * Game.SCALE),
 				(int) (playerNameBox.getBounds().getWidth() - 16 * Game.SCALE),
 				(int) (playerNameBox.getBounds().getHeight() - 6 * Game.SCALE));	
+		nn_label.setBounds(playerName.getBounds());
 		playerNameBox.update();		
 		for (LoginButton lg : createButton) {
 			lg.update();
@@ -110,14 +129,19 @@ public class SetPlayerName extends State implements Statemethods{
 				if (lg.isMousePressed()) {
 					lg.applyGamestate();// apply only when Pressed before and Release after if pressed in button but
 					if (lg.getState() == Gamestate.SETNAME) {
+						setSetPlayerNameState(true);
 						String nickname = limitLengthNickname(playerName.getText());
+						if(nickname.isEmpty() || MySQL.nicknameWasUsed(nickname)) {
+							System.out.println("Nickname INCORRECT !");
+							continue;
+						}
 						game.getMenu().setPlayerName(nickname);
 						MySQL.setNickname(game.getLogin().getUser().getUsername(), nickname);
 						Gamestate.state = Gamestate.MENU;
+						setSetPlayerNameState(false);
 						resetTextField();
 					} else if (lg.getState() == Gamestate.REGISTER) {
 						Gamestate.state = Gamestate.REGISTER;
-						game.getRegister().loadContainer();
 						game.getRegister().SetUpComponent();
 						game.getRegister().addComponent();
 						resetTextField();
@@ -156,6 +180,7 @@ public class SetPlayerName extends State implements Statemethods{
 	}
 	private void resetTextField() {
 		playerName.setVisible(false);
+		nn_label.setVisible(false);
 	}
 	public void resetTextBox() {
 		playerNameBox.resetBools();
@@ -167,33 +192,44 @@ public class SetPlayerName extends State implements Statemethods{
 
 	}
 	public void SetUpComponent() {
-		playerName = new JTextField("character name");
+		playerName = new JTextField();
+		nn_label = new JLabel("Nickname");
 		Font font = new Font("Arial", Font.PLAIN, 25); // Tạo font chữ mới với kích thước 18
 		playerName.setFont(font);
+		nn_label.setBounds(playerName.getBounds());
+		nn_label.setFont(playerName.getFont());
+		nn_label.setForeground(Color.GRAY);
 		playerName.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (playerName.getText().equals("character name")) {
-					playerName.setText("");
-				}
+//				if (playerName.getText().equals("character name")) {
+//					playerName.setText("");
+//				}
+				nn_label.setVisible(false);
 			}
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				if (playerName.getText().isEmpty()) {
-					playerName.setText("character name");
+				if(isSetPlayerNameState()) {
+					if (playerName.getText().isEmpty()) {
+//					playerName.setText("character name");
+						nn_label.setVisible(true);
+					}
 				}
 			}
 		});
 		
 		playerName.setBorder(null);
 		playerName.setOpaque(false);
-
+		
+		nn_label.setBorder(null);
+		nn_label.setOpaque(false);
 
 	}
 
 	public void addComponent() {
 		game.getGamePanel().add(playerName);
+		game.getGamePanel().add(nn_label);
 	}
 	
 }

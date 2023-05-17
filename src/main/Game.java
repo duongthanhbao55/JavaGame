@@ -100,6 +100,7 @@ public class Game implements Runnable{
 	public void update(long currTime) {
 		switch(Gamestate.state) {
 		case LOGIN:
+			login.setLoginState(true);
 			login.update(currTime);
 			break;
 		case REGISTER:
@@ -195,7 +196,7 @@ public class Game implements Runnable{
 			if(System.currentTimeMillis() - lastCheck >= 1000) {
 				lastCheck = System.currentTimeMillis();
 				
-				System.out.println("FPS: " + frames + " | UPS: " + updates);
+//				System.out.println("FPS: " + frames + " | UPS: " + updates);
 				frames = 0;
 				updates = 0;
 			}
