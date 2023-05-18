@@ -19,7 +19,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -476,7 +475,7 @@ public class Player extends Entity {
 		this.damage = damage;
 	}
 
-	public void setMana(int mana) {
+	public void applyMana(int mana) {
 		if (this.mana + mana >= maxMana){
 			this.mana = maxMana;
 		}
@@ -497,7 +496,7 @@ public class Player extends Entity {
 		return this.mana;
 	}
 
-	public void updateExp(long exp) {
+	public void applyExp(long exp) {
         this.currEXP += exp;
         updateLevel();
 	}
@@ -622,7 +621,7 @@ public class Player extends Entity {
 	}
 
 	public void setGold(int gold) {
-		this.gold = gold;
+		this.gold += gold;
 	}
 
 	public void resetAll() {

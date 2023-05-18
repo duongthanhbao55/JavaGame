@@ -8,11 +8,14 @@ import objects.Item;
 import ui.Confirm;
 import entities.Player;
 import gamestates.Playing;
+import untilz.LoadSave;
 
 import java.awt.*;
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ItemManager {
     // VARIABLES
@@ -74,6 +77,52 @@ public class ItemManager {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static void loadItemDataFromCSV() {
+        final String filePath = "csv/assets-1805-2.csv";
+        InputStream inputStream = LoadSave.class.getResourceAsStream('/' + filePath);
+        assert inputStream != null;
+        BufferedReader bufferedReader;
+        ItemTemplate[] _tempArrItemTemplate;
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            int lineCount = (int) bufferedReader.lines().count();
+            int i =0;
+            _tempArrItemTemplate = new ItemTemplate[lineCount];
+            String line = bufferedReader.readLine();
+            while ((line = bufferedReader.readLine()) != null&& i <lineCount) {
+                assert false;
+                String[] datas = line.split(";");
+                ItemTemplate IT = null;
+                IT.name = datas[0];
+                IT.slot = Byte.parseByte(datas[1]);
+                IT.gold = Integer.parseInt(datas[2]);
+                IT.filename = datas[3];
+                IT.ability = datas[4];
+                IT.description = datas[5];
+                String[] effects = datas[6].split(",");
+                IT.atk = Integer.parseInt(effects[0]);
+                IT.hp = Integer.parseInt(effects[1]);
+                IT.def = Integer.parseInt(effects[2]);
+                IT.atk_up = Float.parseFloat(effects[3]);
+                IT.hp_up = Float.parseFloat(effects[4]);
+                IT.def_up = Float.parseFloat(effects[5]);
+                IT.speed_up = Float.parseFloat(effects[6]);
+                IT.dmg_up = Float.parseFloat(effects[7]);
+                IT.dmg_down = Float.parseFloat(effects[8]);
+                IT.heal = Integer.parseInt(effects[9]);
+                IT.mana = Integer.parseInt(effects[10]);
+                _tempArrItemTemplate[i] = IT;
+                i++;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        arrItemTemplate = _tempArrItemTemplate;
+        for (ItemTemplate itemTemplate : arrItemTemplate) {
+            System.out.println(itemTemplate.toString());
+        }
     }
 
     public void checkItemContact(Player player) {

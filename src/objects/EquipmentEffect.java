@@ -63,7 +63,7 @@ public class EquipmentEffect {
         if(item.slot < 0) {
         	 player.applyHeal(item.heal);
              // MANA
-             player.setMana(item.mana);
+             player.applyMana(item.mana);
              return;
         }
         // ATK
