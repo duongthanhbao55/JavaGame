@@ -159,7 +159,6 @@ public abstract class Enemy extends Entity {
 		hitbox.y = y;
 		firstUpdate = true;
 		currHealth = maxHealth;
-		// newState(IDLE);
 		active = true;
 		airSpeed = 0;
 	}

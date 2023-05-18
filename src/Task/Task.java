@@ -51,6 +51,7 @@ public class Task {
 					new int[] { (int) player.getHitbox().getX(), (int) player.getHitbox().getX() + 40 },
 					new int[] { (int) player.getHitbox().getY() - (int) (5 * Game.SCALE),
 							(int) player.getHitbox().getY() - (int) (5 * Game.SCALE) });
+			player.updateExp(10);
 			break;
 		case 1:
 			Confirm.OpenComfirmUI(player, npcsTemplateId, Talk.getTask(1, 0), new String[] { Text.get(0, 2) });

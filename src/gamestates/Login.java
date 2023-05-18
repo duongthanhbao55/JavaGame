@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -38,6 +39,11 @@ public class Login extends State implements Statemethods {
 	private JPasswordField pw;
 	private User user;
 	private Player player;
+	
+	private JLabel L_usernameLabel;
+	private JLabel L_passwordLabel;
+	
+	private boolean loginState;
 
 	public Login(Game game) {
 		super(game);
@@ -46,11 +52,22 @@ public class Login extends State implements Statemethods {
 	
 	// GETTER & SETTER
 	
+	public boolean isLoginState() {
+		return loginState;
+	}
+	
+	public void setLoginState(boolean loginState) {
+		this.loginState = loginState;
+	}
+	
+	public User getUser() {
+		return user;
+	}
 	
 
 	private void loadBackGround() {
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.LOGIN_BACKGROUND);
-		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE1));
+		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE));
 		gifX = 0;
 		gifY = 0;
 		scaledGif = gifIcon.getImage().getScaledInstance(Game.GAME_WIDTH, Game.GAME_HEIGHT, Image.SCALE_DEFAULT);
@@ -62,9 +79,7 @@ public class Login extends State implements Statemethods {
 		loadContainer();
 	}
 
-	public User getUser() {
-		return user;
-	}
+
 
 	public void loadButton() {
 		loginButton[0] = new LoginButton(Game.GAME_WIDTH / 2, (int) (150 * Game.SCALE + 150), 0, Gamestate.LOGIN);
@@ -72,22 +87,24 @@ public class Login extends State implements Statemethods {
 	}
 
 	public void loadContainer() {
+//		userID = new JTextField();
+//		L_usernameLabel = new JLabel("Username");
+//		pw = new JPasswordField();
+//		L_passwordLabel = new JLabel("Password");
 		SetUpComponent();
 		addComponent();
+		
+		
 		userIDBox = new TextBox(menuX + 20, menuY + 185, 1);
 		passwordBox = new TextBox(menuX + 20, menuY + 235, 1);
+		
+		
+		L_setBounds();
 	}
 
 	@Override
 	public void update(long currTime) {
-		userID.setBounds((int) (userIDBox.getBounds().getX() + 8 * Game.SCALE),
-				(int) (userIDBox.getBounds().getY() + 3 * Game.SCALE),
-				(int) (userIDBox.getBounds().getWidth() - 16 * Game.SCALE),
-				(int) (userIDBox.getBounds().getHeight() - 6 * Game.SCALE));
-		pw.setBounds((int) (passwordBox.getBounds().getX() + 8 * Game.SCALE),
-				(int) (passwordBox.getBounds().getY() + 3 * Game.SCALE),
-				(int) (passwordBox.getBounds().getWidth() - 16 * Game.SCALE),
-				(int) (passwordBox.getBounds().getHeight() - 6 * Game.SCALE));
+		L_setBounds();
 
 		for (LoginButton lg : loginButton) {
 			lg.update();
@@ -135,6 +152,8 @@ public class Login extends State implements Statemethods {
 				if (lg.isMousePressed()) {
 					lg.applyGamestate();// apply only when Pressed before and Release after if pressed in button but
 					if (lg.getState() == Gamestate.LOGIN) {
+						setLoginState(true);
+						game.getRegister().setRegisterState(false);
 						user = User.Login(userID.getText(), pw.getText());
 						if(user == null) {
 							continue; // Username or password INCORRECT
@@ -161,8 +180,10 @@ public class Login extends State implements Statemethods {
 							resetTextField();
 						}
 					} else if (lg.getState() == Gamestate.REGISTER) {
+						game.getRegister().setRegisterState(true);
+						setLoginState(false);
 						Gamestate.state = Gamestate.REGISTER;
-						game.getRegister().loadContainer();
+						game.getRegister().SetUpComponent();;
 						game.getRegister().addComponent();
 						resetTextField();
 					}
@@ -212,45 +233,63 @@ public class Login extends State implements Statemethods {
 	private void resetTextField() {
 		userID.setVisible(false);
 		pw.setVisible(false);
+		
+		L_usernameLabel.setVisible(false);
+		L_passwordLabel.setVisible(false);
 	}
 
 	public void SetUpComponent() {
-		userID = new JTextField("username");
+		userID = new JTextField();
+		L_usernameLabel = new JLabel("Username");
 		Font font = new Font("Arial", Font.PLAIN, 18); // Tạo font chữ mới với kích thước 18
 		userID.setFont(font);
+		L_usernameLabel.setBounds(userID.getBounds());
+        L_usernameLabel.setFont(userID.getFont());
+        L_usernameLabel.setForeground(Color.GRAY);
 		userID.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (userID.getText().equals("username")) {
-					userID.setText("");
-				}
+				L_usernameLabel.setVisible(false);
+//				if (userID.getText().equals("username")) {
+//					userID.setText("");
+//				}
 			}
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				if (userID.getText().isEmpty()) {
-					userID.setText("username");
+				if(isLoginState()) {
+					if (userID.getText().isEmpty()) {
+						L_usernameLabel.setVisible(true);
+					}
 				}
 			}
 		});
-		pw = new JPasswordField("password");
+		pw = new JPasswordField();
+		L_passwordLabel = new JLabel("Password");
 		pw.setFont(font);
+		L_passwordLabel.setBounds(pw.getBounds());
+		L_passwordLabel.setFont(pw.getFont());
+		L_passwordLabel.setForeground(Color.GRAY);
 		pw.setEchoChar('\0');
 
 		pw.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (String.valueOf(pw.getPassword()).equals("password")) {
-					pw.setEchoChar('●');
-					pw.setText("");
-				}
+				L_passwordLabel.setVisible(false);
+				pw.setEchoChar('●');
+//				if (String.valueOf(pw.getPassword()).equals("password")) {
+//					pw.setText("");
+//				}
 			}
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				if (String.valueOf(pw.getPassword()).isEmpty()) {
-					pw.setEchoChar('\0');
-					pw.setText("password");
+				if(isLoginState()) {
+					if (String.valueOf(pw.getPassword()).isEmpty()) {
+						L_passwordLabel.setVisible(true);
+						pw.setEchoChar('\0');
+//					pw.setText("password");
+					}
 				}
 			}
 		});
@@ -258,14 +297,34 @@ public class Login extends State implements Statemethods {
 		userID.setOpaque(false);
 		pw.setBorder(null);
 		pw.setOpaque(false);
-
+		
+		L_usernameLabel.setBorder(null);
+		L_usernameLabel.setOpaque(false);
+		L_passwordLabel.setBorder(null);
+		L_passwordLabel.setOpaque(false);
 	}
 
 	public void addComponent() {
 		game.getGamePanel().add(userID);
 		game.getGamePanel().add(pw);
+		
+		game.getGamePanel().add(L_usernameLabel);
+		game.getGamePanel().add(L_passwordLabel);
 	}
 	
-	
+	public void L_setBounds() {
+		userID.setBounds((int) (userIDBox.getBounds().getX() + 8 * Game.SCALE),
+				(int) (userIDBox.getBounds().getY() + 3 * Game.SCALE),
+				(int) (userIDBox.getBounds().getWidth() - 16 * Game.SCALE),
+				(int) (userIDBox.getBounds().getHeight() - 6 * Game.SCALE));
+		pw.setBounds((int) (passwordBox.getBounds().getX() + 8 * Game.SCALE),
+				(int) (passwordBox.getBounds().getY() + 3 * Game.SCALE),
+				(int) (passwordBox.getBounds().getWidth() - 16 * Game.SCALE),
+				(int) (passwordBox.getBounds().getHeight() - 6 * Game.SCALE));
+		
+		L_usernameLabel.setBounds(userID.getBounds());
+		L_passwordLabel.setBounds(pw.getBounds());
+		
+	}
 	
 }
