@@ -19,4 +19,29 @@ public class ItemTemplate {
     public String ability;
     public String description;
     public String filename;
+    public int gold;
+
+    @Override
+    public String toString() {
+        return "ItemTemplate{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", atk=" + atk +
+                ", def=" + def +
+                ", hp=" + hp +
+                ", atk_up=" + atk_up +
+                ", hp_up=" + hp_up +
+                ", def_up=" + def_up +
+                ", speed_up=" + speed_up +
+                ", dmg_up=" + dmg_up +
+                ", dmg_down=" + dmg_down +
+                ", heal=" + heal +
+                ", mana=" + mana +
+                ", slot=" + slot +
+                ", ability='" + ability + '\'' +
+                ", description='" + description + '\'' +
+                ", filename='" + filename + '\'' +
+                ", gold=" + gold +
+                '}';
+    }
 }

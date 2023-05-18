@@ -1,0 +1,71 @@
+Name;Effect;Slot;Sell;Ability;File;Description
+Anvil;0,0,0,0,0,0,0,0,0,0,0;-4;0;None;anvil.png;a metalworking tool to forge your armors and weapons
+Basic Arm Guard;0,0,30,0,0,0,0,0,0.2,0,0;3;204;Resist incoming damages by 20%;arm_guard.png;a guard to block a little of damages
+Basic Arrow;0,0,0,0,0,0,0,0,0,0,0;-4;0;None;arrow.png;good ol' arrow
+Apprentice Magic Book;50,80,100,0,0,0,0,0.2,0.2,0,0;0;205;Increase damages dealt by 20% and decrease incoming damages taken by 20%;book.png;spells written by an apprentice wizard, didn't have any specialities yet
+Basic Boots;0,10,10,0,0,0,0.2,0,0,0,0;5;266;Increases move speed by 20%;boots_01.png;basic boots you could ever find
+New Boots;0,30,30,0,0,0,0.3,0,0,0,0;5;202;Increases move speed by 30%;boots_02.png;fresh boots from your local shoesmiths
+Basic Bow;80,10,10,0,0,0,0.2,0,0,0,0;0;253;Increases move speed by 20%;bow_01.png;basic wooden bow from your great grandparents, at least it's lightweight!
+Fancy Bow;200,100,100,0,0,0,0,0,0,0,0;0;226;For every enemies defeated, ATK increased by 5%;bow_02.png;your granparents didn't tell you about this fancy bow with golden string and gemstones. This is much heavier but at least it fills you with superpower!
+Golden Circlet;50,100,100,0,0,0,0,0,0,0,0;7;232;For every enemies defeated, DEF increased by 15%;circlet.png;an arm ornament left by a mistress
+Three-Leafed Clover;0,0,0,0,0,0,0,0,0,0,0;-2;34;One (1) random stat increased by 200;clover_leaf.png;would this serve as a lucky charm?
+Compass;0,0,0,0,0,0,0,0,0,0,0;-4;0;Return to a previous checkpoint or teleport to boss's lair;compass.png;a traveler's best friend
+Cookies;0,0,0,0,0,0,0,0,0,25,0;-2;50;Restores 50 HP points;cookies.png;cookies, well, cookies
+Copper Ingot;0,0,0,0,0,0,0,0,0,0,0;-3;30;Material;copper_ingot.png;Material
+Copper Ore;0,0,0,0,0,0,0,0,0,0,0;-3;35;Material;copper_ore.png;Material
+Fablic Clothe;150,150,100,0,0,0,0,0.5,0.3,0,0;-3;37;Increase damages dealt by 50% and decrease incoming damages taken by 30%;fablic_clothe.png;feels like a legendary hero
+Fabric;0,0,0,0,0,0,0,0,0,0,0;-3;22;Material;fabric.png;Material
+Feather;0,0,0,0,0,0,0,0,0,0,0;-3;26;Material;feather_a.png;Material
+Fish;0,0,0,0,0,0,0,0,0,20,0;-2;34;Restores 50 HP points;fish_a.png;raw fish, best to grill in a campfire
+Fur;0,0,0,0,0,0,0,0,0,0,0;-3;10;Material;fur_a.png;Material
+Glasses;0,0,0,0,0,0,0.2,0,0,0,0;-3;12;Material;glasses.png;Material
+A Traveler's Gloves;0,50,50,0,0,0,0.3,0.4,0,0,0;4;294;Increases move speed by 20%;glove_01.png;basic gloves for adventures
+Magical Gloves;200,100,50,0,0,0,0,0,0,0,0;4;249;Increases move speed by 30% and damages dealt by 40%;glove_02.png;its 3 magical stones are doing something
+Glowing Dust;0,0,0,0,0,0,0,0,0,0,0;-3;30;Material;glowing_dust.png;Material
+Gold Ingot;0,0,0,0,0,0,0,0,0,0,0;-3;31;Material;gold_ingot.png;Material
+Gold Ore;0,0,0,0,0,0,0,0,0,0,0;-3;48;Material;gold_ore.png;Material
+Green Mushroom;0,0,0,0,0,0,0,0,0,20,0;-2;37;Restores 50 HP points;green_mushroom.png;is it edible?
+Basic Headgear;0,30,30,0,0,0,0,0,0.2,0,0;2;296;Decreases incoming damages taken by 20%;headgear_01.png;basic headwear for the battlefield
+Hero Headgear;0,40,40,0,0,0,0,0,0.5,0,0;2;247;Decreases incoming damages taken by 50%;headgear_02.png;a hero's endeavor for their testaments
+Herb;0,0,0,0,0,0,0,0,0,150,0;-2;42;Restores 150 HP points;herb.png;the natural medicine
+Fine Pickaxe;100,50,0,0,0,0,0,0.3,0,0,0;0;222;Increases damages dealt by 30%;hi_quality_pickaxe.png;well-made by the best hands in town
+Fine Scethe;100,50,0,0,0,0,0,0.3,0,0,0;0;254;Increases damages dealt by 30%;hi_quality_scethe.png;well-made by the best hands in town
+Fine Hoe;100,50,0,0,0,0,0,0.3,0,0,0;0;201;Increases damages dealt by 30%;hoe.png;well-made by the best hands in town
+HP Potion;0,0,0,0,0,0,0,0,0,80,0;-2;18;Restores 300 HP Points;hp_potion.png;bought from a local wizard store if you recall correctly
+Iron Armor;0,50,50,0,0,0,0,0,0.3,0,0;3;215;Decreases incoming damages taken by 30%;iron_armor.png;basic unisex wear for the battlefield
+Iron Ingot;0,0,0,0,0,0,0,0,0,0,0;-3;25;Material;iron_ingot.png;Material
+Iron Ore;0,0,0,0,0,0,0,0,0,0,0;-3;33;Material;iron_ore.png;Material
+Leather Armor;0,80,50,0,0,0,0,0,0.2,0,0;3;235;Decreases incoming damages taken by 20%;leather_armor.png;lightweight and waterproof
+Leather Arm Guard;0,80,50,0,0,0,0,0,0.2,0,0;3;249;Decreases incoming damages taken by 20%;leather_arm_guard.png;looks cool
+Leather Boots;0,80,50,0,0,0,0.3,0,0,0,0;5;227;Increases move speed by 30%;leather_boots_01.png;basic leather boots you could ever ask
+Worn Leather Boots;0,30,20,0,0,0,0.1,0,0,0,0;5;285;Increases move speed by 10%;leather_boots_02.png;have trodden ten thousands miles
+Leather Glove;0,70,50,0,0,0,0.3,0,0,0,0;4;252;Increases move speed by 30%;leather_glove.png;also looks cool
+Log;0,0,0,0,0,0,0,0,0,0,0;-3;50;Material;log.png;Material
+Mana Potion;0,0,0,0,0,0,0,0,0,80,0;-2;40;Restores 300 Mana Points;mana_potion.png;bought from a local wizard store if you recall correctly
+Matua;50,100,150,0,0,0,0.3,0,0.3,0,0;4;275;Increases move speed by 30% and decreases incoming damages taken by 30%;mantua.png;mantua for a fabled hero
+Meat;0,0,0,0,0,0,0,0,0,20,0;-2;13;Restores 50 HP points;meat.png;raw meat, best to stew it first
+Basic Necklace;0,50,50,0,0,100,0,0,0,0,0;7;248;Increases DEF by 100 points;necklace_01.png;feminine necklace belonged to some mistress
+Fine Necklace;0,80,80,0,0,200,0,0,0,0,0;7;300;Increases DEF 200 points;necklace_02.png;feminine necklace belonged to some mistress, it seems having some power
+Onigiri;0,0,0,0,0,0,0,0,0,30,0;-2;29;Restores 150 HP points;onigiri.png;rice is life
+Pouch;0,0,0,0,0,0,0,0,0,0,0;-4;0;Increase your item box capacity by 100;pouch.png;damn, it's empty
+Basic Quiver;0,0,0,0,0,0,0,0,0,0,0;-4;0;Organize your arrows in one (1) place: your arrows quiver will count as 1 item in your item box;quiver.png;helps you organize your arrows bunch
+Bronze Ring;10,10,10,0,0,20,0,0,0,0,0;1;207;Increases DEF by 20 points;ring_01.png;engagement ring left by someone
+Ruby and Gold Ring;0,100,80,0,0,0,0,0,0.4,0,0;1;238;Decreases incoming damages taken by 40%;ring_02.png;looks like a ring with magical power
+Sandwich;0,0,0,0,0,0,0,0,0,30,0;-2;33;Restores 150 HP points;sandwich.png;bread, egg, bacon, tomatoes, lettuces
+Scroll Leather;0,0,0,0.1,0,0,0,0,0,0,0;-2;45;Increases ATK by 10%;scroll_leather.png;an ancient wizard's special spell
+Metal Shield;0,80,80,0,0,0,0,0,0.45,0,0;8;235;Decreases incoming damages taken by 45%;shield_01.png;None
+Imperial Shield;10,100,100,0,0,0,0,0,0.45,0,0;8;269;Decreases incoming damages taken by 45% and reflects 30% of absorbed damages;shield_02.png;made by the Imperial's proudest blacksmiths
+Blessed Spear;250,100,100,0.3,0,0,0,0,0,0,0;0;215;Increases ATK by 30% and for every enemies defeated, increases ATK by 5%;spear_01.png;is blessed by the fire goddess
+Imperial Spear;200,100,100,0,0,0,0,0.2,0,0,0;0;299;Increases damages dealt by 20%;spear_02.png;made by the Imperial's proudest blacksmiths
+Stone Sword;250,80,80,0.3,0,0,0,0.45,0,0,0;0;268;Increases damages dealt by 45% and ATK by 30%;stone sword.png;is definitely heavy as hell
+Stone;0,0,0,0,0,0,0,0,0,0,0;-3;17;Material;stone.png;Material
+Basic Sword;150,80,80,0,0,0,0,0.2,0,0,0;0;233;Increases damages dealt by 20%;sword_01.png;made by the Imperial's proudest blacksmiths
+Blessed Sword;250,100,100,0.3,0,0,0,0,0,0,0;0;256;Increases ATK by 30% and for every enemies defeated, increases ATK by 5%;sword_02.png;is blessed by the fire goddess
+Cat Tail;50,50,50,0,0,0,0,0.15,0,0,0;3;256;"Increases damages dealt by 15%; decreases incoming damages taken by 15%; increases move speed by 20%";tail.png;artificial cat tail ~ nyan
+Veggie;0,0,0,0,0,0,0,0,0,20,0;-2;29;Restores 100 HP points;veggie.png;what kind of salad shall you make?
+Apprentice Magus Wand;50,100,80,0.3,0,0.3,0,0,0,0,0;0;216;Increases ATK and DEF by 30%;wand_01.png;once belongs to a apprentice magus
+Young Magus Wand;200,120,100,0.45,0,0.45,0,0,0,0,0;0;223;Increases ATK and DEF by 45% and 2% for every enemies defeated;wand_02.png;once belongs to a young magus
+Watering Can;0,0,0,0,0,0,0,0,0,0,0;-4;0;To grow veggies;watering_can.png;you got to water to veggies
+Watermelon;0,0,0,0,0,0,0,0,0,20,0;-2;38;Restores 100 HP points;watermelon.png;fresh and juicy, not sure if it could fill your stomach
+Wooden Box;0,0,0,0,0,0,0,0,0,0,0;-4;0;Obtain one (1) random item;wooden_box.png;what is inside?
+Wooden Shield;0,30,30,0,0,0,0,0,0.2,0,0;8;257;Decreases incoming damages taken by 20%;wooden_shield.png;a dream of every young lad

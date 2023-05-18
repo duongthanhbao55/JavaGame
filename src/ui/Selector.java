@@ -248,6 +248,9 @@ public class Selector {
 			slotInventory[index].setEmpty(true);
 		}
 	}
+	private void Sell(){
+//		playing.getPlayer().setGold();
+	}
 
 	private void Equip() {
 		int index1 = slotInventory[index].getItems().get(0).getSlot();
