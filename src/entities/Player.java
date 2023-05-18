@@ -621,9 +621,6 @@ public class Player extends Entity {
 	}
 
 	public void setGold(int gold) {
-		this.gold = gold;
-	}
-	public void applyGold(int gold){
 		this.gold += gold;
 	}
 

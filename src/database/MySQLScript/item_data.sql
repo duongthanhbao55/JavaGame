@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS Item  (
     slot TINYINT NOT NULL DEFAULT -1,
     filename VARCHAR(34) NOT NULL,
     ability TEXT(500) DEFAULT NULL,
-    itemDesc TEXT(500) DEFAULT NULL,
+    description TEXT(500) DEFAULT NULL,
     effect VARCHAR(60) DEFAULT NULL,
     gold SMALLINT DEFAULT 0
 );
@@ -24,13 +24,13 @@ CREATE TABLE IF NOT EXISTS Item  (
 
 
 -- DEFAULT = NONE for ability & DESC
-DELIMITER //
-CREATE TRIGGER new_item_insert BEFORE INSERT ON item 
-FOR EACH ROW 
-	BEGIN
-		SET 
-        NEW.ability = if (NEW.ability IS NULL,'None',NEW.ability),
-		NEW.itemdesc = if ( NEW.itemdesc IS NULL , 'None' , NEW.itemdesc);
-		-- NEW.effect = if (NEW.effect IS NULL , '[]',NEW.effect);
-	END//
-DELIMITER ;
+--DELIMITER //
+--CREATE TRIGGER new_item_insert BEFORE INSERT ON item
+--FOR EACH ROW
+--	BEGIN
+--		SET
+--        NEW.ability = if (NEW.ability IS NULL,'None',NEW.ability),
+--		NEW.description = if ( NEW.itemdesc IS NULL , 'None' , NEW.itemdesc);
+--		-- NEW.effect = if (NEW.effect IS NULL , '[]',NEW.effect);
+--	END//
+--DELIMITER ;

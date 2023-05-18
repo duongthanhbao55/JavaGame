@@ -5,6 +5,7 @@ import static untilz.HelpMethods.nextInt;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import Effect.Animation;
 import Load.CacheDataLoader;
@@ -79,7 +80,7 @@ public class Selector {
 						Equip();
 					}
 					if (slotInventory[index].getItemOption().isSell()) {
-
+						Sell();
 					}
 					if (slotInventory[index].getItemOption().isDrop()) {
 						Drop();
@@ -249,7 +250,10 @@ public class Selector {
 		}
 	}
 	private void Sell(){
-//		playing.getPlayer().setGold();
+		ArrayList<Item> items = slotInventory[index].getItems();
+		playing.getPlayer().setGold(items.get(0).getGold());
+		items.remove(0);
+		if (items.isEmpty()) slotInventory[index].setEmpty(true);
 	}
 
 	private void Equip() {
