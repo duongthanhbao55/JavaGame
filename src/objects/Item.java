@@ -16,22 +16,23 @@ import java.sql.SQLException;
 
 public class Item extends GameObject {
 
-    protected String name;
-    protected byte id;
-    protected int atk;
-    protected int def;
-    protected int hp;
-    protected float atk_up;
-    protected float hp_up;
-    protected float def_up;
-    protected float speed_up;
-    protected float dmg_up;
-    protected float dmg_down;
-    protected int heal;
-    protected int mana;
-    protected byte slot;
-    protected String ability;
-    protected String description;
+    final protected String name;
+    final protected byte id;
+    final protected int atk;
+    final protected int def;
+    final protected int hp;
+    final protected float atk_up;
+    final protected float hp_up;
+    final protected float def_up;
+    final protected float speed_up;
+    final protected float dmg_up;
+    final protected float dmg_down;
+    final protected int heal;
+    final protected int mana;
+    final protected byte slot;
+    final protected String ability;
+    final protected String description;
+    final protected int gold;
     protected int quantity = 0;
     public boolean isContact = false;
     protected int maxHoverOffset, hoverDir = 1;
@@ -49,6 +50,15 @@ public class Item extends GameObject {
         atk = itemTemplate.atk;
         hp = itemTemplate.hp;
         def = itemTemplate.def;
+        atk_up = itemTemplate.atk_up;
+        hp_up = itemTemplate.hp_up;
+        def_up = itemTemplate.def_up;
+        speed_up = itemTemplate.speed_up;
+        dmg_up = itemTemplate.dmg_up;
+        dmg_down = itemTemplate.dmg_down;
+        heal = itemTemplate.heal;
+        mana = itemTemplate.mana;
+        gold = itemTemplate.gold;
         slot = itemTemplate.slot;
         ability = itemTemplate.ability;
         description = itemTemplate.description;
@@ -57,10 +67,6 @@ public class Item extends GameObject {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getAtk() {
@@ -134,11 +140,11 @@ public class Item extends GameObject {
 		return id;
 	}
 
-	public void setId(byte id) {
-		this.id = id;
-	}
+    public int getGold() {
+        return gold;
+    }
 
-	private BufferedImage loadImg(String fileName) {
+    private BufferedImage loadImg(String fileName) {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream("/assets/" + fileName);
         try {

@@ -6,12 +6,6 @@ import entities.Player;
 public class Consumable extends Item{
     public Consumable(int x, int y, int objType, ItemTemplate itemTemplate) {
         super(x, y, objType, itemTemplate);
-        heal = itemTemplate.heal;
-        mana = itemTemplate.mana;
-        atk_up = itemTemplate.atk_up;
-        hp_up = itemTemplate.hp_up;
-        def_up = itemTemplate.def_up;
-        speed_up = itemTemplate.speed_up;
     }
 
     public void use(Player player){

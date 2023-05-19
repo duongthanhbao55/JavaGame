@@ -34,6 +34,7 @@ public class Register extends State implements Statemethods {
 	private Image scaledGif;
 	private int gifX, gifY;
 	private int menuX, menuY, menuWidth, menuHeight;
+	private int warningX,warningY;
 	private TextBox userIDBox, passwordBox, confirmPasswordBox, emailBox;
 	private JTextField userID, email;
 	private JPasswordField pw, confirmPw;
@@ -47,11 +48,16 @@ public class Register extends State implements Statemethods {
 	private JLabel R_passwordLabel;
 	private JLabel R_cf_passwordLabel;
 	
+	private String []warning;
+	private boolean []isWarning;
+	
+	
 	public Register(Game game) {
 		super(game);
 
 		loadBackGround();
 		loadImg();
+		loadWarning();
 	}
 	
 	// GETTER && SETTER
@@ -86,7 +92,7 @@ public class Register extends State implements Statemethods {
 
 
 	private void loadBackGround() {
-		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.LOGIN_BACKGROUND);
+		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.REGISTER_BG);
 		registerSuccess = new RegisterSuccess(game);
 		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE1));
 		gifX = 0;
@@ -95,17 +101,28 @@ public class Register extends State implements Statemethods {
 		menuWidth = (int) (backgroundImg.getWidth() * Game.SCALE);
 		menuHeight = (int) (backgroundImg.getHeight() * Game.SCALE);
 		menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
-		menuY = (int) (45 * Game.SCALE);
+		menuY = (int) (20 * Game.SCALE);
 		loadButton();
 		loadContainer();
-
 	}
 
 	public void loadButton() {
-		loginButton[0] = new LoginButton(Game.GAME_WIDTH / 2, (int) (310 * Game.SCALE), 1, Gamestate.REGISTER);
+		loginButton[0] = new LoginButton(Game.GAME_WIDTH / 2, (int) (320 * Game.SCALE), 1, Gamestate.REGISTER);
 		loginButton[1] = new LoginButton(B_WIDTH / 2, (int) (Game.GAME_HEIGHT - B_HEIGHT), 0, Gamestate.LOGIN);
 	}
-
+	public void loadWarning() {
+		warning = new String[5];
+		warning[0] = "Please complete all information !";
+		warning[1] = "This email is not valid !";
+		warning[2] = "This email was used !";
+		warning[3] = "Username was used !";
+		warning[4] = "Password INCORRECT";
+		
+		isWarning = new boolean[5];
+		for(int i = 0; i < isWarning.length; i++) {
+			isWarning[i] = false;
+		}
+	}
 	public void loadContainer() {
 //		email = new JTextField();
 //		R_emailLabel = new JLabel("Email");
@@ -119,10 +136,10 @@ public class Register extends State implements Statemethods {
 //		confirmPw = new JPasswordField();
 //		R_cf_passwordLabel = new JLabel("Confirm password");
 		
-		emailBox = new TextBox(menuX + 20, menuY + 185, 1);
-		userIDBox = new TextBox(menuX + 20, menuY + 235, 1);
+		emailBox = new TextBox(menuX + 20, menuY + 145, 1);
+		userIDBox = new TextBox(menuX + 20, menuY + 215, 1);
 		passwordBox = new TextBox(menuX + 20, menuY + 285, 1);
-		confirmPasswordBox = new TextBox(menuX + 20, menuY + 335, 1);
+		confirmPasswordBox = new TextBox(menuX + 20, menuY + 355, 1);
 		
 		SetUpComponent();
 		R_setBounds();
@@ -158,10 +175,21 @@ public class Register extends State implements Statemethods {
 		for (LoginButton lg : loginButton) {
 			lg.render(g);
 		}
+		
+		
 		emailBox.render(g);
 		userIDBox.render(g);
 		passwordBox.render(g);
 		confirmPasswordBox.render(g);
+		for(int i = 0; i < warning.length; i++) {
+			if(isWarning[i]) {
+				warningX = (int) (confirmPasswordBox.getBounds().getX() + 10*Game.SCALE);
+				warningY = (int) ((int) confirmPasswordBox.getBounds().getY() + confirmPasswordBox.getBounds().getHeight() + 18 *Game.SCALE);
+				g.setFont(new Font("Arial", Font.PLAIN, 18));
+				g.setColor(new Color(0,255,0));
+				g.drawString(warning[i], warningX, warningY);
+			}
+		}
 		if (success)
 			registerSuccess.render(g);
 	}
@@ -192,7 +220,8 @@ public class Register extends State implements Statemethods {
 					if (lg.getState() == Gamestate.REGISTER) {
 						setRegisterState(true);
 						game.getLogin().setLoginState(false);
-						success = User.Register(email.getText(), userID.getText(), pw.getText(), confirmPw.getText());
+						resetBooleanWarning();
+						success = User.Register(email.getText(), userID.getText(), pw.getText(), confirmPw.getText(),this);
 						if(!success) {
 							continue;
 						}
@@ -431,6 +460,14 @@ public class Register extends State implements Statemethods {
 		R_usernameLabel.setBounds(userID.getBounds());
 		R_passwordLabel.setBounds(pw.getBounds());
 		R_cf_passwordLabel.setBounds(confirmPw.getBounds());
+	}
+	public void setWarningIndex(int index) {
+		isWarning[index] = true;
+	}
+	public void resetBooleanWarning() {
+		for(int i = 0; i < isWarning.length;i++) {
+			isWarning[i] = false;
+		}
 	}
 	
 }
