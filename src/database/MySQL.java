@@ -11,6 +11,8 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import objects.InventoryManager;
+
 public class MySQL
 {
     protected final int MySQL_ID;
@@ -89,6 +91,8 @@ public class MySQL
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		InventoryManager.InventoryDataInitializer();
+		
 		
 	}
 	

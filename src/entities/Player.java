@@ -40,8 +40,8 @@ public class Player extends Entity {
 	private static int playerId;
 	private String Name;
 	private int Level;
-    private long currEXPCap = Exp.BASE_EXP_CAP;
-    private long currEXP;
+	private long currEXPCap = Exp.BASE_EXP_CAP;
+	private long currEXP;
 	private long ExpDown;
 	private int vip;
 	private int mapId;
@@ -78,19 +78,31 @@ public class Player extends Entity {
 	private int statusBarX = (int) (10 * Game.SCALE);
 	private int statusBarY = (int) (10 * Game.SCALE);
 
-	private int healthBarWidth = (int) (150 * Game.SCALE);
+	private int healthBarWidth = (int) (152 * Game.SCALE);
 	private int healthBarHeight = (int) (4 * Game.SCALE);
 	private int healthBarXStart = (int) (34 * Game.SCALE);// offsetX in status bar
 	private int healthBarYStart = (int) (14 * Game.SCALE);// offsetY
 	private float lostHealthWidth = healthBarWidth;
 
+	private int manaBarWidth = (int) (103 * Game.SCALE);
+	private int manaBarHeight = (int) (2.6 * Game.SCALE);
+	private int manaBarXStart = (int) (45 * Game.SCALE);
+	private int manaBarYStart = (int) (34 * Game.SCALE);
+	private float lostManaWidth = manaBarWidth;
+
 	private int healthWidth = healthBarWidth;
+	private int manaWidth = manaBarWidth;
 	private int attack = DEFAULT_ATTACK;
 	private int defend = DEFAULT_DEF;
 	private int damage = attack;
-	final private int maxMana = DEFAULT_MANA;
+	private int maxMana = DEFAULT_MANA;
 	private int mana = maxMana;
+	protected int currMana;
 	private float dmg_down;
+
+	private long previousTime1 = 0;
+	private long previousTime2 = 0;
+	private long restoreTime = 1000000000L;
 
 	// Attack Box
 
@@ -115,10 +127,12 @@ public class Player extends Entity {
 		this.state = IDLE;
 		this.maxHealth = DEFAULT_MAXHEALTH;
 		this.currHealth = maxHealth;
+		maxMana = DEFAULT_MANA;
+		currMana = maxMana;
 		this.walkSpeed = Game.SCALE * 1.0f;
 		loadAnim();
 
-        this.currEXP = 0;
+		this.currEXP = 0;
 		this.ExpDown = 0;
 		this.Level = 1;
 		this.mapId = 0;
@@ -170,7 +184,12 @@ public class Player extends Entity {
 		}
 
 		updateAttackBox();
+		restoreHealth(currTime);
 		updateHealthBar();
+		
+		restoreMana(currTime);
+		updateManaBar();
+
 		updatePos();
 		if (moving) {
 			checkSpikesTouched();
@@ -186,6 +205,29 @@ public class Player extends Entity {
 		setAnimation();
 		animList.get(this.state).Update(currTime);
 		// updateHitbox();
+	}
+
+	private void restoreHealth(long currTime) {
+		if (currTime - previousTime1 > restoreTime) {
+			if(currHealth < maxHealth) {
+				currHealth += 1;
+			}else if(currHealth < 0) {
+				currHealth = 0;
+			}
+			previousTime1 = currTime;
+		}
+		
+	}
+	private void restoreMana(long currTime) {
+		if (currTime - previousTime2 > restoreTime) {
+			if(currMana < maxMana) {
+				currMana += 1;
+			}else if(currMana < 0) {
+				currMana = 0;
+			}
+			previousTime2 = currTime;
+		}
+		
 	}
 
 	private void checkSpikesTouched() {
@@ -250,6 +292,16 @@ public class Player extends Entity {
 
 	}
 
+	private void updateManaBar() {
+		manaWidth = (int) (currMana / (float) maxMana) * manaBarWidth;
+
+		if (manaWidth < lostManaWidth) {
+			lostManaWidth -= 0.3;
+		} else if (manaWidth >= lostManaWidth) {
+			lostManaWidth = manaWidth;
+		}
+	}
+
 	private void updatePos() {
 		moving = false;
 
@@ -302,7 +354,7 @@ public class Player extends Entity {
 				updateXPos(xSpeed);
 			moving = true;
 		}
-		
+
 	}
 
 	private void jump() {
@@ -332,7 +384,7 @@ public class Player extends Entity {
 
 	public void changeHealth(int value) {
 
-		value = (int) (((value * (100 / (float) (100 + defend))))*(1 - dmg_down));
+		value = (int) (((value * (100 / (float) (100 + defend)))) * (1 - dmg_down));
 		currHealth += value;
 		if (currHealth <= 0) {
 			currHealth = 0;
@@ -341,15 +393,13 @@ public class Player extends Entity {
 		}
 	}
 
-	public void hurt(int damage) {
-		int value = (int) ((damage * (100/(float)(100 + defend))));;
-		currHealth -= value;
-		if (currHealth < 0) currHealth = 0;
-
-	}
-
 	public void changeMana(int value) {
-		System.out.println("+" + value + " mana!");
+		currMana += value;
+		if (currMana <= 0) {
+			currMana = 0;
+		} else if (currMana >= maxMana) {
+			currMana = maxMana;
+		}
 
 	}
 
@@ -398,10 +448,8 @@ public class Player extends Entity {
 			g.setColor(new Color(255, nextInt(255), 255));
 			g.drawString(descriptionTask, (int) (10 * Game.SCALE), (int) (140 * Game.SCALE));
 		}
-		realHitbox.x = (hitbox.x - hitbox.width/2);
-		realHitbox.y = (hitbox.y  - hitbox.height/2);
-		
-		
+		realHitbox.x = (hitbox.x - hitbox.width / 2);
+		realHitbox.y = (hitbox.y - hitbox.height / 2);
 
 		// drawAttackBox(g, xLvlOffset);
 		renderUI(g);
@@ -414,6 +462,11 @@ public class Player extends Entity {
 		g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, (int) lostHealthWidth, healthBarHeight);
 		g.setColor(Color.RED);
 		g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
+		g.setColor(new Color(0, 0, 100));
+		g.fillRect((manaBarXStart + statusBarX), (int) (manaBarYStart + statusBarY), (int) lostManaWidth,
+				manaBarHeight);
+		g.setColor(Color.BLUE);
+		g.fillRect((manaBarXStart + statusBarX), (int) (manaBarYStart + statusBarY), manaWidth, manaBarHeight);
 
 	}
 
@@ -466,7 +519,9 @@ public class Player extends Entity {
 		return attack;
 	}
 
-	public void setAttack(int attack) { this.attack = attack; }
+	public void setAttack(int attack) {
+		this.attack = attack;
+	}
 
 	public int getDamage() {
 		return damage;
@@ -477,12 +532,11 @@ public class Player extends Entity {
 	}
 
 	public void setMana(int mana) {
-		if (this.mana + mana >= maxMana){
+		if (this.mana + mana >= maxMana) {
 			this.mana = maxMana;
+		} else {
+			this.mana += mana;
 		}
-		else {
-            this.mana += mana;
-        }
 	}
 
 	public float getDmg_down() {
@@ -498,8 +552,8 @@ public class Player extends Entity {
 	}
 
 	public void updateExp(long exp) {
-        this.currEXP += exp;
-        updateLevel();
+		this.currEXP += exp;
+		updateLevel();
 	}
 
 	public boolean isInteract() {
@@ -575,14 +629,17 @@ public class Player extends Entity {
 	public void applyDef(int defend) {
 		this.defend = defend;
 	}
+
 //
 //	public void applyAtk(int attack) {
 //		this.ATK = attack;
 //	}
-    public void applyHeal(int hp) {
-        if (currHealth + hp > maxHealth) currHealth = maxHealth;
-        else currHealth += hp;
-    }
+	public void applyHeal(int hp) {
+		if (currHealth + hp > maxHealth)
+			currHealth = maxHealth;
+		else
+			currHealth += hp;
+	}
 
 	public int getDef() {
 		return this.defend;
@@ -600,15 +657,17 @@ public class Player extends Entity {
 		Level = level;
 	}
 
-    public void updateLevel() {
-        if (currEXP < currEXPCap) return;
-        currEXP = currEXP - currEXPCap;
-        switch (Level / 10) {
-            case 0 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV10);
-            case 1 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV20);
-        }
-        Level += 1;
-    }
+	public void updateLevel() {
+		if (currEXP < currEXPCap)
+			return;
+		currEXP = currEXP - currEXPCap;
+		switch (Level / 10) {
+		case 0 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV10);
+		case 1 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV20);
+		}
+		Level += 1;
+	}
+
 	public int getMapId() {
 		return mapId;
 	}
@@ -657,14 +716,14 @@ public class Player extends Entity {
 				player.ctaskCount = red.getShort("ctaskCount");
 				// player.cspeed = red.getByte("cspeed");
 				player.Name = red.getString("cName");
-                player.currEXP = red.getLong("cEXP");
+				player.currEXP = red.getLong("cEXP");
 				player.ExpDown = red.getLong("cExpDown");
 				player.gold = red.getInt("xu");
 				System.out.println("gold" + player.gold);
 				player.Level = red.getInt("cLevel");
 				player.vip = red.getInt("vip");
 				player.mapId = red.getInt("idMap");
-				
+
 				JSONArray jarr2 = (JSONArray) JSONValue.parseWithException(red.getString("InfoMap"));
 				player.x = Short.parseShort(jarr2.get(0).toString());
 				player.y = Short.parseShort(jarr2.get(1).toString());
@@ -684,28 +743,28 @@ public class Player extends Entity {
 		return player;
 	}
 
-	public static boolean savePlayerData(PreparedStatement statement,Playing playing) {
-	
+	public static boolean savePlayerData(Playing playing) {
+
 		try {
 			final MySQL mySQL = new MySQL(0);
 			try {
 				Connection conn = MySQL.getConnection(0);
 				String updateQuery = "UPDATE player SET ctaskId = ?, ctaskIndex = ?, ctaskCount = ?, cspeed = ?, cName = ?, cEXP = ?, cExpDown = ?, cLevel = ?, xu = ?, idMap = ?, InfoMap = ?, vip = ? WHERE playerId = ?";
 				PreparedStatement pstmt = conn.prepareStatement(updateQuery);
-				
-				statement.setInt(1, playing.getPlayer().getCtaskId());
-				statement.setInt(2, playing.getPlayer().getCtaskIndex());
-				statement.setInt(3, playing.getPlayer().getCtaskCount());
-				statement.setInt(4, 2);
-				statement.setLong(6, 0);
-				statement.setLong(7, 0);
-				statement.setInt(8, playing.getPlayer().getLevel());
-				statement.setInt(9, playing.getPlayer().getGold());
-				statement.setInt(10, playing.getPlayer().getMapId());
+
+				pstmt.setInt(1, playing.getPlayer().getCtaskId());
+				pstmt.setInt(2, playing.getPlayer().getCtaskIndex());
+				pstmt.setInt(3, playing.getPlayer().getCtaskCount());
+				pstmt.setInt(4, 2);
+				pstmt.setLong(6, 0);
+				pstmt.setLong(7, 0);
+				pstmt.setInt(8, playing.getPlayer().getLevel());
+				pstmt.setInt(9, playing.getPlayer().getGold());
+				pstmt.setInt(10, playing.getPlayer().getMapId());
 				String xPos = Double.toString(playing.getPlayer().getHitbox().getX());
 				String yPos = Double.toString(playing.getPlayer().getHitbox().getY());
-				statement.setString(11, "[" + xPos + "," + yPos + "]");
-				
+				pstmt.setString(11, "[" + xPos + "," + yPos + "]");
+
 				int rowsAffected = pstmt.executeUpdate();
 				if (rowsAffected > 0) {
 					System.out.println("New user has been inserted successfully!");

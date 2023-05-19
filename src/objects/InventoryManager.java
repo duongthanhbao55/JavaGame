@@ -1,6 +1,5 @@
 package objects;
 
-
 import gamestates.Playing;
 import main.Game;
 import untilz.LoadSave;
@@ -10,6 +9,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class InventoryManager {
 	}// 175
 
 	public void initBag() {
-		Bag = new Rectangle2D.Float(Game.TILES_SIZE * 35 + (INVENTORY_WIDTH - GRID_WIDTH) / 2 + 1*Game.SCALE,
+		Bag = new Rectangle2D.Float(Game.TILES_SIZE * 35 + (INVENTORY_WIDTH - GRID_WIDTH) / 2 + 1 * Game.SCALE,
 				1 * Game.TILES_SIZE - 4 * Game.SCALE, GRID_WIDTH, GRID_HEIGHT);
 		Slots = new Slot[24];
 		float width = GRID_WIDTH / 4;
@@ -55,16 +56,18 @@ public class InventoryManager {
 					++row;
 				}
 			Slots[i] = new Slot((float) (Bag.getX() + (i % 4 * width)), (float) (Bag.getY() + row * height), width,
-					height, true,false, null);
-		}	
-	}
-	public void initDataInventory() {
-		for(int i = 0; i < InventoryManager.inventoryTemplate[inventoryId].itemId.length; i++) {
-			int index = InventoryManager.inventoryTemplate[inventoryId].itemIndex[i];
-			Slots[index].addItem(new Item((int)0, (int)0, 0,
-							ItemManager.arrItemTemplate[inventoryTemplate[inventoryId].itemIndex[index]]));
+					height, true, false, null);
 		}
 	}
+
+	public void initDataInventory() {
+		for (int i = 0; i < InventoryManager.inventoryTemplate[inventoryId].itemId.length; i++) {
+			int index = InventoryManager.inventoryTemplate[inventoryId].itemIndex[i];
+			Slots[index].addItem(new Item((int) 0, (int) 0, 0,
+					ItemManager.arrItemTemplate[inventoryTemplate[inventoryId].itemIndex[index]]));
+		}
+	}
+
 	public void LoadImg() {
 		InventoryImg = LoadSave.GetSpriteAtlas(LoadSave.INVENTORY_BACKGROUND);
 	}
@@ -141,9 +144,11 @@ public class InventoryManager {
 	public boolean isOpen() {
 		return isOpen;
 	}
+
 	public Slot[] getSlots() {
 		return Slots;
 	}
+
 	public static void loadInventoryData() {
 		try {
 			InventoryTemplate[] _inventoryTemplates = new InventoryTemplate[0];
@@ -163,12 +168,10 @@ public class InventoryManager {
 				inventoryTemplate.itemId = new short[itemId.size()];
 				inventoryTemplate.itemIndex = new short[inventoryTemplate.itemId.length];
 
-			
 				for (int j5 = 0; j5 < inventoryTemplate.itemId.length; ++j5) {
 					inventoryTemplate.itemId[j5] = Short.parseShort(itemId.get(j5).toString());
 					inventoryTemplate.itemIndex[j5] = Short.parseShort(itemIndex.get(j5).toString());
 				}
-				
 
 				_inventoryTemplates[i] = inventoryTemplate;
 				++i;
@@ -179,6 +182,57 @@ public class InventoryManager {
 		} catch (SQLException | NumberFormatException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static void InventoryDataInitializer() {
+		try {
+			final MySQL mySQL = new MySQL(0);
+			try {
+				Connection conn = MySQL.getConnection(0);
+				String insertQuery = "INSERT INTO inventory (itemId, itemIndex) VALUES (?, ?)";
+				PreparedStatement pstmt = conn.prepareStatement(insertQuery);
+
+				pstmt.setString(1, "[]");
+				pstmt.setString(2, "[]");
+				pstmt.executeUpdate();
+
+				int rowsAffected = pstmt.executeUpdate();
+				if (rowsAffected > 0) {
+					System.out.println("New user has been inserted successfully!");
+				} else {
+
+				}
+			} finally {
+				mySQL.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private int getGeneratedInventoryId() {
+		// Query to retrieve the last inserted inventoryId
+		try {
+			final MySQL mySQL = new MySQL(0);
+			String selectQuery = "SELECT id FROM inventory ORDER BY id DESC LIMIT 1";
+			try (Connection conn = MySQL.getConnection(0);
+					PreparedStatement pstmt = conn.prepareStatement(selectQuery);
+					ResultSet resultSet = pstmt.executeQuery()) {
+
+				if (resultSet.next()) {
+					return resultSet.getInt("id");
+				}
+
+				int rowsAffected = pstmt.executeUpdate();
+
+			} finally {
+				mySQL.close();
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 }

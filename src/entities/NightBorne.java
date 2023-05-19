@@ -18,7 +18,7 @@ import main.Game;
 
 public class NightBorne extends Enemy {
 
-	ArrayList<Animation> NightborneAnimList = new ArrayList<Animation>();
+	ArrayList<Animation> NightborneAnimList = new ArrayList<>();
 
 	// AttackBox
 	private Rectangle2D.Float attackBox;
@@ -47,7 +47,8 @@ public class NightBorne extends Enemy {
 			if (currTime - previousTime > refreshTime) {
 				if (!firstCheck) {
 					this.resetEnemy();
-					active = true;				
+					active = true;		
+					firstCheck = true;	
 				}
 				firstCheck = false;	
 				previousTime = currTime;
