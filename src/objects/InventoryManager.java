@@ -61,10 +61,18 @@ public class InventoryManager {
 	}
 
 	public void initDataInventory() {
-		for (int i = 0; i < InventoryManager.inventoryTemplate[inventoryId].itemId.length; i++) {
-			int index = InventoryManager.inventoryTemplate[inventoryId].itemIndex[i];
-			Slots[index].addItem(new Item((int) 0, (int) 0, 0,
-					ItemManager.arrItemTemplate[inventoryTemplate[inventoryId].itemIndex[index]]));
+		for (int i = 0; i < InventoryManager.inventoryTemplate.length; i++) {
+			
+			if (inventoryTemplate[i].isEquipped == 1) {
+				playing.getEquipment().addItem(new Item((int) 0, (int) 0, 0, ItemManager.arrItemTemplate[inventoryTemplate[i].item_id - 1]));
+			} else {
+				int index = inventoryTemplate[i].index;
+				for(int j = 0; j < inventoryTemplate[i].quantity; j++) {
+					Slots[index].addItem(
+							new Item((int) 0, (int) 0, 0, ItemManager.arrItemTemplate[inventoryTemplate[i].item_id - 1]));
+				}			
+			}
+				
 		}
 	}
 
@@ -154,7 +162,7 @@ public class InventoryManager {
 			InventoryTemplate[] _inventoryTemplates = new InventoryTemplate[0];
 			final MySQL mySQL = new MySQL(0);
 
-			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `inventory`;");
+			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `inven`;");
 			if (res.last()) {
 				_inventoryTemplates = new InventoryTemplate[res.getRow()];
 				res.beforeFirst();
@@ -162,16 +170,12 @@ public class InventoryManager {
 			int i = 0;
 			while (res.next()) {
 				final InventoryTemplate inventoryTemplate = new InventoryTemplate();
-				inventoryTemplate.InventoryId = res.getShort("id");
-				final JSONArray itemId = (JSONArray) JSONValue.parse(res.getString("itemId"));
-				final JSONArray itemIndex = (JSONArray) JSONValue.parse(res.getString("itemIndex"));
-				inventoryTemplate.itemId = new short[itemId.size()];
-				inventoryTemplate.itemIndex = new short[inventoryTemplate.itemId.length];
-
-				for (int j5 = 0; j5 < inventoryTemplate.itemId.length; ++j5) {
-					inventoryTemplate.itemId[j5] = Short.parseShort(itemId.get(j5).toString());
-					inventoryTemplate.itemIndex[j5] = Short.parseShort(itemIndex.get(j5).toString());
-				}
+				inventoryTemplate.player_id = res.getInt("player_id");
+				inventoryTemplate.item_id = res.getShort("item_id");
+				inventoryTemplate.isEquipped = res.getByte("is_equipped");
+				//System.out.println(inventoryTemplate.isEquipped);
+				inventoryTemplate.index = res.getShort("index");
+				inventoryTemplate.quantity = res.getShort("quantity");
 
 				_inventoryTemplates[i] = inventoryTemplate;
 				++i;

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import Effect.HitEffect;
 import Map.PhysicalMap;
 import Template.EnemyTemplate;
+import Template.MobStatus;
 import entities.NightBorne;
 import entities.Player;
 import gamestates.Playing;
@@ -17,6 +18,7 @@ import static untilz.HelpMethods.*;
 public class EnemyManager {
 
 	public static EnemyTemplate[] arrEnemyTemplate;
+	public static MobStatus[] arrMobStatus;
 	private Playing playing;
 	private ArrayList<NightBorne> NightBornes = new ArrayList<>();
 	private HitEffect hitEffect = null;
@@ -65,7 +67,6 @@ public class EnemyManager {
 		drawNightBornes(g, xLvlOffset);
 		if (activeEffect)
 			hitEffect.render(g, xLvlOffset);
-
 	}
 
 	private void drawNightBornes(Graphics g, int xLvlOffset) {
@@ -84,4 +85,5 @@ public class EnemyManager {
 		for (NightBorne c : NightBornes)
 			c.resetEnemy();
 	}
+	
 }

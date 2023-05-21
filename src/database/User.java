@@ -90,15 +90,9 @@ public class User {
 		if(MySQL.loginSuccessfully(uName, pass)) {
 			user.username = uName;
 			JSONArray jrs;
-			try {
-				jrs = (JSONArray) JSONValue.parseWithException(MySQL.getPlayerID(uName));
-				user.player = Player.getPlayer(user, Integer.parseInt(jrs.get(0).toString()));
-				return user;
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				
-				e.printStackTrace();
-			}
+			//jrs = (JSONArray) JSONValue.parseWithException(MySQL.getPlayerID(uName));
+			user.player = Player.getPlayer(user, MySQL.getPlayerID(uName));
+			return user;
 		}
 		return null;
 	}

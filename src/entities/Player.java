@@ -93,8 +93,10 @@ public class Player extends Entity {
 	private int manaWidth = manaBarWidth;
 	private int attack = DEFAULT_ATTACK;
 	private int defend = DEFAULT_DEF;
-	private int damage = attack;
 	private int maxMana = DEFAULT_MANA;
+	private float restoreHPSpeed = 1.0f;;
+	private int def = defend;
+	private int damage = attack;
 	private int mana = maxMana;
 	protected int currMana;
 	private float dmg_down;
@@ -209,7 +211,7 @@ public class Player extends Entity {
 	private void restoreHealth(long currTime) {
 		if (currTime - previousTime1 > restoreTime) {
 			if(currHealth < maxHealth) {
-				currHealth += 1;
+				currHealth += restoreHPSpeed;
 			}else if(currHealth < 0) {
 				currHealth = 0;
 			}
@@ -515,11 +517,11 @@ public class Player extends Entity {
 	}
 
 	public int getAttack() {
-		return attack;
+		return damage;
 	}
 
-	public void setAttack(int attack) {
-		this.attack = attack;
+	public void setAttack(int damage) {
+		this.damage = damage;
 	}
 
 	public int getDamage() {
@@ -625,8 +627,8 @@ public class Player extends Entity {
 		this.descriptionTask = descriptionTask;
 	}
 
-	public void applyDef(int defend) {
-		this.defend = defend;
+	public void applyDef(int def) {
+		this.def = def;
 	}
 
 //
@@ -641,12 +643,9 @@ public class Player extends Entity {
 	}
 
 	public int getDef() {
-		return this.defend;
+		return this.def;
 	}
 
-	public int getAtk() {
-		return this.damage;
-	}
 
 	public int getLevel() {
 		return Level;
@@ -707,25 +706,19 @@ public class Player extends Entity {
 		final Player player = new Player(user, 0, 0, (int) (Game.TILES_SIZE * 4), (int) (Game.TILES_SIZE * 2));
 		try {
 			MySQL mySQL = new MySQL(0);
-			ResultSet red = mySQL.stat.executeQuery("SELECT * FROM `player` WHERE `playerId`=" + id + " LIMIT 1;");
+			ResultSet red = mySQL.stat.executeQuery("SELECT * FROM `player` WHERE `player_id`=" + id + " LIMIT 1;");
 			if (red.first()) {
-				player.playerId = red.getInt("playerId");
-				player.ctaskId = red.getByte("ctaskId");
-				player.ctaskIndex = red.getByte("ctaskIndex");
-				player.ctaskCount = red.getShort("ctaskCount");
-				// player.cspeed = red.getByte("cspeed");
-				player.Name = red.getString("cName");
-				player.currEXP = red.getLong("cEXP");
-				player.ExpDown = red.getLong("cExpDown");
-				player.gold = red.getInt("xu");
-				System.out.println("gold" + player.gold);
-				player.Level = red.getInt("cLevel");
-				player.vip = red.getInt("vip");
-				player.mapId = red.getInt("idMap");
+				player.playerId = red.getInt("player_id");
+				player.currEXP = red.getLong("experience");
+				player.damage = red.getInt("attack");
+				player.maxHealth = red.getInt("health_point");
+				player.maxMana = red.getInt("mana");
+				player.def = red.getInt("defense");
+				player.gold = red.getInt("gold");
+				player.mapId = red.getInt("map_id");
 
-				JSONArray jarr2 = (JSONArray) JSONValue.parseWithException(red.getString("InfoMap"));
-				player.x = Short.parseShort(jarr2.get(0).toString());
-				player.y = Short.parseShort(jarr2.get(1).toString());
+				player.x = red.getInt("coordinates_x");
+				player.y = red.getInt("coordinates_y");
 				player.hitbox.x = player.x;
 				player.hitbox.y = player.y;
 
@@ -737,8 +730,9 @@ public class Player extends Entity {
 			e.printStackTrace();
 		}
 		PhysicalMap.loadMapData();
+		PhysicalMap.loadMobData();
+		PhysicalMap.loadNpcData();
 		InventoryManager.loadInventoryData();
-		Equipment.loadEquipment();
 		return player;
 	}
 

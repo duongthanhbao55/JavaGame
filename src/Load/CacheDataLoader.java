@@ -246,12 +246,9 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 					} else if (objectType.equals("ellipse")) {
 						containers.add(new GameContainer((int) (x * Game.SCALE), (int) (y * Game.SCALE), BOX));
 					}
-
-				} else
-					nightBorneList.add(new NightBorne((int) (x * Game.SCALE), (int) (y * Game.SCALE), playing));
+				}
 			}
 		}
-		physicalMap.addEnenmies(nightBorneList);
 		physicalMap.setContainers(containers);
 	}
 

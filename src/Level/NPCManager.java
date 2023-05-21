@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import Map.PhysicalMap;
 import Task.Task;
 import Template.EnemyTemplate;
+import Template.NpcStatus;
 import Template.NpcTemplate;
 import entities.NPC;
 import entities.NPC_Wizard1;
@@ -17,13 +18,13 @@ import objects.Potion;
 import ui.Confirm;
 
 public class NPCManager {
+	public static NpcStatus[] arrNpcStatus;
 	private ArrayList<NPC_Wizard1> npcWizard1s = new ArrayList<>();
 	private Playing playing;
 	public static NpcTemplate[] arrNpcTemplate;
 
 	public NPCManager(Playing playing) {
 		this.playing = playing;
-		npcWizard1s.add(new NPC_Wizard1(400, 580, 0));
 	}
 
 	public void update(long currTime, int[][] lvlData, Player player) {

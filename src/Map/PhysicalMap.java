@@ -11,7 +11,12 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
+import Level.EnemyManager;
+import Level.NPCManager;
+import Template.EnemyTemplate;
 import Template.MapTemplate;
+import Template.MobStatus;
+import Template.NpcStatus;
 import database.MySQL;
 import entities.NPC;
 import entities.NPC_Wizard1;
@@ -84,20 +89,12 @@ public class PhysicalMap {
 	}
 
 	public void loadAll(Playing playing, int idMap) {
-		loadEnenmies(playing, idMap);
+		this.idMap = idMap;
 		loadPlayerSpawn();
 		loadAreaSwitch();
-		loadNpcs();
+		// loadNpcs();
 	}
 
-	public void loadEnenmies(Playing playing, int idMap) {
-		this.idMap = idMap;
-		for (int i = 0; i < PhysicalMap.mapTemplate[idMap].mobID.length; i++) {
-			nightBornes.add(new NightBorne(PhysicalMap.mapTemplate[idMap].mobX[i],
-					PhysicalMap.mapTemplate[idMap].mobY[i], playing));
-		}
-
-	}
 
 	public void loadAreaSwitch() {
 		areaSwitchMap = new Rectangle2D.Float[PhysicalMap.mapTemplate[this.idMap].WgoX.length];
@@ -108,21 +105,21 @@ public class PhysicalMap {
 		}
 	}
 
-	public void loadNpcs() {
-		for (int i = 0; i < PhysicalMap.mapTemplate[idMap].npcID.length; i++) {
-			float xPos = PhysicalMap.mapTemplate[this.idMap].npcX[i];
-			float yPos = PhysicalMap.mapTemplate[this.idMap].npcY[i];
-			int id = PhysicalMap.mapTemplate[this.idMap].npcID[i];
-			npcs.add(new NPC_Wizard1(xPos, yPos, id));
-		}
-	}
+//	public void loadNpcs() {
+//		for (int i = 0; i < PhysicalMap.mapTemplate[idMap].npcID.length; i++) {
+//			float xPos = PhysicalMap.mapTemplate[this.idMap].npcX[i];
+//			float yPos = PhysicalMap.mapTemplate[this.idMap].npcY[i];
+//			int id = PhysicalMap.mapTemplate[this.idMap].npcID[i];
+//			npcs.add(new NPC_Wizard1(xPos, yPos, id));
+//		}
+//	}
 
 	public void loadPlayerSpawn() {
 		playerSpawn = new Point[PhysicalMap.mapTemplate[idMap].cSpawnX.length];
 		for (int i = 0; i < PhysicalMap.mapTemplate[idMap].cSpawnX.length; i++) {
 			float xPos = PhysicalMap.mapTemplate[this.idMap].cSpawnX[i];
 			float yPos = PhysicalMap.mapTemplate[this.idMap].cSpawnY[i];
-			playerSpawn[i] = new Point((int)xPos,(int)yPos);
+			playerSpawn[i] = new Point((int) xPos, (int) yPos);
 		}
 	}
 
@@ -218,7 +215,6 @@ public class PhysicalMap {
 		this.playerSpawn = playerSpawn;
 	}
 
-
 	public ArrayList<Cannon> getCannons() {
 		return cannons;
 	}
@@ -248,7 +244,7 @@ public class PhysicalMap {
 			MapTemplate[] _mapTemplates = new MapTemplate[0];
 			final MySQL mySQL = new MySQL(0);
 
-			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `maptemplate`;");
+			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `map`;");
 			if (res.last()) {
 				_mapTemplates = new MapTemplate[res.getRow()];
 				res.beforeFirst();
@@ -256,14 +252,13 @@ public class PhysicalMap {
 			int i = 0;
 			while (res.next()) {
 				final MapTemplate mapTemplate = new MapTemplate();
-				mapTemplate.mapID = res.getShort("id");
-				mapTemplate.mapName = res.getString("mapName");
-				mapTemplate.mapDescription = res.getString("mapDescription");
-				final JSONArray WgoX = (JSONArray) JSONValue.parse(res.getString("WgoX"));
-				final JSONArray WgoY = (JSONArray) JSONValue.parse(res.getString("WgoY"));
-				final JSONArray cSpawnX = (JSONArray) JSONValue.parse(res.getString("cSpawnX"));
-				final JSONArray cSpawnY = (JSONArray) JSONValue.parse(res.getString("cSpawnY"));
-				final JSONArray WmapID = (JSONArray) JSONValue.parse(res.getString("WmapID"));
+				mapTemplate.mapID = res.getShort("map_id");
+				mapTemplate.mapName = res.getString("map_name");
+				final JSONArray WgoX = (JSONArray) JSONValue.parse(res.getString("x_link_map"));
+				final JSONArray WgoY = (JSONArray) JSONValue.parse(res.getString("y_link_map"));
+				final JSONArray cSpawnX = (JSONArray) JSONValue.parse(res.getString("x_pSpawn"));
+				final JSONArray cSpawnY = (JSONArray) JSONValue.parse(res.getString("y_pSpawn"));
+				final JSONArray WmapID = (JSONArray) JSONValue.parse(res.getString("link_map_id"));
 				mapTemplate.WgoX = new short[WgoX.size()];
 				mapTemplate.WgoY = new short[mapTemplate.WgoX.length];
 				mapTemplate.cSpawnX = new short[mapTemplate.WgoX.length];
@@ -277,45 +272,74 @@ public class PhysicalMap {
 					mapTemplate.cSpawnY[j5] = Short.parseShort(cSpawnY.get(j5).toString());
 					mapTemplate.WmapID[j5] = Short.parseShort(WmapID.get(j5).toString());
 				}
-				final JSONArray jarrX = (JSONArray) JSONValue.parse(res.getString("npcX"));
-				final JSONArray jarrY = (JSONArray) JSONValue.parse(res.getString("npcY"));
-				final JSONArray jarrID = (JSONArray) JSONValue.parse(res.getString("npcID"));
-				mapTemplate.npcX = new short[jarrX.size()];
-				mapTemplate.npcY = new short[mapTemplate.npcX.length];
-				mapTemplate.npcID = new byte[mapTemplate.npcX.length];
 
-				for (int j6 = 0; j6 < mapTemplate.npcX.length; ++j6) {
-					mapTemplate.npcX[j6] = Short.parseShort(jarrX.get(j6).toString());
-					mapTemplate.npcY[j6] = Short.parseShort(jarrY.get(j6).toString());
-					mapTemplate.npcID[j6] = Byte.parseByte(jarrID.get(j6).toString());
-				}
-				final JSONArray mobID = (JSONArray) JSONValue.parse(res.getString("mobID"));
-				final JSONArray mobLevel = (JSONArray) JSONValue.parse(res.getString("mobLevel"));
-				final JSONArray mobX = (JSONArray) JSONValue.parse(res.getString("mobX"));
-				final JSONArray mobY = (JSONArray) JSONValue.parse(res.getString("mobY"));
-				final JSONArray mobStatus = (JSONArray) JSONValue.parse(res.getString("mobStatus"));
-				final JSONArray mobRefreshTime = (JSONArray) JSONValue.parse(res.getString("mobRefreshTime"));
-				mapTemplate.mobID = new int[mobID.size()];
-				mapTemplate.mobLevel = new short[mapTemplate.mobID.length];
-				mapTemplate.mobX = new short[mapTemplate.mobID.length];
-				mapTemplate.mobY = new short[mapTemplate.mobID.length];
-				mapTemplate.mobStatus = new byte[mapTemplate.mobID.length];
-				mapTemplate.mobRefreshTime = new int[mapTemplate.mobID.length];
-				for (int j7 = 0; j7 < mapTemplate.mobID.length; ++j7) {
-					mapTemplate.mobID[j7] = Integer.parseInt(mobID.get(j7).toString());
-					mapTemplate.mobLevel[j7] = Short.parseShort(mobLevel.get(j7).toString());
-					mapTemplate.mobX[j7] = Short.parseShort(mobX.get(j7).toString());
-					mapTemplate.mobY[j7] = Short.parseShort(mobY.get(j7).toString());
-					mapTemplate.mobStatus[j7] = Byte.parseByte(mobStatus.get(j7).toString());
-					mapTemplate.mobRefreshTime[j7] = Integer.parseInt(mobRefreshTime.get(j7).toString());
-				}
-
-				mapTemplate.bgID = res.getByte("bgID");
 				_mapTemplates[i] = mapTemplate;
 				++i;
 			}
 			res.close();
 			mapTemplate = _mapTemplates;
+
+		} catch (SQLException | NumberFormatException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static void loadMobData() {
+		try {
+			MobStatus[] _mobStatus = new MobStatus[0];
+			final MySQL mySQL = new MySQL(0);
+
+			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `mobstatus`;");
+			if (res.last()) {
+				_mobStatus = new MobStatus[res.getRow()];
+				res.beforeFirst();
+			}
+			int i = 0;
+			while (res.next()) {
+				final MobStatus mobStatus = new MobStatus();
+				mobStatus.mobID = res.getShort("mobID");
+				mobStatus.mobLevel = res.getShort("mobLevel");	
+				mobStatus.mobX = res.getShort("mobX");
+				mobStatus.mobY = res.getShort("mobY");
+				mobStatus.mapID = res.getInt("mapID");
+				mobStatus.mobStatus = res.getByte("mobStatus");
+				mobStatus.mobLevelBoss = res.getByte("moblevelBoss");
+				mobStatus.mobRefreshTime = res.getInt("mobRefreshTime");
+			
+				_mobStatus[i] = mobStatus;
+				i++;
+			}
+			EnemyManager.arrMobStatus = _mobStatus;
+			res.close();
+
+		} catch (SQLException | NumberFormatException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static void loadNpcData() {
+		try {
+			NpcStatus[] _npcStatus = new NpcStatus[0];
+			final MySQL mySQL = new MySQL(0);
+
+			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `npcstatus`;");
+			if (res.last()) {
+				_npcStatus = new NpcStatus[res.getRow()];
+				res.beforeFirst();
+			}
+			int i = 0;
+			while (res.next()) {
+				final NpcStatus mobStatus = new NpcStatus();
+				mobStatus.npcID = res.getByte("npcID");
+				mobStatus.npcX = res.getShort("npcX");
+				mobStatus.npcY = res.getShort("npcY");
+				mobStatus.mapID = res.getShort("mapID");
+				
+				_npcStatus[i] = mobStatus;
+				i++;
+			}
+			NPCManager.arrNpcStatus = _npcStatus;
+			res.close();
 
 		} catch (SQLException | NumberFormatException e) {
 			throw new RuntimeException(e);

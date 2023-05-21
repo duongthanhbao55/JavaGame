@@ -8,18 +8,7 @@ public class MapTemplate {
     public short[] WgoY;
     public short[] cSpawnX;
     public short[] cSpawnY;
-    public short[] WmapID;
-    public byte[] npcType;
-    public short[] npcX;
-    public short[] npcY;
-    public byte[] npcID;
-    protected short sumMob;
-    public int[] mobID;
-    public short[] mobLevel;
-    public short[] mobX;
-    public short[] mobY;
-    public byte[] mobStatus;
-    public int[] mobRefreshTime;
+    public short[] WmapID;    
     public byte bgID;
     
     public char[] maps;
