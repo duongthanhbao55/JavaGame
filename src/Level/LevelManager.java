@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import Load.CacheDataLoader;
 import Map.PhysicalMap;
 import database.ItemManager;
+import entities.NPC_Wizard1;
+import entities.NightBorne;
 import gamestates.Gamestate;
 import main.Game;
 
@@ -32,6 +34,8 @@ public class LevelManager {
 		levels.get(0).loadAll(game.getPlaying(), 0);
 		levels.get(1).loadAll(game.getPlaying(), 1);
 		levels.get(2).loadAll(game.getPlaying(), 2);
+		loadEnemies();
+		loadNpcs();
 	}
 
 	public void loadNextLevel() {
@@ -72,7 +76,22 @@ public class LevelManager {
 			}
 		}
 	}
-
+	public void loadEnemies() {
+		for(int i = 0; i < EnemyManager.arrMobStatus.length;i++	) {
+			int index = EnemyManager.arrMobStatus[i].mapID;
+			int x = EnemyManager.arrMobStatus[i].mobX;
+			int y = EnemyManager.arrMobStatus[i].mobY;
+			levels.get(index).getNightBornes().add(new NightBorne(x,y,game.getPlaying()));
+		}
+	}
+	public void loadNpcs() {
+		for(int i = 0; i < NPCManager.arrNpcStatus.length;i++) {
+			int index = NPCManager.arrNpcStatus[i].mapID;
+			int x = NPCManager.arrNpcStatus[i].npcX;
+			int y = NPCManager.arrNpcStatus[i].npcY;
+			levels.get(index).getNpcs().add(new NPC_Wizard1(x,y,0));
+		}
+	}
 	public PhysicalMap getCurrLevel() {
 		return levels.get(lvlIndex);
 	}
@@ -87,4 +106,5 @@ public class LevelManager {
 	public void setLvlIndex(int lvlIndex) {
 		this.lvlIndex = lvlIndex;
 	}
+	
 }

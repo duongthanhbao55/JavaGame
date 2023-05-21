@@ -11,6 +11,8 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import objects.InventoryManager;
+
 public class MySQL
 {
     protected final int MySQL_ID;
@@ -89,6 +91,8 @@ public class MySQL
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		InventoryManager.InventoryDataInitializer();
+		
 		
 	}
 	
@@ -188,19 +192,19 @@ public class MySQL
 		return null;
 	}
 	
-	public static String getPlayerID(String username) {
+	public static int getPlayerID(String username) {
 		Connection connection = getConnection(0);
 		try {
 			CallableStatement cs = connection.prepareCall("{? = CALL findPlayerID(?)}");
-			cs.registerOutParameter(1, Types.VARCHAR);
+			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setString(2, username);
 			cs.execute();
-			return cs.getString(1);
+			return cs.getInt(1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return -1;
 	}
 	
 	// Check password is correct

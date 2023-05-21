@@ -3,22 +3,11 @@ package objects;
 import static untilz.Constants.UI.EquipmentUI.*;
 import static untilz.Constants.UI.Inventory.GRID_HEIGHT;
 import static untilz.Constants.UI.Inventory.GRID_WIDTH;
-import static untilz.Constants.UI.Inventory.INVENTORY_WIDTH;
 
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
-
-import Template.EquipmentTemplate;
-import Template.InventoryTemplate;
-import database.ItemManager;
-import database.MySQL;
 import gamestates.Playing;
 import main.Game;
 import ui.Selector;
@@ -30,7 +19,6 @@ import static untilz.Constants.EquipmentConstants.*;
 public class Equipment {
 	private Playing playing;
 	private int equipmentId = 0;
-	public static EquipmentTemplate[] equipmentTemplate;
 	private BufferedImage equipmentUI;
 	private Slot[] Slots = new Slot[10];
 	private Rectangle2D.Float Bag;
@@ -80,16 +68,6 @@ public class Equipment {
 		
 		
 	}
-	public void initEquipment() {
-		for(int i = 0; i < equipmentTemplate[equipmentId].itemId.length; i++) {
-			int index = ItemManager.arrItemTemplate[equipmentTemplate[equipmentId].itemId[i]].slot;
-			Slots[index].addItem(new Item((int)0, (int)0, 0,
-							ItemManager.arrItemTemplate[equipmentTemplate[equipmentId].itemId[i]]));
-		
-			Slots[index].getItemOption().setText(new String[] { Text.get(0, 3), Text.get(0, 4), Text.get(0, 6) });
-		}
-		Selector.getInstance().getEquipmentEffect().applyEffect(Slots);
-	}
 	public void update() {
 		
 	}
@@ -137,36 +115,10 @@ public class Equipment {
 	public Slot[] getSlots() {
 		return Slots;
 	}
-	public static void loadEquipment() {
-		try {
-			EquipmentTemplate[] _equipmentTemplates = new EquipmentTemplate[0];
-			final MySQL mySQL = new MySQL(0);
-
-			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `equipment`;");
-			if (res.last()) {
-				_equipmentTemplates = new EquipmentTemplate[res.getRow()];
-				res.beforeFirst();
-			}
-			int i = 0;
-			while (res.next()) {
-				final EquipmentTemplate equipmentTemplates = new EquipmentTemplate();
-				equipmentTemplates.EquipmentId = res.getShort("id");
-				final JSONArray itemId = (JSONArray) JSONValue.parse(res.getString("itemId"));
-				equipmentTemplates.itemId = new short[itemId.size()];
-			
-				for (int j5 = 0; j5 < equipmentTemplates.itemId.length; ++j5) {
-					equipmentTemplates.itemId[j5] = Short.parseShort(itemId.get(j5).toString());
-				}
-				
-
-				_equipmentTemplates[i] = equipmentTemplates;
-				++i;
-			}
-			res.close();
-			equipmentTemplate = _equipmentTemplates;
-
-		} catch (SQLException | NumberFormatException e) {
-			throw new RuntimeException(e);
-		}
+	public void addItem(Item item) {
+		int index = item.getSlot();
+		Slots[index].addItem(item);
+		Slots[index].getItemOption().setText(new String[] { Text.get(0, 3), Text.get(0, 4), Text.get(0, 6) });
+		Selector.getInstance().getEquipmentEffect().applyEffect(item);
 	}
 }

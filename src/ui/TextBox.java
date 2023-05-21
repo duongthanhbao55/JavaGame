@@ -20,6 +20,8 @@ public class TextBox {
 	private BufferedImage textBox;
 	private Rectangle bounds;
 	private boolean mouseOver, mousePressed;
+	private boolean showText;
+	private String[] text;
 	
 	public TextBox(int x, int y,float scale){
 		this.x = x;
@@ -46,6 +48,7 @@ public class TextBox {
 	public void render(Graphics g) {
 		
 		g.drawImage(textBox, x , y, (int)(TEXTBOX_WIDTH * scale),(int)( TEXTBOX_HEIGHT * scale),null);
+		//g.drawString(text[0], x + 20, y + 20);
 //		if(index == 1) {
 //			g.setColor(new Color(0,0,0,80));
 //			g.fillRect((int)(bounds.x + 4* Game.SCALE),(int)( bounds.y + 2 * Game.SCALE),(int)( bounds.width - 9 * Game.SCALE),(int)( bounds.height - 4 * Game.SCALE));
@@ -53,6 +56,7 @@ public class TextBox {
 	}
 	
 	//UPDATE
+	
 	public void update() {
 			
 	}
@@ -77,5 +81,9 @@ public class TextBox {
 	}
 	public Rectangle getBounds() {
 		return this.bounds;
+	}
+	public void setText(String[] text) {
+		showText = true;
+		this.text = text;
 	}
 }

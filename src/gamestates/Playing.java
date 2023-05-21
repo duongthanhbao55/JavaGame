@@ -99,9 +99,9 @@ public class Playing extends State implements Statemethods {
 		levelManager = new LevelManager(game);
 		ArrayList<TileLayer> mapLayer = levelManager.getCurrLevel().getMapLayer();
 		player.LoadLvlData(mapLayer.get(0).getTileMap());
-		enemyManager = new EnemyManager(this);
-		inventoryManager.initDataInventory();
-		equipment.initEquipment();
+		npcManager.loadNpcs(levelManager.getCurrLevel());
+		enemyManager.loadEnimies(levelManager.getCurrLevel());
+		inventoryManager.initDataInventory();		
 		loadAll();
 		initTask();
 	}
@@ -110,7 +110,8 @@ public class Playing extends State implements Statemethods {
 
 		CacheDataLoader.getInstance().readAllMap(this);
 		objectManager = new ObjectManager(this);
-		npcManager = new NPCManager(this);
+		enemyManager = new EnemyManager(this);
+		npcManager = new NPCManager(this);		
 		pauseOverlay = new PauseOverlay(this);
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
@@ -460,7 +461,9 @@ public class Playing extends State implements Statemethods {
 	public InventoryManager getInventoryManager() {
 		return this.inventoryManager;
 	}
-
+	public Equipment getEquipment() {
+		return this.equipment;
+	}
 	public void setPlayerDying(boolean playerDying) {
 		this.playerDying = playerDying;
 	}

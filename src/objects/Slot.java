@@ -82,6 +82,7 @@ public class Slot {
 
 	public void addItem(Item item) {
 		items.add(item);
+		System.out.println(item.slot);
 		if (item.slot >= 0 && item.slot <= 9) {
 			itemOption.setText(new String[] { "equip", "drop", "sell" });
 		}

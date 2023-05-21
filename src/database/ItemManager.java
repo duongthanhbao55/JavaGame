@@ -60,11 +60,11 @@ public class ItemManager {
                 itemTemplate.heal = Integer.parseInt(effect[9].trim());
                 itemTemplate.mana = Integer.parseInt(effect[10].trim());
                 // OTHER VARIABLES
-                itemTemplate.id = (byte) read.getInt("itemID");
-                itemTemplate.name = read.getString("name");
+                itemTemplate.id = (byte) read.getInt("item_id");
+                itemTemplate.name = read.getString("item_name");
                 itemTemplate.slot = (byte) read.getInt("slot");
                 itemTemplate.ability = read.getString("ability");
-                itemTemplate.description = read.getString("itemdesc");
+                itemTemplate.description = read.getString("description");
                 itemTemplate.filename = read.getString("filename");
 
                 _arrItemTemplate[i] = itemTemplate;

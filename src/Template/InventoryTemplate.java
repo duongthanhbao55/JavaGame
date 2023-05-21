@@ -1,7 +1,9 @@
 package Template;
 
 public class InventoryTemplate {
-	public short InventoryId;
-    public short[] itemId;
-    public short[] itemIndex;
+	public int player_id;
+    public short item_id;
+    public short quantity;
+    public short index;
+    public byte isEquipped;
 }

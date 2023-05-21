@@ -21,7 +21,7 @@ public class Init {
 		int i = 0;
 		try {
 			final MySQL mySQL = new MySQL(0);
-			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `task`;");
+			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `taskinfo`;");
 			if (res.last()) {
 				Game.tasks = new byte[res.getRow()][];
 				Game.mapTasks = new byte[Game.tasks.length][];
@@ -40,7 +40,7 @@ public class Init {
 				++i;
 			}
 			res.close();
-			res = mySQL.stat.executeQuery("SELECT * FROM `tasktemplate`;");
+			res = mySQL.stat.executeQuery("SELECT * FROM `task`;");
 			if (res.last()) {
 				Game.taskTemplates = new TaskTemplate[res.getRow()];
 				res.beforeFirst();
@@ -48,17 +48,17 @@ public class Init {
 			i = 0;
 			while (res.next()) {
 				final TaskTemplate taskTemplate = new TaskTemplate();
-				taskTemplate.taskId = res.getShort("taskId");
-				taskTemplate.name = res.getString("name");
+				taskTemplate.taskId = res.getShort("task_id");
+				taskTemplate.name = res.getString("task_name");
 				taskTemplate.detail = res.getString("detail");
-				final JSONArray subNames = (JSONArray) JSONValue.parse(res.getString("subNames"));
+				final JSONArray subNames = (JSONArray) JSONValue.parse(res.getString("subnames"));
 				taskTemplate.subNames = new String[subNames.size()];
 				taskTemplate.counts = new short[taskTemplate.subNames.length];
 				for (byte k = 0; k < taskTemplate.subNames.length; ++k) {
 					taskTemplate.subNames[k] = subNames.get((int) k).toString();
 					taskTemplate.counts[k] = -1;
 				}
-				final JSONArray counts = (JSONArray) JSONValue.parse(res.getString("counts"));
+				final JSONArray counts = (JSONArray) JSONValue.parse(res.getString("parameters"));
 				for (byte l = 0; l < counts.size(); ++l) {
 					taskTemplate.counts[l] = Short.parseShort(counts.get((int) l).toString());
 				}

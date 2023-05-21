@@ -9,6 +9,7 @@ import database.ItemManager;
 import gamestates.Playing;
 
 import static untilz.Constants.EnemyConstants.*;
+import static untilz.Constants.Objecttiles.CANNON_BALL_DAMAGE;
 import static untilz.Constants.Directions.*;
 import static untilz.Constants.GRAVITY;
 
@@ -57,7 +58,7 @@ public abstract class Enemy extends Entity {
 					NightBorne.setDeadCount(NightBorne.getDeadCount() + 1);
 				}
 				playing.getItemManager().add(new Item((int) hitbox.getX(), (int) (hitbox.getY() - 5 * Game.SCALE), 0,
-						ItemManager.arrItemTemplate[nextInt(70)]));
+						ItemManager.arrItemTemplate[nextInt(68)]));
 				active = false;
 				break;
 			}
@@ -106,7 +107,7 @@ public abstract class Enemy extends Entity {
 
 	protected void checkPlayerHit(Rectangle2D.Float attackBox, Player player) {
 		if (attackBox.intersects(player.getHitbox()))
-			player.hurt(GetEnemyDmg(enemyType));
+			player.changeHealth(-(GetEnemyDmg(enemyType)));
 		attackChecked = true;
 	}
 

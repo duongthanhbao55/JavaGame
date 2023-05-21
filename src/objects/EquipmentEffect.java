@@ -17,6 +17,13 @@ public class EquipmentEffect {
 
     public EquipmentEffect(Playing playing) {
         this.playing = playing;
+        this.ATK_flat = 0;
+        this.ATK_percent = 0;
+        this.DMG_DOWN = 0;
+        this.DMG_UP = 0;
+        this.HP = 0;
+        this.DEF_flat = 0;
+        this.DEF_percent = 0;
     }
 
     public float getDMG_DOWN() {

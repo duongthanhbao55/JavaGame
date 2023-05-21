@@ -62,6 +62,7 @@ public class LoadSave {
 	public static final String GOLD_ICON = "GoldIcon.png";
 	public static final String DEFEND_ICON = "DefendIcon.png";
 	public static final String LUCK_ICON = "LuckIcon.png";
+	public static final String REGISTER_BG = "RegisterBg.png";
 	
 	public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;

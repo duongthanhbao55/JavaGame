@@ -1,12 +1,9 @@
 package database;
 
 import entities.Player;
+import gamestates.Register;
 import static untilz.HelpMethods.strSQL;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
@@ -93,46 +90,47 @@ public class User {
 		if(MySQL.loginSuccessfully(uName, pass)) {
 			user.username = uName;
 			JSONArray jrs;
-			try {
-				jrs = (JSONArray) JSONValue.parseWithException(MySQL.getPlayerID(uName));
-				user.player = Player.getPlayer(user, Integer.parseInt(jrs.get(0).toString()));
-				return user;
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			//jrs = (JSONArray) JSONValue.parseWithException(MySQL.getPlayerID(uName));
+			user.player = Player.getPlayer(user, MySQL.getPlayerID(uName));
+			return user;
 		}
 		return null;
 	}
 	
-	public static boolean Register(String email, String uName, String password, String confirmPw) {
+	public static boolean Register(String email, String uName, String password, String confirmPw,Register register) {
 		
 		boolean chk_email = email.length() == 0;
 		boolean chk_uname = uName.length() == 0;
 		boolean chk_password = password.length() == 0;
 //		System.out.println(email);
 		
+		
 		if(chk_email || chk_uname || chk_password) {
 			System.out.println("Please complete all information !");
+			register.setWarningIndex(0);
 			return false;
 		}
 
 		if(!MySQL.emailIsValid(email)) {
 			System.out.println("This email is not valid !");
+			register.setWarningIndex(1);
 			return false;
 		}
 		else {
 			if(MySQL.emailWasUsed(email)) {
 				System.out.println("This email was used !");
+				register.setWarningIndex(2);
 				return false;
 			}
 		}
 		if(MySQL.usernameWasUsed(uName)) {
 			System.out.println("Username was used !");
+			register.setWarningIndex(3);
 			return false;
 		}
 		if(!password.equals(confirmPw)) {
 			System.out.println("Password INCORRECT");
+			register.setWarningIndex(4);
 			return false;
 		}
 		MySQL.insertAccounts(email, uName, password);

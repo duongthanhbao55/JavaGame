@@ -44,6 +44,9 @@ public class Login extends State implements Statemethods {
 	private JLabel L_passwordLabel;
 	
 	private boolean loginState;
+	
+	private String[] warning;
+	private boolean[] isWarning;
 
 	public Login(Game game) {
 		super(game);
@@ -67,7 +70,7 @@ public class Login extends State implements Statemethods {
 
 	private void loadBackGround() {
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.LOGIN_BACKGROUND);
-		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE));
+		gifIcon = new ImageIcon(getClass().getClassLoader().getResource(LoadSave.BACKGROUND_SCENE1));
 		gifX = 0;
 		gifY = 0;
 		scaledGif = gifIcon.getImage().getScaledInstance(Game.GAME_WIDTH, Game.GAME_HEIGHT, Image.SCALE_DEFAULT);
@@ -100,6 +103,14 @@ public class Login extends State implements Statemethods {
 		
 		
 		L_setBounds();
+	}
+	public void loadWarning() {
+		warning = new String[2];
+		warning[0] = "Please complete all information !";
+		warning[1] = "This email is not valid !";
+
+		isWarning = new boolean[2];
+		resetBooleanWarning();
 	}
 
 	@Override
@@ -158,7 +169,7 @@ public class Login extends State implements Statemethods {
 						if(user == null) {
 							continue; // Username or password INCORRECT
 						}
-						player = user.getPlayer();				
+						player = user.getPlayer();	
 						game.getPlaying().initPlayer(this.player);
 //						if (player.getPlayerName() == "") {
 //							game.getSetNamePlayer().addComponent();
@@ -183,7 +194,7 @@ public class Login extends State implements Statemethods {
 						game.getRegister().setRegisterState(true);
 						setLoginState(false);
 						Gamestate.state = Gamestate.REGISTER;
-						game.getRegister().SetUpComponent();;
+						game.getRegister().SetUpComponent();
 						game.getRegister().addComponent();
 						resetTextField();
 					}
@@ -325,6 +336,11 @@ public class Login extends State implements Statemethods {
 		L_usernameLabel.setBounds(userID.getBounds());
 		L_passwordLabel.setBounds(pw.getBounds());
 		
+	}
+	public void resetBooleanWarning() {
+		for (int i = 0; i < isWarning.length; i++) {
+			isWarning[i] = false;
+		}
 	}
 	
 }
