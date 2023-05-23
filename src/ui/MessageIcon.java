@@ -36,4 +36,8 @@ public class MessageIcon {
 	public void setType(int type) {
 		this.type = type;
 	}
+	public void setPos(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 }

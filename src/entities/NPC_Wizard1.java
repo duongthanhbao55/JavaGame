@@ -23,6 +23,7 @@ public class NPC_Wizard1 extends NPC {
 	ArrayList<Animation> Wizard1AnimList = new ArrayList<Animation>();
 	private MessageIcon messageIcon;
 	private TextBox dialogueBox;
+	private String name;
 	private boolean isContact = false;
 	private boolean isPlayerDoingTask = false;;
 	private int index = -1;
@@ -30,10 +31,11 @@ public class NPC_Wizard1 extends NPC {
 	private String warning;
 	private int Wizard1Id;
 
-	public NPC_Wizard1(float x, float y, int enemyType) {
+	public NPC_Wizard1(float x, float y, int enemyType,String name,int npcId) {
 		super(x, y, WIZARD1_SIZE, WIZARD1_SIZE, enemyType);
-		npcId = 0;
+		npcId = npcId;
 		initHitbox(30, 50);
+		this.name = name;
 		loadConversation();
 		LoadAnimNPC();
 		loadMessage();
@@ -53,7 +55,7 @@ public class NPC_Wizard1 extends NPC {
 	}
 
 	private void LoadAnimNPC() {
-		Wizard1AnimList.add(CacheDataLoader.getInstance().getAnimation("Wizard1_Idle"));
+		Wizard1AnimList.add(CacheDataLoader.getInstance().getAnimation(name));
 	}
 
 	// UPDATE
@@ -61,6 +63,7 @@ public class NPC_Wizard1 extends NPC {
 		Wizard1AnimList.get(state).Update(currTime);
 		super.update(lvlData, Wizard1AnimList.get(state));
 		updateBehavior(lvlData, player);
+		messageIcon.setPos((int) (hitbox.getX()), (int) (hitbox.getY() - 50 * Game.SCALE));
 		if (haveTask)
 			messageIcon.update();
 		if (isContact)
@@ -84,6 +87,7 @@ public class NPC_Wizard1 extends NPC {
 		int y = dialogueBox.getBounds().y + Game.TILES_SIZE * 2 - (int) (Game.SCALE * 4);
 		int x = dialogueBox.getBounds().x + Game.TILES_SIZE * 2;
 		g.setFont(new Font("Arial", Font.PLAIN, 20));
+		if(index != -1)
 		for (String line : conversation[index].split("\n")) {
 			g.drawString(line, x, y);
 			y += 20;

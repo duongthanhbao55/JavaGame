@@ -1,18 +1,27 @@
 package Effect;
 
+import java.awt.Graphics;
 import java.awt.Rectangle;
 
-public class VFX {
+public abstract class VFX {
 	protected int x, y, width, height; 
 	protected Rectangle bounds;
 	
-	public VFX(int x, int y, int width, int height){
+	protected VFX(int x, int y, int width, int height){
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 	}
-
+	
+	protected void update(long currTime) {
+		
+	}
+	
+	protected void render(Graphics g,int xLvlOffset) {
+		
+	}
+	
 	public int getX() {
 		return x;
 	}

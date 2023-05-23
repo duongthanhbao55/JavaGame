@@ -105,15 +105,6 @@ public class PhysicalMap {
 		}
 	}
 
-//	public void loadNpcs() {
-//		for (int i = 0; i < PhysicalMap.mapTemplate[idMap].npcID.length; i++) {
-//			float xPos = PhysicalMap.mapTemplate[this.idMap].npcX[i];
-//			float yPos = PhysicalMap.mapTemplate[this.idMap].npcY[i];
-//			int id = PhysicalMap.mapTemplate[this.idMap].npcID[i];
-//			npcs.add(new NPC_Wizard1(xPos, yPos, id));
-//		}
-//	}
-
 	public void loadPlayerSpawn() {
 		playerSpawn = new Point[PhysicalMap.mapTemplate[idMap].cSpawnX.length];
 		for (int i = 0; i < PhysicalMap.mapTemplate[idMap].cSpawnX.length; i++) {
@@ -156,10 +147,10 @@ public class PhysicalMap {
 		}
 		g.setColor(new Color(255, 0, 0));
 
-		g.drawRect((int) areaSwitchMap[0].getBounds().getX() - xLvlOffset, (int) areaSwitchMap[0].getBounds().getY(),
-				(int) areaSwitchMap[0].getBounds().getWidth(), (int) areaSwitchMap[0].getBounds().getHeight());
-		g.drawRect((int) areaSwitchMap[1].getBounds().getX() - xLvlOffset, (int) areaSwitchMap[1].getBounds().getY(),
-				(int) areaSwitchMap[1].getBounds().getWidth(), (int) areaSwitchMap[1].getBounds().getHeight());
+//		g.drawRect((int) areaSwitchMap[0].getBounds().getX() - xLvlOffset, (int) areaSwitchMap[0].getBounds().getY(),
+//				(int) areaSwitchMap[0].getBounds().getWidth(), (int) areaSwitchMap[0].getBounds().getHeight());
+//		g.drawRect((int) areaSwitchMap[1].getBounds().getX() - xLvlOffset, (int) areaSwitchMap[1].getBounds().getY(),
+//				(int) areaSwitchMap[1].getBounds().getWidth(), (int) areaSwitchMap[1].getBounds().getHeight());
 	}
 
 	// GETTER VS SETTER
@@ -284,12 +275,12 @@ public class PhysicalMap {
 		}
 	}
 
-	public static void loadMobData() {
+	public static void loadMobData(int id) {
 		try {
 			MobStatus[] _mobStatus = new MobStatus[0];
 			final MySQL mySQL = new MySQL(0);
 
-			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `mobstatus`;");
+			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `mobstatus` WHERE `player_id` = " + id + ";");
 			if (res.last()) {
 				_mobStatus = new MobStatus[res.getRow()];
 				res.beforeFirst();
@@ -317,12 +308,12 @@ public class PhysicalMap {
 		}
 	}
 	
-	public static void loadNpcData() {
+	public static void loadNpcData(int id) {
 		try {
 			NpcStatus[] _npcStatus = new NpcStatus[0];
 			final MySQL mySQL = new MySQL(0);
 
-			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `npcstatus`;");
+			ResultSet res = mySQL.stat.executeQuery("SELECT npcstatus.*,`name` FROM npcstatus INNER JOIN npctemplate ON npcstatus.npcID = npctemplate.id WHERE `player_id` =" + id + ";");
 			if (res.last()) {
 				_npcStatus = new NpcStatus[res.getRow()];
 				res.beforeFirst();
@@ -334,7 +325,7 @@ public class PhysicalMap {
 				mobStatus.npcX = res.getShort("npcX");
 				mobStatus.npcY = res.getShort("npcY");
 				mobStatus.mapID = res.getShort("mapID");
-				
+				mobStatus.name = res.getString("name");
 				_npcStatus[i] = mobStatus;
 				i++;
 			}

@@ -32,8 +32,8 @@ public class PlayerStatus {
 		statusInf = new int[6];
 		Player player = playing.getPlayer();
 		statusInf[0] = player.getCurrHealth();
-		statusInf[1] = player.getMana();
-		statusInf[2] = player.getDamage();
+		statusInf[1] = player.getCurrMana();
+		statusInf[2] = player.getCurrDamage();
 		statusInf[3] = player.getDef();
 		statusInf[4] = 0;
 		statusInf[5] = 0;

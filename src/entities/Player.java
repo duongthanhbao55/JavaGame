@@ -1,6 +1,7 @@
 package entities;
 
 import Effect.Animation;
+import Effect.BuffEffect;
 import Load.CacheDataLoader;
 import Map.PhysicalMap;
 import Task.Task;
@@ -167,6 +168,7 @@ public class Player extends Entity {
 
 	// UPDATE
 	public void update(long currTime) {
+		System.out.println(Level);
 		if (currHealth <= 0) {
 
 			if (state != DEAD) {
@@ -294,7 +296,7 @@ public class Player extends Entity {
 	}
 
 	private void updateManaBar() {
-		manaWidth = (int) (currMana / (float) maxMana) * manaBarWidth;
+		manaWidth = (int) ((currMana / (float) maxMana) * manaBarWidth);
 
 		if (manaWidth < lostManaWidth) {
 			lostManaWidth -= 0.3;
@@ -451,8 +453,8 @@ public class Player extends Entity {
 		}
 		realHitbox.x = (hitbox.x - hitbox.width / 2);
 		realHitbox.y = (hitbox.y - hitbox.height / 2);
-
-		// drawAttackBox(g, xLvlOffset);
+		//drawHitbox(g, xLvlOffset);
+		//drawAttackBox(g, xLvlOffset);
 		renderUI(g);
 	}
 
@@ -463,7 +465,7 @@ public class Player extends Entity {
 		g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, (int) lostHealthWidth, healthBarHeight);
 		g.setColor(Color.RED);
 		g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
-		g.setColor(new Color(0, 0, 100));
+		g.setColor(Color.GREEN);
 		g.fillRect((manaBarXStart + statusBarX), (int) (manaBarYStart + statusBarY), (int) lostManaWidth,
 				manaBarHeight);
 		g.setColor(Color.BLUE);
@@ -506,7 +508,7 @@ public class Player extends Entity {
 	public void setJump(boolean jump) {
 		this.jump = jump;
 	}
-
+	
 	public void setAttack1(boolean isAttacking) {
 		this.isAttacking = isAttacking;
 	}
@@ -515,7 +517,9 @@ public class Player extends Entity {
 		this.attackBox.width = width;
 		this.attackBox.height = height;
 	}
-
+	public int getFlipW() {
+		return this.flipW;
+	}
 	public int getAttack() {
 		return damage;
 	}
@@ -524,22 +528,13 @@ public class Player extends Entity {
 		this.damage = damage;
 	}
 
-	public int getDamage() {
+	public int getCurrDamage() {
 		return damage;
 	}
 
 	public void setDamage(int damage) {
 		this.damage = damage;
 	}
-
-	public void applyMana(int mana) {
-		if (this.mana + mana >= maxMana){
-			this.mana = maxMana;
-		} else {
-			this.mana += mana;
-		}
-	}
-
 	public float getDmg_down() {
 		return dmg_down;
 	}
@@ -548,8 +543,11 @@ public class Player extends Entity {
 		this.dmg_down = dmg_down;
 	}
 
-	public int getMana() {
+	public int getCurrMaxMana() {
 		return this.mana;
+	}
+	public int getCurrMana() {
+		return this.currMana;
 	}
 
 	public void applyExp(long exp) {
@@ -641,7 +639,7 @@ public class Player extends Entity {
 		else
 			currHealth += hp;
 	}
-
+	
 	public int getDef() {
 		return this.def;
 	}
@@ -663,6 +661,7 @@ public class Player extends Entity {
 		case 0 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV10);
 		case 1 -> currEXPCap = (long) (currEXPCap * Exp.EXP_INCREASE_LV20);
 		}
+		BuffEffect.setIsLevelUp(true);
 		Level += 1;
 	}
 
@@ -730,8 +729,8 @@ public class Player extends Entity {
 			e.printStackTrace();
 		}
 		PhysicalMap.loadMapData();
-		PhysicalMap.loadMobData();
-		PhysicalMap.loadNpcData();
+		PhysicalMap.loadMobData(id);
+		PhysicalMap.loadNpcData(id);
 		InventoryManager.loadInventoryData();
 		return player;
 	}

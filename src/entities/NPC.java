@@ -45,9 +45,7 @@ public void update(int[][] lvlData,Animation anim) {
 		
 		if(anim.isLastFrame()) 
 			switch(this.state) {
-			case ATTACK-> this.state = IDLE;
-			case HURT-> this.state = IDLE;
-			case DEAD -> active = false;
+
 			}			
 	}
 	protected void firstUpdateCheck(int[][] lvlData) {
@@ -107,6 +105,9 @@ public void update(int[][] lvlData,Animation anim) {
 	}
 	public static int getCurrNpcId() {
 		return NPC.currNpcId; 
+	}
+	public int getNpcId() {
+		return this.npcId;
 	}
 	public void resetNPC() {
 		hitbox.x = x;

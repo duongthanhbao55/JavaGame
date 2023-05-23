@@ -266,7 +266,32 @@ public class Constants {
 		
 		public static final int HIT_EFFECT_HEIGHT = (int)(HIT_EFFECT_HEIGHT_DEFAULT * Game.SCALE);
 		public static final int HIT_EFFECT_WIDTH = (int)(HIT_EFFECT_WIDTH_DEFAULT * Game.SCALE);
+		
+		public static final int HEAL_EFFECT_SIZE_DEFAULT = 128;
+		
+		public static final int HEAL_EFFECT_SIZE = (int)(HEAL_EFFECT_SIZE_DEFAULT * Game.SCALE);
 	}
+	
+	public static class Skill{
+		public static final int START_UP1_WIDTH_DEFAULT = 64;
+		public static final int START_UP1_HEIGHT_DEFAULT = 16;
+		
+		public static final int START_UP1_WIDTH = (int)(START_UP1_WIDTH_DEFAULT * Game.SCALE);
+		public static final int START_UP1_HEIGHT = (int)(START_UP1_HEIGHT_DEFAULT * Game.SCALE);
+		
+		
+		public static final int WATER_STRIKE_WIDTH_DEFAULT = 64;
+		public static final int WATER_STRIKE_HEIGHT_DEFAULT = 80;
+		
+		public static final int WATER_STRIKE_WIDTH = (int)(WATER_STRIKE_WIDTH_DEFAULT * Game.SCALE);
+		public static final int WATER_STRIKE_HEIGHT = (int)(WATER_STRIKE_HEIGHT_DEFAULT * Game.SCALE);
+		
+		public static final int WATER_SPLASH_WIDTH_DEFAULT = 66;
+		public static final int WATER_SPLASH_HEIGHT_DEFAULT = 77;
+		
+		public static final int WATER_SPLASH_WIDTH = (int)(WATER_SPLASH_WIDTH_DEFAULT * Game.SCALE);
+		public static final int WATER_SPLASH_HEIGHT = (int)(WATER_SPLASH_HEIGHT_DEFAULT * Game.SCALE);
+	} 
 	public static class EquipmentConstants{
 		public static final int HELMET = 2;
 		public static final int ARMOR = 3;
