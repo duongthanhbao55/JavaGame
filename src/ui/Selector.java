@@ -72,7 +72,9 @@ public class Selector {
 	}
 
 	public void keyPressed(KeyEvent e) {
+
 		if (isInInventory) {
+
 			if (!slotInventory[index].isEmpty())
 				if (slotInventory[index].isSelected()) {
 					slotInventory[index].keyPressed(e);
@@ -145,6 +147,10 @@ public class Selector {
 
 			break;
 		case KeyEvent.VK_LEFT:
+			if (isInEquipment)
+				slotEquipment[index].setSelect(false);
+			else
+				slotInventory[index].setSelect(false);
 			if (isInInventory && !slotInventory[index].isSelected()) {
 				index--;
 				if (index == -1) {
@@ -173,6 +179,10 @@ public class Selector {
 			}
 			break;
 		case KeyEvent.VK_RIGHT:
+			if (isInEquipment)
+				slotEquipment[index].setSelect(false);
+			else
+				slotInventory[index].setSelect(false);
 			if (isInInventory && !slotInventory[index].isSelected()) {
 				if (slotInventory[index].isSelected()) {
 					slotInventory[index].setSelect(false);
@@ -234,8 +244,10 @@ public class Selector {
 
 	private void Drop() {
 		byte id = slotInventory[index].getItems().get(0).getId();
-		playing.getItemManager().add(new Item((int) playing.getPlayer().getHitbox().getX(),
-				(int) (playing.getPlayer().getHitbox().getY() - 5 * Game.SCALE), 0, ItemManager.arrItemTemplate[id - 1]));
+		playing.getItemManager()
+				.add(new Item((int) playing.getPlayer().getHitbox().getX(),
+						(int) (playing.getPlayer().getHitbox().getY() - 5 * Game.SCALE), 0,
+						ItemManager.arrItemTemplate[id - 1]));
 		slotInventory[index].getItems().remove(0);
 		if (slotInventory[index].getItems().isEmpty()) {
 			slotInventory[index].setEmpty(true);
@@ -249,11 +261,13 @@ public class Selector {
 			slotInventory[index].setEmpty(true);
 		}
 	}
-	private void Sell(){
+
+	private void Sell() {
 		ArrayList<Item> items = slotInventory[index].getItems();
 		playing.getPlayer().setGold(items.get(0).getGold());
 		items.remove(0);
-		if (items.isEmpty()) slotInventory[index].setEmpty(true);
+		if (items.isEmpty())
+			slotInventory[index].setEmpty(true);
 	}
 
 	private void Equip() {

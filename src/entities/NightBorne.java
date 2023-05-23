@@ -88,8 +88,11 @@ public class NightBorne extends Enemy {
 
 				break;
 			case HURT:
+				
 				break;
 			case DEAD:
+				playing.getPlayer().applyExp(10);
+				break;
 
 			}
 		}

@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
+import Effect.BuffEffect;
 import Map.PhysicalMap;
 import entities.Player;
 
@@ -173,6 +174,7 @@ public class ObjectManager {
 			if (p.isActive()) {
 				if (hitbox.intersects(p.getHitbox())) {
 					p.setActive(false);
+					BuffEffect.setIsHeal(true);
 					applyEffectToPlayer(p);
 				}
 			}

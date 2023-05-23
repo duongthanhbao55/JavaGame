@@ -8,11 +8,13 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+import Effect.EffectManager;
 import Level.EnemyManager;
 import Level.LevelManager;
 import Level.NPCManager;
 import Load.CacheDataLoader;
 import Map.TileLayer;
+import Skill.SkillManager;
 import Task.Task;
 import Template.NpcTemplate;
 import database.ItemManager;
@@ -33,7 +35,6 @@ import untilz.LoadSave;
 
 import static untilz.Constants.Enviroment.*;
 
-
 public class Playing extends State implements Statemethods {
 	// VARIABLE
 	private Player player;
@@ -50,12 +51,14 @@ public class Playing extends State implements Statemethods {
 	private EquipmentEffect equipmentEffect;
 	private Confirm confirmUI;
 	private PlayerStatus playerStatus;
+	private EffectManager effectManager;
+	private SkillManager skillManager;
 
 	private boolean paused = false;
 
 	// CAMERA
 	private int xLvlOffset = 0;
-	
+
 	private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
 	private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
 	private int maxLvlOffsetX;
@@ -84,24 +87,32 @@ public class Playing extends State implements Statemethods {
 	}
 
 	public void initTask() {
-		for (NpcTemplate npc : NPCManager.arrNpcTemplate) {
-			if (Task.isTaskNPC(player, (short) npc.npcTemplateId)) {
-				npcManager.getNpcWizard1s().get(npc.npcTemplateId).setHaveTask(true, player);
-				NPC.setCurrNpcId(npc.npcTemplateId);
-				break;
+		for(NPC npc : npcManager.getNpcWizard1s()) {
+			if (Task.isTaskNPC(player, (short)npc.getNpcId())) {
+				npc.setHaveTask(true, player);
 			}
 		}
+//		for (NpcTemplate npc : NPCManager.arrNpcTemplate) {
+//			if (Task.isTaskNPC(player, (short) npc.npcTemplateId)) {			
+//				NPC.setCurrNpcId(npc.npcTemplateId);
+//				npcManager.getNpcWizard1s().get(npc.npcTemplateId).setHaveTask(true, player);			
+//				break;
+//			}
+//		}
 	}
 
 	public void initPlayer(Player player) {
 		this.player = player;
 		this.player.setPlaying(this);
+		effectManager = new EffectManager(this);
+		skillManager = new SkillManager(this);
 		levelManager = new LevelManager(game);
 		ArrayList<TileLayer> mapLayer = levelManager.getCurrLevel().getMapLayer();
 		player.LoadLvlData(mapLayer.get(0).getTileMap());
 		npcManager.loadNpcs(levelManager.getCurrLevel());
 		enemyManager.loadEnimies(levelManager.getCurrLevel());
-		inventoryManager.initDataInventory();		
+		inventoryManager.initDataInventory();
+		
 		loadAll();
 		initTask();
 	}
@@ -111,13 +122,14 @@ public class Playing extends State implements Statemethods {
 		CacheDataLoader.getInstance().readAllMap(this);
 		objectManager = new ObjectManager(this);
 		enemyManager = new EnemyManager(this);
-		npcManager = new NPCManager(this);		
+		npcManager = new NPCManager(this);
 		pauseOverlay = new PauseOverlay(this);
 		gameOverOverlay = new GameOverOverlay(this);
 		levelCompleteOverlay = new LevelCompleteOverlay(this);
 		confirmUI = new Confirm(this);
 		itemManager = new ItemManager(this);
 		inventoryManager = new InventoryManager(this);
+
 		equipment = new Equipment(this);
 		playerStatus = new PlayerStatus(this);
 		Selector.getInstance().setBounds(inventoryManager.getSlots()[0].getBounds());
@@ -145,12 +157,13 @@ public class Playing extends State implements Statemethods {
 			objectManager.update(currTime, collisionLayer, player);
 			npcManager.update(currTime, collisionLayer, player);
 			player.update(currTime);
-			
+			skillManager.update(currTime);
 			enemyManager.update(currTime, collisionLayer, player);
-			itemManager.update();			
+			effectManager.update(currTime);
+			itemManager.update();
 			if (Confirm.isShow())
 				confirmUI.update();
-			if(inventoryManager.isOpen()) {
+			if (inventoryManager.isOpen()) {
 				inventoryManager.update();
 				equipment.update();
 				playerStatus.update();
@@ -213,17 +226,19 @@ public class Playing extends State implements Statemethods {
 		npcManager.render(g, xLvlOffset);
 		itemManager.render(g, xLvlOffset);
 		player.render(g, xLvlOffset);
+		skillManager.render(g, xLvlOffset);
 		enemyManager.render(g, xLvlOffset);
+		effectManager.render(g, xLvlOffset);
 		npcManager.drawDialogue(g);
-		
-		if(inventoryManager.isOpen()) {
+
+		if (inventoryManager.isOpen()) {
 			inventoryManager.render(g);
 			equipment.render(g);
 			playerStatus.render(g);
 			Selector.getInstance().render(g);
 		}
 		if (Confirm.isShow())
-			confirmUI.render(g,xLvlOffset);
+			confirmUI.render(g, xLvlOffset);
 		if (paused) {
 			pauseOverlay.render(g);
 		} else if (gameOver) {
@@ -270,9 +285,6 @@ public class Playing extends State implements Statemethods {
 		paused = false;
 		lvlCompleted = false;
 		playerDying = false;
-		player.resetAll();
-		enemyManager.resetAllEnemies();
-		objectManager.resetAllObject();
 		npcManager.resetNPC();
 	}
 
@@ -302,9 +314,9 @@ public class Playing extends State implements Statemethods {
 				levelCompleteOverlay.MousePressed(e);
 			else if (Confirm.isShow())
 				confirmUI.MousePressed(e);
-			else if(inventoryManager.isOpen())
+			else if (inventoryManager.isOpen())
 				inventoryManager.mousePressed(e);
-			
+
 		} else {
 			gameOverOverlay.MousePressed(e);
 		}
@@ -320,7 +332,7 @@ public class Playing extends State implements Statemethods {
 				levelCompleteOverlay.MouseRelease(e);
 			else if (Confirm.isShow())
 				confirmUI.MouseRelease(e);
-			else if(inventoryManager.isOpen())
+			else if (inventoryManager.isOpen())
 				inventoryManager.mouseReleased(e);
 		} else {
 			gameOverOverlay.MouseRelease(e);
@@ -337,7 +349,7 @@ public class Playing extends State implements Statemethods {
 				levelCompleteOverlay.MouseMoved(e);
 			else if (Confirm.isShow())
 				confirmUI.MouseMoved(e);
-			else if(inventoryManager.isOpen())
+			else if (inventoryManager.isOpen())
 				inventoryManager.mouseMoved(e);
 		} else {
 			gameOverOverlay.MouseMoved(e);
@@ -346,38 +358,38 @@ public class Playing extends State implements Statemethods {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		skillManager.keyPressed(e);
 		if (gameOver)
 			gameOverOverlay.keyPressed(e);
-		else
-			if(inventoryManager.isOpen()) {
-				Selector.getInstance().keyPressed(e);
-			}
-			switch (e.getKeyCode()) {
+		else if (inventoryManager.isOpen()) {
+			Selector.getInstance().keyPressed(e);
+		}
 
-			case KeyEvent.VK_A:
-				player.setLeft(true);
-				break;
-			case KeyEvent.VK_D:
-				player.setRight(true);
-				break;
-			case KeyEvent.VK_W:
-				player.setJump(true);
-				break;
-			case KeyEvent.VK_J:
-				player.setAttack1(true);
-				break;
-			case KeyEvent.VK_F:
-				checkNPCContact(player.getHitbox());
-				checkPotionTouched(player.getHitbox());
-				checkItemContact(player);
-				break;
-			case KeyEvent.VK_B:
-				inventoryManager.setOpen(!inventoryManager.isOpen());
-				break;
-			case KeyEvent.VK_ESCAPE:
-				paused = !paused;
-				break;
-			}
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_A:
+			player.setLeft(true);
+			break;
+		case KeyEvent.VK_D:
+			player.setRight(true);
+			break;
+		case KeyEvent.VK_W:
+			player.setJump(true);
+			break;
+		case KeyEvent.VK_J:
+			player.setAttack1(true);
+			break;
+		case KeyEvent.VK_F:
+			checkNPCContact(player.getHitbox());
+			checkPotionTouched(player.getHitbox());
+			checkItemContact(player);
+			break;
+		case KeyEvent.VK_B:
+			inventoryManager.setOpen(!inventoryManager.isOpen());
+			break;
+		case KeyEvent.VK_ESCAPE:
+			paused = !paused;
+			break;
+		}
 
 	}
 
@@ -433,6 +445,9 @@ public class Playing extends State implements Statemethods {
 	public void checkItemContact(Player player) {
 		itemManager.checkItemContact(player);
 	}
+	public void setThrownAway(boolean isThrownAway) {
+		enemyManager.setThrownAway(isThrownAway);
+	}
 
 	public EnemyManager getEnemyManager() {
 		return enemyManager;
@@ -461,8 +476,12 @@ public class Playing extends State implements Statemethods {
 	public InventoryManager getInventoryManager() {
 		return this.inventoryManager;
 	}
+
 	public Equipment getEquipment() {
 		return this.equipment;
+	}
+	public EffectManager getEffectManager() {
+		return this.effectManager;
 	}
 	public void setPlayerDying(boolean playerDying) {
 		this.playerDying = playerDying;

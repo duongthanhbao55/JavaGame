@@ -120,9 +120,6 @@ public class ItemManager {
             throw new RuntimeException(e);
         }
         arrItemTemplate = _tempArrItemTemplate;
-        for (ItemTemplate itemTemplate : arrItemTemplate) {
-            System.out.println(itemTemplate.toString());
-        }
     }
 
     public void checkItemContact(Player player) {

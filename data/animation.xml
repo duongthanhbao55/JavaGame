@@ -193,7 +193,7 @@
     <frame name="FireBall3" value="60000000"/>
     <frame name="FireBall4" value="60000000"/>
   </animation>
-    <animation name="Wizard1_Idle">
+    <animation name="NPC_Wizard1">
     <frame name="Wizard1_Idle1" value="60000000"/>
     <frame name="Wizard1_Idle2" value="60000000"/>
     <frame name="Wizard1_Idle3" value="60000000"/>
@@ -209,11 +209,162 @@
 	<frame name="Wizard1_Idle13" value="60000000"/>
 	<frame name="Wizard1_Idle14" value="60000000"/>
   </animation>
+    <animation name="NPC_Wizard2">
+    <frame name="Wizard2_Idle1" value="60000000"/>
+    <frame name="Wizard2_Idle2" value="60000000"/>
+    <frame name="Wizard2_Idle3" value="60000000"/>
+    <frame name="Wizard2_Idle4" value="60000000"/>
+	<frame name="Wizard2_Idle5" value="60000000"/>
+	<frame name="Wizard2_Idle6" value="60000000"/>
+	<frame name="Wizard2_Idle7" value="60000000"/>
+	<frame name="Wizard2_Idle8" value="60000000"/>
+	<frame name="Wizard2_Idle9" value="60000000"/>
+	<frame name="Wizard2_Idle10" value="60000000"/>
+	<frame name="Wizard2_Idle11" value="60000000"/>
+	<frame name="Wizard2_Idle12" value="60000000"/>
+	<frame name="Wizard2_Idle13" value="60000000"/>
+	<frame name="Wizard2_Idle14" value="60000000"/>
+  </animation>
+    <animation name="NPC_Wizard3">
+    <frame name="Wizard3_Idle1" value="60000000"/>
+    <frame name="Wizard3_Idle2" value="60000000"/>
+    <frame name="Wizard3_Idle3" value="60000000"/>
+    <frame name="Wizard3_Idle4" value="60000000"/>
+	<frame name="Wizard3_Idle5" value="60000000"/>
+	<frame name="Wizard3_Idle6" value="60000000"/>
+	<frame name="Wizard3_Idle7" value="60000000"/>
+	<frame name="Wizard3_Idle8" value="60000000"/>
+	<frame name="Wizard3_Idle9" value="60000000"/>
+	<frame name="Wizard3_Idle10" value="60000000"/>
+	<frame name="Wizard3_Idle11" value="60000000"/>
+	<frame name="Wizard3_Idle12" value="60000000"/>
+	<frame name="Wizard3_Idle13" value="60000000"/>
+	<frame name="Wizard3_Idle14" value="60000000"/>
+  </animation>
     <animation name="Selector">
     <frame name="Selector1" value="60000000"/>
     <frame name="Selector2" value="60000000"/>
     <frame name="Selector3" value="60000000"/>
     <frame name="Selector4" value="60000000"/>
+  </animation>
+    <animation name="HealEffect">
+    <frame name="HealEffect1" value="60000000"/>
+    <frame name="HealEffect2" value="60000000"/>
+    <frame name="HealEffect3" value="60000000"/>
+    <frame name="HealEffect4" value="60000000"/>
+	<frame name="HealEffect5" value="60000000"/>
+	<frame name="HealEffect6" value="60000000"/>
+	<frame name="HealEffect7" value="60000000"/>
+	<frame name="HealEffect8" value="60000000"/>
+	<frame name="HealEffect9" value="60000000"/>
+	<frame name="HealEffect10" value="60000000"/>
+	<frame name="HealEffect11" value="60000000"/>
+	<frame name="HealEffect12" value="60000000"/>
+	<frame name="HealEffect13" value="60000000"/>
+	<frame name="HealEffect14" value="60000000"/>
+	<frame name="HealEffect15" value="60000000"/>
+	<frame name="HealEffect16" value="60000000"/>
+  </animation>
+ <animation name="1WaterStartUp">
+    <frame name="1WaterStartUp1" value="60000000"/>
+    <frame name="1WaterStartUp2" value="60000000"/>
+    <frame name="1WaterStartUp3" value="60000000"/>
+    <frame name="1WaterStartUp4" value="60000000"/>
+	<frame name="1WaterStartUp5" value="60000000"/>
+	<frame name="1WaterStartUp6" value="60000000"/>
+	<frame name="1WaterStartUp7" value="60000000"/>
+	<frame name="1WaterStartUp8" value="60000000"/>
+	<frame name="1WaterStartUp9" value="60000000"/>
+	<frame name="1WaterStartUp10" value="60000000"/>
+	<frame name="1WaterStartUp11" value="60000000"/>
+	<frame name="1WaterStartUp12" value="60000000"/>
+	<frame name="1WaterStartUp13" value="60000000"/>
+	<frame name="1WaterStartUp14" value="60000000"/>
+	<frame name="1WaterStartUp15" value="60000000"/>
+	<frame name="1WaterStartUp16" value="60000000"/>
+	<frame name="1WaterStartUp17" value="60000000"/>
+	<frame name="1WaterStartUp18" value="60000000"/>
+	<frame name="1WaterStartUp19" value="60000000"/>
+	<frame name="1WaterStartUp20" value="60000000"/>
+  </animation>
+   <animation name="2WaterStartUp">
+    <frame name="2WaterStartUp1" value="60000000"/>
+    <frame name="2WaterStartUp2" value="60000000"/>
+    <frame name="2WaterStartUp3" value="60000000"/>
+    <frame name="2WaterStartUp4" value="60000000"/>
+	<frame name="2WaterStartUp5" value="60000000"/>
+	<frame name="2WaterStartUp6" value="60000000"/>
+	<frame name="2WaterStartUp7" value="60000000"/>
+	<frame name="2WaterStartUp8" value="60000000"/>
+	<frame name="2WaterStartUp9" value="60000000"/>
+	<frame name="2WaterStartUp10" value="60000000"/>
+	<frame name="2WaterStartUp11" value="60000000"/>
+	<frame name="2WaterStartUp12" value="60000000"/>
+	<frame name="2WaterStartUp13" value="60000000"/>
+	<frame name="2WaterStartUp14" value="60000000"/>
+	<frame name="2WaterStartUp15" value="60000000"/>
+	<frame name="2WaterStartUp16" value="60000000"/>
+	<frame name="2WaterStartUp17" value="60000000"/>
+	<frame name="2WaterStartUp18" value="60000000"/>
+	<frame name="2WaterStartUp19" value="60000000"/>
+	<frame name="2WaterStartUp20" value="60000000"/>
+  </animation>
+   <animation name="WaterStrike">
+    <frame name="WaterSpike1" value="60000000"/>
+    <frame name="WaterSpike2" value="60000000"/>
+    <frame name="WaterSpike3" value="60000000"/>
+    <frame name="WaterSpike4" value="60000000"/>
+	<frame name="WaterSpike5" value="60000000"/>
+	<frame name="WaterSpike6" value="60000000"/>
+	<frame name="WaterSpike7" value="60000000"/>
+	<frame name="WaterSpike8" value="60000000"/>
+	<frame name="WaterSpike9" value="60000000"/>
+	<frame name="WaterSpike10" value="60000000"/>
+	<frame name="WaterSpike11" value="60000000"/>
+	<frame name="WaterSpike12" value="60000000"/>
+	<frame name="WaterSpike13" value="60000000"/>
+	<frame name="WaterSpike14" value="60000000"/>
+	<frame name="WaterSpike15" value="60000000"/>
+	<frame name="WaterSpike16" value="60000000"/>
+	<frame name="WaterSpike17" value="60000000"/>
+  </animation>
+   <animation name="WaterSplash">
+    <frame name="WaterSplash1" value="60000000"/>
+    <frame name="WaterSplash2" value="60000000"/>
+    <frame name="WaterSplash3" value="60000000"/>
+    <frame name="WaterSplash4" value="60000000"/>
+	<frame name="WaterSplash5" value="60000000"/>
+	<frame name="WaterSplash6" value="60000000"/>
+	<frame name="WaterSplash7" value="60000000"/>
+	<frame name="WaterSplash8" value="60000000"/>
+	<frame name="WaterSplash9" value="60000000"/>
+	<frame name="WaterSplash10" value="60000000"/>
+	<frame name="WaterSplash11" value="60000000"/>
+	<frame name="WaterSplash12" value="60000000"/>
+	<frame name="WaterSplash13" value="60000000"/>
+	<frame name="WaterSplash14" value="60000000"/>
+	<frame name="WaterSplash15" value="60000000"/>
+	<frame name="WaterSplash16" value="60000000"/>
+	<frame name="WaterSplash17" value="60000000"/>
+	<frame name="WaterSplash18" value="60000000"/>
+	<frame name="WaterSplash19" value="60000000"/>
+  </animation>
+    <animation name="LevelUpEffect">
+    <frame name="LevelUpEffect1" value="60000000"/>
+    <frame name="LevelUpEffect2" value="60000000"/>
+    <frame name="LevelUpEffect3" value="60000000"/>
+    <frame name="LevelUpEffect4" value="60000000"/>
+	<frame name="LevelUpEffect5" value="60000000"/>
+	<frame name="LevelUpEffect6" value="60000000"/>
+	<frame name="LevelUpEffect7" value="60000000"/>
+	<frame name="LevelUpEffect8" value="60000000"/>
+	<frame name="LevelUpEffect9" value="60000000"/>
+	<frame name="LevelUpEffect10" value="60000000"/>
+	<frame name="LevelUpEffect11" value="60000000"/>
+	<frame name="LevelUpEffect12" value="60000000"/>
+	<frame name="LevelUpEffect13" value="60000000"/>
+	<frame name="LevelUpEffect14" value="60000000"/>
+	<frame name="LevelUpEffect15" value="60000000"/>
   </animation>
   
 </animations>

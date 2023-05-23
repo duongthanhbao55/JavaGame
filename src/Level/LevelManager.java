@@ -56,7 +56,6 @@ public class LevelManager {
 		game.getPlaying().getObjectManager().loadObject(newLevel);
 		game.getPlaying().getItemManager().loadItem(newLevel);
 		game.getPlaying().getNpcManager().loadNpcs(newLevel);
-		game.getPlaying().initTask();
 	}
 
 	public void render(Graphics g, int lvlOffset) {
@@ -72,7 +71,6 @@ public class LevelManager {
 					lvlIndex = PhysicalMap.mapTemplate[lvlIndex].WmapID[i];					
 					loadNextLevel();
 					game.getPlaying().loadNextLevel();
-					
 			}
 		}
 	}
@@ -89,7 +87,9 @@ public class LevelManager {
 			int index = NPCManager.arrNpcStatus[i].mapID;
 			int x = NPCManager.arrNpcStatus[i].npcX;
 			int y = NPCManager.arrNpcStatus[i].npcY;
-			levels.get(index).getNpcs().add(new NPC_Wizard1(x,y,0));
+			String name = NPCManager.arrNpcStatus[i].name;
+			int npcId = NPCManager.arrNpcStatus[i].npcID;
+			levels.get(index).getNpcs().add(new NPC_Wizard1(x,y,0,name,npcId));
 		}
 	}
 	public PhysicalMap getCurrLevel() {
