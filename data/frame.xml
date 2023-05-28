@@ -2416,6 +2416,73 @@
     <w>48</w>
     <h>48</h>
   </frame>
+  
+  
+  
+    <frame>
+    <id>torch-C-01</id>
+    <image>data/torchC01.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>16</w>
+    <h>32</h>
+  </frame>
+   <frame>
+    <id>torch-C-02</id>
+    <image>data/torchC02.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>16</w>
+    <h>32</h>
+  </frame>
+  <frame>
+    <id>torch-C-03</id>
+    <image>data/torchC03.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>16</w>
+    <h>32</h>
+  </frame>
+   <frame>
+    <id>torch-C-04</id>
+    <image>data/torchC04.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>16</w>
+    <h>32</h>
+  </frame>
+  <frame>
+    <id>torchB01</id>
+    <image>data/torchB01.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>16</w>
+    <h>32</h>
+  </frame>
+       <frame>
+    <id>torchB02</id>
+    <image>data/torchB02.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>16</w>
+    <h>32</h>
+  </frame>
+       <frame>
+    <id>torchB03</id>
+    <image>data/torchB03.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>16</w>
+    <h>32</h>
+  </frame>     
+  <frame>
+    <id>torchB04</id>
+    <image>data/torchB04.png</image>
+    <x>0</x>
+    <y>0</y>
+    <w>16</w>
+    <h>32</h>
+  </frame>     
 
   
 

@@ -20,59 +20,63 @@ import Task.Task;
 import gamestates.Playing;
 import main.Game;
 
-public abstract class NPC extends Entity{
-	protected int npcState,npcType;
+public abstract class NPC extends Entity {
+	protected int npcState, npcType;
 	protected boolean firstUpdate = true;
 	protected boolean inAir;
 	protected float fallSpeed;
 	protected float gravity = 0.04f * Game.SCALE;
 	protected int tileY;
 	protected float contactDistance = Game.TILES_SIZE;
+	protected boolean isContact = false;
 	protected boolean active = true;
 	protected boolean haveTask = false;
 	protected boolean finishTask = false;
 	protected int npcId;
 	protected static int currNpcId;
-	
+
 	public NPC(float x, float y, int width, int height, int enemyType) {
 		super(x, y, width, height);
 		this.npcType = enemyType;
 		state = IDLE;
 		initHitbox(width, height);
 	}
-	
-public void update(int[][] lvlData,Animation anim) {
-		
-		if(anim.isLastFrame()) 
-			switch(this.state) {
 
-			}			
+	public void update(int[][] lvlData, Animation anim) {
+		if (anim.isLastFrame())
+			switch (this.state) {
+
+			}
 	}
+
 	protected void firstUpdateCheck(int[][] lvlData) {
-		
-			if(!IsEntityOnFloor(hitbox,lvlData))
-				inAir = true;			
-			firstUpdate = false;
+
+		if (!IsEntityOnFloor(hitbox, lvlData))
+			inAir = true;
+		firstUpdate = false;
 	}
+
 	protected void updateInAir(int[][] lvlData) {
-		if(CanMoveHere(hitbox.x - hitbox.width/2, (hitbox.y - hitbox.height/2) + airSpeed, hitbox.width, hitbox.height, lvlData)) {
+		if (CanMoveHere(hitbox.x - hitbox.width / 2, (hitbox.y - hitbox.height / 2) + airSpeed, hitbox.width,
+				hitbox.height, lvlData)) {
 			hitbox.y += airSpeed;
 			airSpeed += GRAVITY;
-		}else {
+		} else {
 			inAir = false;
 			hitbox.y = GetEntityYPosUnderRoofOfAboveFloor(hitbox, airSpeed);
-			tileY = (int)((hitbox.y) / Game.TILES_SIZE);
+			tileY = (int) ((hitbox.y) / Game.TILES_SIZE);
 		}
-		
+
 	}
 
 	protected void newState(int enemyState, Animation anim) {
 		this.state = enemyState;
-		anim.reset();	
+		anim.reset();
 	}
-	protected boolean canSeePlayer(int[][] lvlData,Player player) {
+
+	protected boolean canSeePlayer(int[][] lvlData, Player player) {
 		int playerTileY = (int) ((player.getHitbox().y) / Game.TILES_SIZE);
-		if(playerTileY == tileY) {
+		if (playerTileY == tileY) {
 //			if(isPlayerInRanger(player)) {
 //				if(IsSightClear(lvlData,hitbox,player.hitbox,tileY))
 //					return true;
@@ -80,41 +84,58 @@ public void update(int[][] lvlData,Animation anim) {
 		}
 		return false;
 	}
-	
+
 	protected boolean isPlayerCloseForContact(Player player) {
 		int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
 		return absValue <= contactDistance;
 	}
-	public void setHaveTask(boolean haveTask,Player player) {
+
+	public void setHaveTask(boolean haveTask, Player player) {
 		this.haveTask = haveTask;
 	}
+
 	public void setFinishTask(boolean finishTask) {
 		this.finishTask = finishTask;
 	}
+
 	public boolean getFinishTask() {
 		return this.finishTask;
 	}
+
 	public boolean getHaveTask() {
 		return this.haveTask;
 	}
+
 	public boolean isActive() {
 		return active;
 	}
+
 	public static void setCurrNpcId(int currNpcId) {
 		NPC.currNpcId = currNpcId;
 	}
+
 	public static int getCurrNpcId() {
-		return NPC.currNpcId; 
+		return NPC.currNpcId;
 	}
+
 	public int getNpcId() {
 		return this.npcId;
 	}
+
+	public boolean isContact() {
+		return isContact;
+	}
+
+	public void setContact(boolean isContact) {
+		this.isContact = isContact;
+	}
+
 	public void resetNPC() {
 		hitbox.x = x;
 		hitbox.y = y;
 		firstUpdate = true;
 		currHealth = maxHealth;
-		//newState(IDLE);
+		// newState(IDLE);
 		active = true;
 		airSpeed = 0;
 	}

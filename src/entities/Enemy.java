@@ -27,8 +27,9 @@ public abstract class Enemy extends Entity {
 	protected float attackDistance = Game.TILES_SIZE;
 	protected boolean active = true;
 	protected boolean attackChecked = false;
-	protected long refreshTime;
+	protected long refreshTime = 0;
 	protected long previousTime = 0;
+	protected long deadTime = 0;
 	protected boolean firstCheck;
 	protected int enemyId;
 	protected Playing playing;
@@ -41,6 +42,7 @@ public abstract class Enemy extends Entity {
 		currHealth = maxHealth;
 		this.walkSpeed = Game.SCALE * 0.5f;
 		this.playing = playing;
+		this.inAir = true;
 	}
 
 	public void update(int[][] lvlData, Animation anim) {
@@ -57,9 +59,13 @@ public abstract class Enemy extends Entity {
 				if (NightBorne.getExtermination()) {
 					NightBorne.setDeadCount(NightBorne.getDeadCount() + 1);
 				}
-				playing.getItemManager().add(new Item((int) hitbox.getX(), (int) (hitbox.getY() - 5 * Game.SCALE), 0,
-						ItemManager.arrItemTemplate[nextInt(68)]));
-				active = false;
+				if(generateWithProbability(500)) {
+					playing.getItemManager().add(new Item((int) hitbox.getX(), (int) (hitbox.getY() - 5 * Game.SCALE), 0,
+							ItemManager.arrItemTemplate[nextInt(68)]));
+				}
+				
+				playing.getPlayer().applyExp(10);
+				active = false;				
 				break;
 			}
 	}
@@ -154,7 +160,12 @@ public abstract class Enemy extends Entity {
 	public int getEnemyId() {
 		return this.enemyId;
 	}
-
+	public long getRefreshTime() {
+		return refreshTime;
+	}
+	public long getDeadTime() {
+		return deadTime;
+	}
 	public void resetEnemy() {
 		hitbox.x = x;
 		hitbox.y = y;

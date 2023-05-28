@@ -135,6 +135,10 @@ public class HelpMethods {
     public static int nextInt(final int max) {
         return HelpMethods.rand.nextInt(max);
     }
+    public static boolean generateWithProbability(int probability) {
+    	int randomValue = nextInt(probability);
+    	return randomValue < 100;
+    }
     public static void setDebug(final boolean v) {
         HelpMethods.debug = v;
     }

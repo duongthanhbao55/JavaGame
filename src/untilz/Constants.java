@@ -24,6 +24,8 @@ public class Constants {
 		public static final int SPIKE = 4;
 		public static final int LEFT_CANNON = 5;
 		public static final int RIGHT_CANNON = 6;
+		public static final int TORCH1 = 7;
+		public static final int TORCH2 = 8;
 		
 		
 		public static final int HEAL_POTION_VALUE = 15;

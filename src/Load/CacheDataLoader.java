@@ -37,6 +37,7 @@ import gamestates.Playing;
 import main.Game;
 import objects.Cannon;
 import objects.GameContainer;
+import objects.Inviroment;
 import objects.Potion;
 import objects.Spike;
 
@@ -47,7 +48,7 @@ import static untilz.Constants.ObjectConstants.BARREL;
 import static untilz.Constants.ObjectConstants.LEFT_CANNON;
 import static untilz.Constants.ObjectConstants.RIGHT_CANNON;
 import static untilz.Constants.ObjectConstants.SPIKE;
-
+import static untilz.Constants.ObjectConstants.TORCH1;
 //Simpleton design (vô hiệu hóa CONSTRUCTOR bằng cách đưa nó vào private, không thể tạo instance(object) của class này
 //vì ta chỉ cần 1 instance để quản lý tất cả data, để truy cập được class này ta sử dụng static function)
 //Mục đích tránh tạo 2 hoặc nhiều hơn instance khác của lớp này
@@ -116,21 +117,21 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 	public void loadFont() {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Font myFont = null;
-		    try {
-				myFont = Font.createFont(Font.TRUETYPE_FONT, new File("data/antiquity-print.ttf"));
-				ge.registerFont(myFont);
-			} catch (FontFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		    
-		
+		try {
+			myFont = Font.createFont(Font.TRUETYPE_FONT, new File("data/antiquity-print.ttf"));
+			ge.registerFont(myFont);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
+
 	public void LoadData(String mapID, String frameFile, String aniFile) throws IOException {
-		
+
 		readXML(CacheDataLoader.PLAYER_FRAME);
 		LoadXMLAnim(CacheDataLoader.PLAYER_ANIMATION);
 		// readXMLMap(physmapfile,mapID);
@@ -175,7 +176,7 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 				// " + height);
 				doc.normalize();
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -226,6 +227,7 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 	public void readObjectPos(Element tileElement, Playing playing, PhysicalMap physicalMap) {
 		ArrayList<NightBorne> nightBorneList = new ArrayList<>();
 		ArrayList<GameContainer> containers = new ArrayList<>();
+		ArrayList<Inviroment> torchs = new ArrayList<>();
 		NodeList imageList = tileElement.getElementsByTagName("object");
 		for (int i = 0; i < imageList.getLength(); i++) {
 			Node imageNode = imageList.item(i);
@@ -245,11 +247,14 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 						containers.add(new GameContainer((int) (x * Game.SCALE), (int) (y * Game.SCALE), BARREL));
 					} else if (objectType.equals("ellipse")) {
 						containers.add(new GameContainer((int) (x * Game.SCALE), (int) (y * Game.SCALE), BOX));
-					}
+					} 
+				}else {
+					torchs.add(new Inviroment((int)(x * Game.SCALE),(int)(y * Game.SCALE),TORCH1));
 				}
 			}
 		}
 		physicalMap.setContainers(containers);
+		physicalMap.setTorchs(torchs);
 	}
 
 	public void readSpikePos(Element tileElement, Playing playing, PhysicalMap physicalMap) {
@@ -263,7 +268,7 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 				String objectType = null;
 				if (imageElement.getElementsByTagName("point").item(0) != null) {
 					objectType = imageElement.getElementsByTagName("point").item(0).getNodeName();
-				}else if (imageElement.getElementsByTagName("ellipse").item(0) != null) {
+				} else if (imageElement.getElementsByTagName("ellipse").item(0) != null) {
 					objectType = imageElement.getElementsByTagName("ellipse").item(0).getNodeName();
 				}
 				double x = Double.parseDouble(imageElement.getAttribute("x"));
@@ -275,12 +280,13 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 						cannons.add(new Cannon((int) (x * Game.SCALE), (int) (y * Game.SCALE), RIGHT_CANNON));
 
 				} else
-					spikes.add(new Spike((int) (x * Game.SCALE), (int) (y * Game.SCALE),0));
+					spikes.add(new Spike((int) (x * Game.SCALE), (int) (y * Game.SCALE), 0));
 			}
 		}
 		physicalMap.setSpikes(spikes);
 		physicalMap.setCannons(cannons);
 	}
+
 	public Point GetPlayerSpawn(Element tileElement, Playing playing) {
 		NodeList imageList = tileElement.getElementsByTagName("object");
 		double x = 0, y = 0;
@@ -339,9 +345,9 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 				// Enemies
 				if (e.getNodeName().equals("objectgroup") && e.getAttribute("name").equals("NightBornes")) {
 					readObjectPos(e, playing, gamemap);
-				}else if(e.getNodeName().equals("objectgroup") && e.getAttribute("name").equals("Spike,Cannon")){
+				} else if (e.getNodeName().equals("objectgroup") && e.getAttribute("name").equals("Spike,Cannon")) {
 					readSpikePos(e, playing, gamemap);
-				}else if (e.getNodeName().equals("objectgroup") && e.getAttribute("name").equals("Player")) {
+				} else if (e.getNodeName().equals("objectgroup") && e.getAttribute("name").equals("Player")) {
 					spawnPoint = GetPlayerSpawn(e, playing);
 				}
 				// Layer
@@ -353,7 +359,7 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 			}
 		}
 		xml.normalize();
-		Point spawn[] = {spawnPoint,null};
+		Point spawn[] = { spawnPoint, null };
 		gamemap.setPlayerSpawn(spawn);
 
 		instance.mapsDict.put(ID, gamemap);
@@ -384,12 +390,11 @@ public class CacheDataLoader// Cache là lưu trong bộ nhớ trong
 				try {
 					tile = ImageIO.read(new File("data/" + tileset.source));
 				} catch (IOException e) {
-					e.printStackTrace();	
+					e.printStackTrace();
 				}
 				this.textureMap.put(tileset.name, tile);
 			}
 		}
-
 
 		return tileset;
 	}

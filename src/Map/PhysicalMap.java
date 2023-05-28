@@ -25,6 +25,7 @@ import gamestates.Playing;
 import main.Game;
 import objects.Cannon;
 import objects.GameContainer;
+import objects.Inviroment;
 import objects.Item;
 import objects.Potion;
 import objects.Spike;
@@ -42,6 +43,7 @@ public class PhysicalMap {
 	private ArrayList<Cannon> cannons = new ArrayList<>();
 	private ArrayList<Item> items = new ArrayList<>();
 	private ArrayList<NPC_Wizard1> npcs = new ArrayList<>();
+	private ArrayList<Inviroment> torchs = new ArrayList<>();
 	private int lvlTilesWide;
 	private int maxTilesOffset;
 	private int maxLvlOffsetX;
@@ -81,6 +83,9 @@ public class PhysicalMap {
 		}
 		for (Cannon c : physmap.getCannons()) {
 			this.cannons.add(c);
+		}
+		for(Inviroment i : physmap.getTorch()) {
+			this.torchs.add(i);
 		}
 		physmap.calcLvlOffsets();
 		this.maxLvlOffsetX = physmap.getLvlOffset();
@@ -221,11 +226,15 @@ public class PhysicalMap {
 	public ArrayList<NPC_Wizard1> getNpcs() {
 		return npcs;
 	}
-
+	public ArrayList<Inviroment> getTorch(){
+		return torchs;
+	}
 	public void setCannons(ArrayList<Cannon> cannons) {
 		this.cannons = cannons;
 	}
-
+	public void setTorchs(ArrayList<Inviroment> torchs) {
+		this.torchs = torchs;
+	}
 	public Rectangle2D.Float[] getAreaSwitch() {
 		return this.areaSwitchMap;
 	}
@@ -288,14 +297,16 @@ public class PhysicalMap {
 			int i = 0;
 			while (res.next()) {
 				final MobStatus mobStatus = new MobStatus();
-				mobStatus.mobID = res.getShort("mobID");
+				mobStatus.mobID = res.getShort("mob_id");
 				mobStatus.mobLevel = res.getShort("mobLevel");	
 				mobStatus.mobX = res.getShort("mobX");
 				mobStatus.mobY = res.getShort("mobY");
-				mobStatus.mapID = res.getInt("mapID");
-				mobStatus.mobStatus = res.getByte("mobStatus");
-				mobStatus.mobLevelBoss = res.getByte("moblevelBoss");
-				mobStatus.mobRefreshTime = res.getInt("mobRefreshTime");
+				mobStatus.mapID = res.getInt("map_id");
+				mobStatus.mobStatus = res.getByte("status");
+				mobStatus.health_point = res.getInt("health_point");
+				mobStatus.mobLevelBoss = res.getByte("levelBoss");
+				mobStatus.mobDeadTime = res.getLong("deadTime");
+				mobStatus.mobRefreshTime = res.getLong("refreshTime");
 			
 				_mobStatus[i] = mobStatus;
 				i++;
@@ -313,7 +324,7 @@ public class PhysicalMap {
 			NpcStatus[] _npcStatus = new NpcStatus[0];
 			final MySQL mySQL = new MySQL(0);
 
-			ResultSet res = mySQL.stat.executeQuery("SELECT npcstatus.*,`name` FROM npcstatus INNER JOIN npctemplate ON npcstatus.npcID = npctemplate.id WHERE `player_id` =" + id + ";");
+			ResultSet res = mySQL.stat.executeQuery("SELECT npcstatus.*,`name` FROM npcstatus INNER JOIN npc ON npcstatus.npc_id = npc.npc_id WHERE `player_id` =" + id + ";");
 			if (res.last()) {
 				_npcStatus = new NpcStatus[res.getRow()];
 				res.beforeFirst();
@@ -321,10 +332,10 @@ public class PhysicalMap {
 			int i = 0;
 			while (res.next()) {
 				final NpcStatus mobStatus = new NpcStatus();
-				mobStatus.npcID = res.getByte("npcID");
+				mobStatus.npcID = res.getByte("npc_id");
 				mobStatus.npcX = res.getShort("npcX");
 				mobStatus.npcY = res.getShort("npcY");
-				mobStatus.mapID = res.getShort("mapID");
+				mobStatus.mapID = res.getShort("map_id");
 				mobStatus.name = res.getString("name");
 				_npcStatus[i] = mobStatus;
 				i++;

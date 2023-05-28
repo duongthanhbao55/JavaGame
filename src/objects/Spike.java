@@ -33,7 +33,7 @@ public class Spike extends GameObject{
 	public void render(Graphics g, int xLvlOffset) {
 		spike.draw((int) ((getHitbox().x - xLvlOffset) - this.xDrawOffset), (int) (getHitbox().y - this.yDrawOffset),
 				SPIKE_WIDTH, SPIKE_HEIGHT, g);
-		drawHitbox(g, xLvlOffset);
+		//drawHitbox(g, xLvlOffset);
 	}
 
 	

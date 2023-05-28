@@ -18,7 +18,9 @@ import Skill.SkillManager;
 import Task.Task;
 import Template.NpcTemplate;
 import database.ItemManager;
+import database.User;
 import entities.NPC;
+import entities.NightBorne;
 import entities.Player;
 import main.Game;
 import objects.Equipment;
@@ -55,6 +57,8 @@ public class Playing extends State implements Statemethods {
 	private SkillManager skillManager;
 
 	private boolean paused = false;
+	private boolean restart = false;
+	private boolean logout = false;
 
 	// CAMERA
 	private int xLvlOffset = 0;
@@ -87,18 +91,10 @@ public class Playing extends State implements Statemethods {
 	}
 
 	public void initTask() {
-		for(NPC npc : npcManager.getNpcWizard1s()) {
-			if (Task.isTaskNPC(player, (short)npc.getNpcId())) {
-				npc.setHaveTask(true, player);
-			}
+		if(player.getCtaskCount() != -1 && player.getCtaskCount() != -2) {
+			NightBorne.setDeadCount(player.getCtaskCount());
 		}
-//		for (NpcTemplate npc : NPCManager.arrNpcTemplate) {
-//			if (Task.isTaskNPC(player, (short) npc.npcTemplateId)) {			
-//				NPC.setCurrNpcId(npc.npcTemplateId);
-//				npcManager.getNpcWizard1s().get(npc.npcTemplateId).setHaveTask(true, player);			
-//				break;
-//			}
-//		}
+		Task.checkCurrTask(this, player);
 	}
 
 	public void initPlayer(Player player) {
@@ -107,11 +103,13 @@ public class Playing extends State implements Statemethods {
 		effectManager = new EffectManager(this);
 		skillManager = new SkillManager(this);
 		levelManager = new LevelManager(game);
+		levelManager.setLvlIndex(player.getMapId());
 		ArrayList<TileLayer> mapLayer = levelManager.getCurrLevel().getMapLayer();
-		player.LoadLvlData(mapLayer.get(0).getTileMap());
+		this.player.LoadLvlData(mapLayer.get(0).getTileMap());
 		npcManager.loadNpcs(levelManager.getCurrLevel());
 		enemyManager.loadEnimies(levelManager.getCurrLevel());
 		inventoryManager.initDataInventory();
+		Player.setUpPlayerStatus(player);
 		
 		loadAll();
 		initTask();
@@ -172,7 +170,6 @@ public class Playing extends State implements Statemethods {
 			CheckCloseToBorder();
 		}
 	}
-
 	private void loadStartLevel() {
 		enemyManager.loadEnimies(levelManager.getCurrLevel());
 		objectManager.loadObject(levelManager.getCurrLevel());
@@ -285,7 +282,6 @@ public class Playing extends State implements Statemethods {
 		paused = false;
 		lvlCompleted = false;
 		playerDying = false;
-		npcManager.resetNPC();
 	}
 
 	public void setGameOver(boolean gameOver) {
@@ -390,7 +386,9 @@ public class Playing extends State implements Statemethods {
 			paused = !paused;
 			break;
 		}
-
+		if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
+			User.saveData(this);
+		}
 	}
 
 	@Override
@@ -489,6 +487,18 @@ public class Playing extends State implements Statemethods {
 
 	public void setLevelCompleted(boolean lvlCompleted) {
 		this.lvlCompleted = lvlCompleted;
+	}
+	public void setReStart(boolean restart) {
+		this.restart = restart;
+	}
+	public boolean isReStart() {
+		return this.restart;
+	}
+	public void setLogout(boolean logout) {
+		this.logout = logout;
+	}
+	public boolean getLogout() {
+		return this.logout;
 	}
 
 }
