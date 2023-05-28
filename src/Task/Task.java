@@ -40,6 +40,10 @@ public class Task {
 			Confirm.OpenComfirmUI(player, npcsTemplateId, Talk.getTask(0, 1),
 					new String[] { Text.get(0, 0), Text.get(0, 1) });
 			break;
+		case 3:
+			Confirm.OpenComfirmUI(player, npcsTemplateId, Talk.getTask(0, 1),
+					new String[] { Text.get(0, 0), Text.get(0, 1) });
+			break;
 		}
 	}
 
@@ -73,6 +77,7 @@ public class Task {
 	public static boolean isTaskNPC(final Player player, final short npcTemplateId) {
 		if (player.getCtaskId() < Game.tasks.length) {
 			try {
+
 				return Game.tasks[player.getCtaskId()][player.getCtaskIndex() + 1] == npcTemplateId;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -100,25 +105,38 @@ public class Task {
 	}
 
 	public static void upNextTask(final Player player, Playing playing) {
-		ArrayList<NPC_Wizard1> npcWizard1 = playing.getNpcManager().getNpcWizard1s();
 		player.setCtaskIndex((byte) (player.getCtaskIndex() + 1));
+
+		checkCurrTask(playing, player);
+	}
+
+	public static void checkCurrTask(Playing playing, Player player) {
+		// check last mission
+
 		if (Task.isLastMission(player)) {
 			Confirm.setReceivePrize(true);
 			player.setDoneTask(true);
-			player.setDescriptionTask("Mission success, meet npc to receive prize");
+
 		} else if (isFinishTask(player)) {
 			nextTask(player);
 			Confirm.setReceivePrize(false);
 		}
-		for (NpcTemplate npc : NPCManager.arrNpcTemplate) {
-			if (Task.isTaskNPC(player, (short) npc.npcTemplateId)) {
-				npcWizard1.get(npc.npcTemplateId).setHaveTask(true, player);
-				NPC.setCurrNpcId(npc.npcTemplateId);
+		// set description on screen
+		if (!Confirm.isReceivePrize()) {
+			player.setDescriptionTask(Game.taskTemplates[player.getCtaskId()].subNames[player.getCtaskIndex() + 1]);
+			player.setIsDefaultTask(true);
+		} else {
+			player.setDescriptionTask("Mission success, meet npc to receive prize");
+		}
+
+		// check npc task
+		for (NPC npc : NPCManager.getAllNpc()) {
+			if (Task.isTaskNPC(player, (short) npc.getNpcId())) {
+				npc.setHaveTask(true, player);
+				player.setCtaskCount((short) 0);
 				break;
 			} else {
-				npcWizard1.get(npc.npcTemplateId).setHaveTask(false, player);
-				NPC.setCurrNpcId(-1);
-				break;
+				npc.setHaveTask(false, player);
 			}
 		}
 		for (EnemyTemplate e : EnemyManager.arrEnemyTemplate) {
@@ -136,8 +154,8 @@ public class Task {
 	public static boolean isExtermination(final Player player, Playing playing, final EnemyTemplate enemyTemplate) {
 		switch (enemyTemplate.mobTemplateId) {
 		case 0: {
-			if (player.getCtaskId() == 1 && player.getCtaskIndex() == 0
-					|| player.getCtaskId() == 2 && player.getCtaskIndex() == 0
+			if (player.getCtaskId() == 1 && player.getCtaskIndex() == 1
+					|| player.getCtaskId() == 2 && player.getCtaskIndex() == 1
 					|| player.getCtaskId() == 0 && player.getCtaskIndex() == 0) {
 				NightBorne.setTaskExtermination(true);
 				player.setDescriptionTask(Game.taskTemplates[player.getCtaskId()].subNames[player.getCtaskIndex() + 1]);
@@ -172,11 +190,12 @@ public class Task {
 	}
 
 	public static void isDoneExtermination(Player player, Playing playing) {
+
 		player.setCtaskCount((short) NightBorne.getDeadCount());
 		if (player.getCtaskCount() >= Game.taskTemplates[player.getCtaskId()].counts[player.getCtaskIndex() + 1]) {
 			player.setDoTask(false);
-			NightBorne.setDeadCount(0);
 			upNextTask(player, playing);
+			NightBorne.setDeadCount(0);
 		}
 	}
 

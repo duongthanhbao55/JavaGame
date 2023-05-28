@@ -82,7 +82,6 @@ public class Slot {
 
 	public void addItem(Item item) {
 		items.add(item);
-		System.out.println(item.slot);
 		if (item.slot >= 0 && item.slot <= 9) {
 			itemOption.setText(new String[] { "equip", "drop", "sell" });
 		}
@@ -95,6 +94,9 @@ public class Slot {
 		else if(item.slot == -3) {
 			itemOption.setText(new String[] { "drop","sell"});
 		}		
+		else if(item.slot == -4) {
+			itemOption.setText(new String[] { "drop"});
+		}
 		else if(item.slot == 10) {
 			itemOption.setText(new String[] {"learn","drop"});
 		}

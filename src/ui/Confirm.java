@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 
+import Level.NPCManager;
 import Task.Task;
 import database.ItemManager;
 import entities.NPC_Wizard1;
@@ -124,7 +125,7 @@ public class Confirm {
 
 	public void notShow() {
 		Confirm.isShow = false;
-		playing.getNpcManager().getNpcWizard1s().get(npcTemplateId).setContact(false);
+		NPCManager.getAllNpc().get(npcTemplateId).setContact(false);
 		playing.getPlayer().setInteract(false);
 	}
 
@@ -159,10 +160,8 @@ public class Confirm {
 	public static boolean isReceivePrize() {
 		return Confirm.isReceivePrize;
 	}
-
 	public static void setPrize(int[] index, int[] xPos, int[] yPos) {
 		for (int i = 0; i < index.length; i++) {
-			System.out.println(index[i]);
 			ItemManager.addItem(new Item(xPos[i], yPos[i], 0, ItemManager.arrItemTemplate[index[i]]));
 		}
 	}

@@ -24,7 +24,7 @@ public class NPC_Wizard1 extends NPC {
 	private MessageIcon messageIcon;
 	private TextBox dialogueBox;
 	private String name;
-	private boolean isContact = false;
+
 	private boolean isPlayerDoingTask = false;;
 	private int index = -1;
 	private String[] conversation;
@@ -33,7 +33,7 @@ public class NPC_Wizard1 extends NPC {
 
 	public NPC_Wizard1(float x, float y, int enemyType,String name,int npcId) {
 		super(x, y, WIZARD1_SIZE, WIZARD1_SIZE, enemyType);
-		npcId = npcId;
+		this.npcId = npcId;
 		initHitbox(30, 50);
 		this.name = name;
 		loadConversation();
@@ -112,13 +112,7 @@ public class NPC_Wizard1 extends NPC {
 
 	}
 
-	public boolean isContact() {
-		return isContact;
-	}
 
-	public void setContact(boolean isContact) {
-		this.isContact = isContact;
-	}
 
 	public void setIsPlayerDoingTask(boolean isPlayerDoingTask) {
 		if (isPlayerDoingTask) {

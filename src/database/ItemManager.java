@@ -15,6 +15,7 @@ import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Scanner;
 
 public class ItemManager {
@@ -61,11 +62,11 @@ public class ItemManager {
                 itemTemplate.mana = Integer.parseInt(effect[10].trim());
                 // OTHER VARIABLES
                 itemTemplate.id = (byte) read.getInt("item_id");
-                itemTemplate.name = read.getString("item_name");
-                itemTemplate.slot = (byte) read.getInt("slot");
-                itemTemplate.ability = read.getString("ability");
-                itemTemplate.description = read.getString("description");
-                itemTemplate.filename = read.getString("filename");
+                itemTemplate.name = read.getString("Name");
+                itemTemplate.slot = (byte) read.getInt("Slot");
+                itemTemplate.ability = read.getString("Ability");
+                itemTemplate.description = read.getString("Description");
+                itemTemplate.filename = read.getString("Filename");
 
                 _arrItemTemplate[i] = itemTemplate;
                 ++i;
@@ -132,6 +133,7 @@ public class ItemManager {
                 ItemManager.items.get(i).setQuantity(ItemManager.items.get(i).getQuantity() + 1);
 
                 playing.getInventoryManager().add(ItemManager.items.get(i));
+                
                 ItemManager.items.get(i).isContact = false;
                 itemDrops[i] = ItemManager.items.get(i);
                 // items.remove(i);
@@ -149,10 +151,16 @@ public class ItemManager {
     }
 
     public void render(Graphics g, int xLvlOffset) {
-        if (ItemManager.items.size() > 0)
-            for (Item i : ItemManager.items) {
-                i.render(g, xLvlOffset);
-            }
+//        if (!ItemManager.items.isEmpty())
+//            for (Item i : ItemManager.items) {
+//                i.render(g, xLvlOffset);
+//            }
+        
+        ListIterator<Item> list = ItemManager.items.listIterator();
+        while (list.hasNext()) {
+            list.next().render(g, xLvlOffset);
+
+        }
     }
 
     public void update() {

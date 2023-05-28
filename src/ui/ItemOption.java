@@ -97,7 +97,7 @@ public class ItemOption {
 			if(index == 2 && text[index].equals("sell")) {
 				this.isSell = true;
 			}
-			if(index == 1 && text[index].equals("drop")) {
+			if(index == 1 || index == 0 && text[index].equals("drop")) {
 				this.isDrop = true;
 			}
 			break;

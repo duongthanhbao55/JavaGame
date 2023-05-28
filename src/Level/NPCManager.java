@@ -20,8 +20,9 @@ import ui.Confirm;
 public class NPCManager {
 	public static NpcStatus[] arrNpcStatus;
 	private ArrayList<NPC_Wizard1> npcWizard1s = new ArrayList<>();
+	private static ArrayList<NPC> allNpc = new ArrayList<>();
 	private Playing playing;
-	public static NpcTemplate[] arrNpcTemplate;
+	public static NpcTemplate[] arrNpcTemplate;                    
 
 	public NPCManager(Playing playing) {
 		this.playing = playing;
@@ -58,8 +59,10 @@ public class NPCManager {
 						if (!Confirm.isShow()) {
 							if(Confirm.isReceivePrize()) {
 								Task.FinishTask(player, (short) w.getNpcId());
-							}else
-							Task.TaskGet(player, (short) w.getNpcId());
+							}else {
+								Task.TaskGet(player, (short) w.getNpcId());
+							}		
+							w.setContact(false);
 						}
 						w.setContact(true);
 						playing.getPlayer().setInteract(true);
@@ -83,16 +86,6 @@ public class NPCManager {
 		}
 	}
 
-	public void setUpTask(Player player) {
-		for (NpcTemplate npc : NPCManager.arrNpcTemplate) {
-			if (Task.isTaskNPC(player, (short) npc.npcTemplateId)) {
-				npcWizard1s.get(npc.npcTemplateId).setHaveTask(true, player);
-			} else {
-				npcWizard1s.get(npc.npcTemplateId).setHaveTask(false, player);
-			}
-		}
-	}
-
 	public void resetNPC() {
 		for (NPC_Wizard1 w : npcWizard1s)
 			w.reset();
@@ -107,6 +100,9 @@ public class NPCManager {
 	}
 	public void loadNpcs(PhysicalMap physicalMap) {
 		this.npcWizard1s = physicalMap.getNpcs();
+	}
+	public static ArrayList<NPC> getAllNpc() {
+		return NPCManager.allNpc;
 	}
 
 }

@@ -27,9 +27,11 @@ public class NightBorne extends Enemy {
 	private static boolean isExtermination = false;
 	private static int deadCount = 0;
 
-	public NightBorne(float x, float y, Playing playing) {
+	public NightBorne(float x, float y,int currHealth,boolean active, Playing playing) {
 		super(x, y, NIGHTBORNE_SIZE, NIGHTBORNE_SIZE, NIGHTBORNE, playing);
 		enemyId = 0;
+		this.active = active;
+		this.currHealth = currHealth;
 		this.refreshTime = 20000000000L;
 		this.firstCheck = true;
 		initHitbox(20, 30);
@@ -91,7 +93,7 @@ public class NightBorne extends Enemy {
 				
 				break;
 			case DEAD:
-				playing.getPlayer().applyExp(10);
+
 				break;
 
 			}

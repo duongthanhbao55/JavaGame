@@ -7,6 +7,7 @@ import java.util.HashMap;
 import Template.TaskTemplate;
 import audio.AudioPlayer;
 import database.MySQL;
+import entities.Player;
 import gamestates.GameOptions;
 import gamestates.Gamestate;
 import gamestates.Login;
@@ -54,6 +55,8 @@ public class Game implements Runnable{
     protected static byte qua_top;
     protected static int up_exp;
     
+    
+    public static long exps[];
     public static byte[][] tasks;//id npc u need to talk( -1 talk with npc or orther mission, -2 kill enemies task or)
     public static byte[][] mapTasks;// index map of task( -1 talk with npc or orther mission,if(-2) if(tasks == idmap) => kill enemeis else if(task == -2) => useItemTask}
  
@@ -89,17 +92,27 @@ public class Game implements Runnable{
 		register = new Register(this);
 		setPlayerName = new SetPlayerName(this);
 		playing = new Playing(this);
-		//LoadSave.GetAllLevels();
 	}
-
+	public void reStart() {
+		if(playing.isReStart()) {
+			playing = new Playing(this);
+			playing.initPlayer(Player.getPlayer(login.getUser(), MySQL.getPlayerID(login.getUser().getUsername())));
+			playing.setReStart(false);
+		}
+	}
 	public void startGameLoop() {
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 	
 	public void update(long currTime) {
+
 		switch(Gamestate.state) {
 		case LOGIN:
+			if(playing.getLogout()) {
+				playing = new Playing(this);
+				playing.setLogout(false);
+			}
 			login.setLoginState(true);
 			login.update(currTime);
 			break;
@@ -109,10 +122,12 @@ public class Game implements Runnable{
 		case SETNAME:
 			setPlayerName.update(currTime);
 			break;
-		case MENU:
+		case MENU:			
+			reStart();		
 			menu.update(currTime);
 			break;
 		case PLAYING:
+			reStart();
 			playing.update(currTime);
 			break;
 		case OPTIONS:

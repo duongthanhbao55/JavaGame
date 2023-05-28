@@ -33,6 +33,7 @@ public class Login extends State implements Statemethods {
 	private ImageIcon gifIcon;
 	private Image scaledGif;
 	private int gifX, gifY;
+	private int warningX, warningY;
 	private int menuX, menuY, menuWidth, menuHeight;
 	private TextBox userIDBox, passwordBox;
 	private JTextField userID;
@@ -51,6 +52,8 @@ public class Login extends State implements Statemethods {
 	public Login(Game game) {
 		super(game);
 		loadBackGround();
+		loadWarning();
+		//setPosWarning();
 	}
 	
 	// GETTER & SETTER
@@ -66,7 +69,12 @@ public class Login extends State implements Statemethods {
 	public User getUser() {
 		return user;
 	}
-	
+	public void setUser(User user) {
+		this.user = user;
+	}
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
 
 	private void loadBackGround() {
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.LOGIN_BACKGROUND);
@@ -90,10 +98,6 @@ public class Login extends State implements Statemethods {
 	}
 
 	public void loadContainer() {
-//		userID = new JTextField();
-//		L_usernameLabel = new JLabel("Username");
-//		pw = new JPasswordField();
-//		L_passwordLabel = new JLabel("Password");
 		SetUpComponent();
 		addComponent();
 		
@@ -106,7 +110,7 @@ public class Login extends State implements Statemethods {
 	}
 	public void loadWarning() {
 		warning = new String[2];
-		warning[0] = "Please complete all information !";
+		warning[0] = "Username or password INCORRECT";
 		warning[1] = "This email is not valid !";
 
 		isWarning = new boolean[2];
@@ -116,10 +120,11 @@ public class Login extends State implements Statemethods {
 	@Override
 	public void update(long currTime) {
 		L_setBounds();
-
+		setPosWarning();
 		for (LoginButton lg : loginButton) {
 			lg.update();
 		}
+		
 		userIDBox.update();
 		passwordBox.update();
 
@@ -135,6 +140,13 @@ public class Login extends State implements Statemethods {
 		g.drawImage(backgroundImg, menuX, menuY, menuWidth, menuHeight, null);
 		for (LoginButton lg : loginButton) {
 			lg.render(g);
+		}
+		for (int i = 0; i < warning.length; i++) {
+			if (isWarning[i]) {
+				g.setFont(new Font("Arial", Font.PLAIN, 18));
+				g.setColor(new Color(0, 255, 0));
+				g.drawString(warning[i], warningX, warningY);
+			}
 		}
 		userIDBox.render(g);
 		passwordBox.render(g);
@@ -165,7 +177,7 @@ public class Login extends State implements Statemethods {
 					if (lg.getState() == Gamestate.LOGIN) {
 						setLoginState(true);
 						game.getRegister().setRegisterState(false);
-						user = User.Login(userID.getText(), pw.getText());
+						user = User.Login(userID.getText(), pw.getText(),this);
 						if(user == null) {
 							continue; // Username or password INCORRECT
 						}
@@ -228,6 +240,8 @@ public class Login extends State implements Statemethods {
 
 	}
 	public Player getPlayer() {
+		System.out.println("playerX:" + player.getHitbox().getX());
+		System.out.println("PlayerY:" + player.getHitbox().getY());
 		return this.player;
 	}
 	private boolean isIn(MouseEvent e, LoginButton b) {
@@ -337,6 +351,16 @@ public class Login extends State implements Statemethods {
 		L_passwordLabel.setBounds(pw.getBounds());
 		
 	}
+	public void setPosWarning() {
+		if(isWarning[0] || isWarning[1]) {
+			warningX = (int) (loginButton[0].getBounds().getX() - 25*Game.SCALE);
+			warningY = (int) ((int) loginButton[0].getBounds().getY() + loginButton[0].getBounds().getHeight() + 18 *Game.SCALE); 
+		}
+	}
+	public void setWarningIndex(int index) {
+		isWarning[index] = true;
+	}
+
 	public void resetBooleanWarning() {
 		for (int i = 0; i < isWarning.length; i++) {
 			isWarning[i] = false;

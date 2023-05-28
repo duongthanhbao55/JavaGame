@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
@@ -23,6 +24,7 @@ import Template.ItemTemplate;
 import Template.MapTemplate;
 import database.ItemManager;
 import database.MySQL;
+import entities.Player;
 
 import static untilz.Constants.UI.Inventory.*;
 import static untilz.HelpMethods.nextInt;
@@ -62,17 +64,18 @@ public class InventoryManager {
 
 	public void initDataInventory() {
 		for (int i = 0; i < InventoryManager.inventoryTemplate.length; i++) {
-			
+
 			if (inventoryTemplate[i].isEquipped == 1) {
-				playing.getEquipment().addItem(new Item((int) 0, (int) 0, 0, ItemManager.arrItemTemplate[inventoryTemplate[i].item_id - 1]));
+				playing.getEquipment().addItem(
+						new Item((int) 0, (int) 0, 0, ItemManager.arrItemTemplate[inventoryTemplate[i].item_id - 1]));
 			} else {
 				int index = inventoryTemplate[i].index;
-				for(int j = 0; j < inventoryTemplate[i].quantity; j++) {
-					Slots[index].addItem(
-							new Item((int) 0, (int) 0, 0, ItemManager.arrItemTemplate[inventoryTemplate[i].item_id - 1]));
-				}			
+				for (int j = 0; j < inventoryTemplate[i].quantity; j++) {
+					Slots[index].addItem(new Item((int) 0, (int) 0, 0,
+							ItemManager.arrItemTemplate[inventoryTemplate[i].item_id - 1]));
+				}
 			}
-				
+
 		}
 	}
 
@@ -157,12 +160,12 @@ public class InventoryManager {
 		return Slots;
 	}
 
-	public static void loadInventoryData() {
+	public static void loadInventoryData(int id) {
 		try {
 			InventoryTemplate[] _inventoryTemplates = new InventoryTemplate[0];
 			final MySQL mySQL = new MySQL(0);
 
-			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `inven`;");
+			ResultSet res = mySQL.stat.executeQuery("SELECT * FROM `inven` WHERE `player_id` =" + id + ";");
 			if (res.last()) {
 				_inventoryTemplates = new InventoryTemplate[res.getRow()];
 				res.beforeFirst();
@@ -173,7 +176,6 @@ public class InventoryManager {
 				inventoryTemplate.player_id = res.getInt("player_id");
 				inventoryTemplate.item_id = res.getShort("item_id");
 				inventoryTemplate.isEquipped = res.getByte("is_equipped");
-				//System.out.println(inventoryTemplate.isEquipped);
 				inventoryTemplate.index = res.getShort("index");
 				inventoryTemplate.quantity = res.getShort("quantity");
 
@@ -238,5 +240,29 @@ public class InventoryManager {
 		}
 		return 0;
 	}
+
+	public static void saveInventory(Playing playing) {
+		try {
+			final MySQL mySQL = new MySQL(0);
+
+			try (Connection conn = MySQL.getConnection(0); Statement pstmt = conn.createStatement()) {
+				String selectQuery = "DELETE FROM inven;";
+				pstmt.executeUpdate(selectQuery);
+				int k = 0;
+				for (Slot s : playing.getInventoryManager().getSlots()) {
+					for (Item i : s.getItems()) {
+						MySQL.baloAddItem(playing.getPlayer().getPlayerId(), i.getId(), k, 0);
+					}
+					k++;
+					Equipment.saveEquipment(playing);
+				}
+			} finally {
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 }

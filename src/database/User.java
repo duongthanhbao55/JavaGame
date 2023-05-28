@@ -1,13 +1,18 @@
 package database;
 
 import entities.Player;
+import gamestates.Playing;
 import gamestates.Register;
+import objects.Equipment;
+import objects.InventoryManager;
+import gamestates.Login;
 import static untilz.HelpMethods.strSQL;
-
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
+
+import Level.LevelManager;
 
 public class User {
 	protected Player player;
@@ -84,93 +89,71 @@ public class User {
 //
 //		return null;
 //	}
-	public static User Login(final String uName, final String pass) {
+	public static User Login(final String uName, final String pass,Login login) {
 		System.out.println(uName + " " + pass);
 		User user = new User();
-		if(MySQL.loginSuccessfully(uName, pass)) {
+		if (MySQL.loginSuccessfully(uName, pass,login)) {
 			user.username = uName;
 			JSONArray jrs;
-			//jrs = (JSONArray) JSONValue.parseWithException(MySQL.getPlayerID(uName));
 			user.player = Player.getPlayer(user, MySQL.getPlayerID(uName));
 			return user;
 		}
 		return null;
 	}
-	
-	public static boolean Register(String email, String uName, String password, String confirmPw,Register register) {
-		
+
+	public static boolean Register(String email, String uName, String password, String confirmPw, Register register) {
+
 		boolean chk_email = email.length() == 0;
 		boolean chk_uname = uName.length() == 0;
 		boolean chk_password = password.length() == 0;
 //		System.out.println(email);
-		
-		
-		if(chk_email || chk_uname || chk_password) {
+
+		if (chk_email || chk_uname || chk_password) {
 			System.out.println("Please complete all information !");
 			register.setWarningIndex(0);
 			return false;
 		}
 
-		if(!MySQL.emailIsValid(email)) {
+		if (!MySQL.emailIsValid(email)) {
 			System.out.println("This email is not valid !");
 			register.setWarningIndex(1);
 			return false;
-		}
-		else {
-			if(MySQL.emailWasUsed(email)) {
+		} else {
+			if (MySQL.emailWasUsed(email)) {
 				System.out.println("This email was used !");
 				register.setWarningIndex(2);
 				return false;
 			}
 		}
-		if(MySQL.usernameWasUsed(uName)) {
+		if (MySQL.usernameWasUsed(uName)) {
 			System.out.println("Username was used !");
 			register.setWarningIndex(3);
 			return false;
 		}
-		if(!password.equals(confirmPw)) {
+		if (!password.equals(confirmPw)) {
 			System.out.println("Password INCORRECT");
 			register.setWarningIndex(4);
 			return false;
 		}
 		MySQL.insertAccounts(email, uName, password);
+		final int userID = MySQL.getUserID(uName);
+		final int playerID = MySQL.createPlayerID(userID);
+		MySQL.createPlayer(playerID);
+		MySQL.updatePlayerIdInAccounts(userID,playerID);
+		MySQL.createMobStatus(playerID);
+		MySQL.createNpcStatus(playerID);
+		MySQL.startDoTask(playerID);
+		
 		System.out.println("Register Successfully !");
 		return true;
 	}
+	public static void saveData(Playing playing) {
+		Player.savePlayerData(playing);
+		LevelManager.saveMobStatus(playing);
+		LevelManager.saveNpcStatus(playing);
+		InventoryManager.saveInventory(playing);
+	}
 
-//	public static boolean Register(String uName, String password, String email) {
-//		boolean result = false;
-//		try {
-//			final MySQL mySQL = new MySQL(0);
-//			try {
-//				Connection conn = MySQL.getConnection(0);
-//				String sql = "INSERT INTO user (userid, user, status, password, player, admin, created_at, email, tester) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//				PreparedStatement pstmt = conn.prepareStatement(sql);
-//				pstmt.setInt(1, 1); // set the value for user
-//				pstmt.setString(2, uName); // set the value for user
-//				pstmt.setInt(3, 1); // set the value for status
-//				pstmt.setString(4, password); // set the value for password
-//				pstmt.setString(5, "[]");
-//				pstmt.setInt(6, 0); // set the value for admin
-//				pstmt.setString(7, null);
-//				pstmt.setString(8, "test@gmail.com");
-//				pstmt.setInt(9, 0); // set the value for tester
-//
-//				int rowsUpdate = pstmt.executeUpdate();
-//				if (rowsUpdate > 0) {
-//					System.out.println("New user has been inserted successfully!");
-//					return true;
-//				} else {
-//					System.out.println("User not found with id = " + uName);
-//				}
-//			} finally {
-//				mySQL.close();
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return result;
-//	}
 	public Player getPlayer() {
 		return this.player;
 	}

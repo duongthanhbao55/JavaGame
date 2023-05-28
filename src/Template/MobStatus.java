@@ -6,7 +6,9 @@ public class MobStatus {
     public short mobX;
     public short mobY;
     public byte mobStatus;
-    public int mobRefreshTime;
+    public int health_point;
+    public long mobRefreshTime;
+    public long mobDeadTime;
     public byte mobLevelBoss;
     public int mapID;
     

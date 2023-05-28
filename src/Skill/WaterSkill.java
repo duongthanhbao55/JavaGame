@@ -117,7 +117,7 @@ public class WaterSkill extends Skill {
 				|| waterSplash.getCurrentFrame() == 3 || waterSplash.getCurrentFrame() == 5
 				|| waterSplash.getCurrentFrame() == 9) {// UPS_SET 180
 			hasDealtDamage = true;
-			playing.getGame().getAudioPlayer().playAttackSound();
+			//playing.getGame().getAudioPlayer().playAttackSound(); sounds attack
 		}
 		if (hasDealtDamage) {
 			playing.checkEnemyHit(attackBox);

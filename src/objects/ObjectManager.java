@@ -24,6 +24,7 @@ public class ObjectManager {
 	private ArrayList<Spike> spikes = new ArrayList<>();
 	private ArrayList<Cannon> cannons = new ArrayList<>();
 	private ArrayList<Projectiles> cannonBalls = new ArrayList<>();
+	private ArrayList<Inviroment> torchs = new ArrayList<>();
 
 	public ObjectManager(Playing playing) {
 		this.playing = playing;
@@ -42,11 +43,14 @@ public class ObjectManager {
 			if (s.active)
 				s.update(currTime);
 		}
+		for(Inviroment i : torchs) {
+			i.update(currTime);
+		}
 		updateCannons(currTime, lvlData, player);
 		updateCannonBalls(lvlData, player);
 
 	}
-
+	
 	private void updateCannonBalls(int[][] lvlData, Player player) {
 		for (Projectiles p : cannonBalls) {
 			if (p.isActive()) {
@@ -108,6 +112,7 @@ public class ObjectManager {
 	}
 
 	public void render(Graphics g, int xLvlOffset) {
+		drawTorchs(g,xLvlOffset);
 		drawPotions(g, xLvlOffset);
 		drawContainers(g, xLvlOffset);
 		drawSpike(g, xLvlOffset);
@@ -150,7 +155,11 @@ public class ObjectManager {
 				cb.render(g, xLvlOffset);
 		}
 	}
-
+	private void drawTorchs(Graphics g, int xLvlOffset) {
+		for(Inviroment i : torchs) {
+			i.render(g, xLvlOffset);
+		}
+	}
 	public void resetAllObject() {
 
 		loadObject(playing.getLevelManager().getCurrLevel());
@@ -227,6 +236,7 @@ public class ObjectManager {
 		loadContainer(physicalMap);
 		loadSpike(physicalMap);
 		loadCannon(physicalMap);
+		loadTorch(physicalMap);
 		cannonBalls.clear();
 	}
 
@@ -244,6 +254,9 @@ public class ObjectManager {
 
 	public void loadCannon(PhysicalMap physicalMap) {
 		this.cannons = new ArrayList<>(physicalMap.getCannons());
+	}
+	public void loadTorch(PhysicalMap physicalMap) {
+		this.torchs = new ArrayList<>(physicalMap.getTorch());
 	}
 
 }

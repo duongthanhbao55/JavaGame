@@ -366,5 +366,18 @@
 	<frame name="LevelUpEffect14" value="60000000"/>
 	<frame name="LevelUpEffect15" value="60000000"/>
   </animation>
+  <animation name="torch-C">
+    <frame name="torch-C-01" value="60000000"/>
+    <frame name="torch-C-02" value="60000000"/>
+    <frame name="torch-C-03" value="60000000"/>
+    <frame name="torch-C-04" value="60000000"/>
+  </animation>
+   <animation name="torchB">
+    <frame name="torchB01" value="60000000"/>
+    <frame name="torchB02" value="60000000"/>
+    <frame name="torchB03" value="60000000"/>
+    <frame name="torchB04" value="60000000"/>
+  </animation>
+  
   
 </animations>

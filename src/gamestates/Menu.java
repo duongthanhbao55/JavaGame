@@ -1,6 +1,7 @@
 package gamestates;
 
 import java.awt.Color;
+
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -10,19 +11,22 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 
+import database.User;
 import main.Game;
 import ui.MenuButton;
 import untilz.LoadSave;
 
+import static untilz.Constants.UI.Button.*;
 import static untilz.Constants.UI.Banner.WELCOME_BANNER_WIDTH;
 import static untilz.Constants.UI.Banner.WELCOME_BANNER_HEIGHT;
 
 public class Menu extends State implements Statemethods {
 
 	// VARIABLE
-	private MenuButton[] buttons = new MenuButton[3];
+	private MenuButton[] buttons = new MenuButton[4];
 	private BufferedImage backgroundImg;
 	private BufferedImage welcomeBanner;
+	
 	private String playerName;
 	private ImageIcon gifIcon;
 	Image scaledGif;
@@ -48,15 +52,17 @@ public class Menu extends State implements Statemethods {
 		menuHeight = (int) (backgroundImg.getHeight() * Game.SCALE);
 		menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
 		menuY = (int) (85 * Game.SCALE);
-		bannerX = Game.GAME_WIDTH / 2 - menuWidth / 2 + (int)(30 * game.SCALE);
-		bannerY = (int)(1 * Game.SCALE);
-		
+		bannerX = Game.GAME_WIDTH / 2 - menuWidth / 2 + (int) (30 * game.SCALE);
+		bannerY = (int) (1 * Game.SCALE);
+
 	}
 
 	private void loadBottons() {
 		buttons[0] = new MenuButton(Game.GAME_WIDTH / 2, (int) (190 * Game.SCALE), 0, Gamestate.PLAYING);
 		buttons[1] = new MenuButton(Game.GAME_WIDTH / 2, (int) (260 * Game.SCALE), 1, Gamestate.OPTIONS);
 		buttons[2] = new MenuButton(Game.GAME_WIDTH / 2, (int) (330 * Game.SCALE), 2, Gamestate.QUIT);
+		buttons[3] = new MenuButton((Game.GAME_WIDTH - B_WIDTH),(Game.GAME_HEIGHT - B_HEIGHT), 3, Gamestate.LOGIN);
+
 	}
 
 	// RENDER
@@ -68,7 +74,7 @@ public class Menu extends State implements Statemethods {
 		Font font = new Font("Arial", Font.PLAIN, 25);
 		g.setFont(font);
 		g.setColor(new Color(51, 51, 204));
-		g.drawString(playerName, bannerX + (int)(80 * Game.SCALE),bannerY +(int)(60 * Game.SCALE));
+		g.drawString(playerName, bannerX + (int) (80 * Game.SCALE), bannerY + (int) (60 * Game.SCALE));
 		for (MenuButton mb : buttons)
 			mb.render(g);
 	}
@@ -112,6 +118,12 @@ public class Menu extends State implements Statemethods {
 					mb.applyGamestate();// apply only when Pressed before and Release after if pressed in button but
 					if (mb.getState() == Gamestate.PLAYING) {
 						game.getAudioPlayer().setLevelSong(game.getPlaying().getLevelManager().getLvlIndex());
+					}else if(mb.getState() == Gamestate.LOGIN) {
+						game.getLogin().setLoginState(true);
+						Gamestate.state = Gamestate.LOGIN;
+						game.getLogin().SetUpComponent();
+						game.getLogin().addComponent();
+						game.getPlaying().setLogout(true);
 					}
 					// when release mouse position is out side bound of button, we didn't apply that
 					// state
@@ -144,7 +156,7 @@ public class Menu extends State implements Statemethods {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	public void setPlayerName(String playerName) {
 		this.playerName = playerName;
 	}

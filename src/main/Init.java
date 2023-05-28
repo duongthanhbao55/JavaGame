@@ -29,8 +29,8 @@ public class Init {
 			}
 			i = 0;
 			while (res.next()) {
-				final JSONArray jarrT = (JSONArray) JSONValue.parse(res.getString("tasks"));
-				final JSONArray jarrM = (JSONArray) JSONValue.parse(res.getString("mapTasks"));
+				final JSONArray jarrT = (JSONArray) JSONValue.parse(res.getString("npcRequire"));
+				final JSONArray jarrM = (JSONArray) JSONValue.parse(res.getString("mapRequire"));
 				Game.tasks[i] = new byte[jarrT.size()];
 				Game.mapTasks[i] = new byte[jarrM.size()];
 				for (int j = 0; j < Game.tasks[i].length; ++j) {
@@ -66,7 +66,7 @@ public class Init {
 				++i;
 			}
 			res.close();
-            res = mySQL.stat.executeQuery("SELECT * FROM `mobtemplate`;");
+            res = mySQL.stat.executeQuery("SELECT * FROM `mob`;");
             if (res.last()) {
                 EnemyManager.arrEnemyTemplate = new EnemyTemplate[res.getRow()];
                 res.beforeFirst();
@@ -74,7 +74,7 @@ public class Init {
             i = 0;
             while (res.next()) {
                 final EnemyTemplate mobTemplate = new EnemyTemplate();
-                mobTemplate.mobTemplateId = res.getShort("mobTemplateId");
+                mobTemplate.mobTemplateId = res.getShort("mob_id");
                 mobTemplate.type = res.getByte("type");
                 mobTemplate.name = res.getString("name");
                 mobTemplate.hp = res.getInt("hp");
@@ -86,7 +86,7 @@ public class Init {
                 ++i;
             }
             res.close();
-            res = mySQL.stat.executeQuery("SELECT * FROM `npctemplate`;");
+            res = mySQL.stat.executeQuery("SELECT * FROM `npc`;");
             if (res.last()) {
                 NPCManager.arrNpcTemplate = new NpcTemplate[res.getRow()];
                 res.beforeFirst();
@@ -94,7 +94,7 @@ public class Init {
             i = 0;
             while (res.next()) {
                 final NpcTemplate npcTemplate = new NpcTemplate();
-                npcTemplate.npcTemplateId = res.getByte("id");
+                npcTemplate.npcTemplateId = res.getByte("npc_id");
                 npcTemplate.name = res.getString("name");
                 final JSONArray jarr = (JSONArray)JSONValue.parse(res.getString("menu"));
                 npcTemplate.menu = new String[jarr.size()][];
@@ -108,6 +108,18 @@ public class Init {
                 NPCManager.arrNpcTemplate[i] = npcTemplate;
                 ++i;
             }
+            res.close();
+            res = mySQL.stat.executeQuery("SELECT * FROM `exp`;");
+            if (res.last()) {
+                Game.exps = new long[res.getRow()];
+                res.beforeFirst();
+            }
+            i = 0;
+            while (res.next()) {
+                Game.exps[i] = res.getLong("exp");
+                ++i;
+            }
+            res.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(0);

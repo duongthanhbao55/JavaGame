@@ -8,6 +8,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+
+import database.MySQL;
 import gamestates.Playing;
 import main.Game;
 import ui.Selector;
@@ -120,5 +122,15 @@ public class Equipment {
 		Slots[index].addItem(item);
 		Slots[index].getItemOption().setText(new String[] { Text.get(0, 3), Text.get(0, 4), Text.get(0, 6) });
 		Selector.getInstance().getEquipmentEffect().applyEffect(item);
+	}
+	
+	public static void saveEquipment(Playing playing) {
+		int k = 0;
+		for(Slot s : playing.getEquipment().getSlots()) {
+			for(Item i : s.getItems()) {
+				MySQL.baloAddItem(playing.getPlayer().getPlayerId(), i.getId(), k,1);
+			}
+			k++;
+		}
 	}
 }
